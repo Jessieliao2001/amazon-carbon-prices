@@ -1,7 +1,8 @@
 
 
 
-xiarray=(0.5 1 2 10000)
+# xiarray=(0.5 1 2 10000)
+xiarray=(10000)
 sites=1043
 
 # xiarray=(10000)

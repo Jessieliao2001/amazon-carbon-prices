@@ -292,7 +292,7 @@ def ambiguity_decom(pe_det=7.1, pe_hmc=5.3, num_sites=78, solver="gurobi", pa=41
 
         results_AO = []
         for i in range(200):
-            result_AO = pa * np.dot(dfz_np[i + 1], dft_np) / ((1 + 0.02) ** (i))
+            result_AO = pa * np.dot(dfz_np[i], dft_np) / ((1 + 0.02) ** (i))
             results_AO.append(result_AO)
         total_AO = np.sum(results_AO)
 
@@ -300,7 +300,7 @@ def ambiguity_decom(pe_det=7.1, pe_hmc=5.3, num_sites=78, solver="gurobi", pa=41
         for i in range(200):
             result_NT = (
                 -b[order]
-                * (kappa * np.sum(dfz_np[i + 1]) - dfxdot[i])
+                * (kappa * np.sum(dfz_np[i]) - dfxdot[i])
                 / ((1 + 0.02) ** (i))
             )
             results_NT.append(result_NT)
@@ -309,7 +309,7 @@ def ambiguity_decom(pe_det=7.1, pe_hmc=5.3, num_sites=78, solver="gurobi", pa=41
         results_CS = []
         for i in range(200):
             result_CS = (
-                -pee * (kappa * np.sum(dfz_np[i + 1]) - dfxdot[i]) / ((1 + 0.02) ** (i))
+                -pee * (kappa * np.sum(dfz_np[i]) - dfxdot[i]) / ((1 + 0.02) ** (i))
             )
             results_CS.append(result_CS)
         total_CS = np.sum(results_CS)
