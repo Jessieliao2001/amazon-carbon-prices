@@ -72,7 +72,7 @@ def value_decom(pee=7.1, num_sites=78, solver="gurobi", pa=41.11, model="det", x
 
         results_AO = []
         for i in range(200):
-            result_AO = pa * np.dot(dfz_np[i + 1], dft_np) / ((1 + 0.02) ** (i))
+            result_AO = pa * np.dot(dfz_np[i], dft_np) / ((1 + 0.02) ** (i))
             results_AO.append(result_AO)
         total_AO = np.sum(results_AO)
 
@@ -80,7 +80,7 @@ def value_decom(pee=7.1, num_sites=78, solver="gurobi", pa=41.11, model="det", x
         for i in range(200):
             result_NT = (
                 -b[order]
-                * (kappa * np.sum(dfz_np[i + 1]) - dfxdot[i])
+                * (kappa * np.sum(dfz_np[i]) - dfxdot[i])
                 / ((1 + 0.02) ** (i))
             )
             results_NT.append(result_NT)
@@ -89,7 +89,7 @@ def value_decom(pee=7.1, num_sites=78, solver="gurobi", pa=41.11, model="det", x
         results_CS = []
         for i in range(200):
             result_CS = (
-                -pee * (kappa * np.sum(dfz_np[i + 1]) - dfxdot[i]) / ((1 + 0.02) ** (i))
+                -pee * (kappa * np.sum(dfz_np[i]) - dfxdot[i]) / ((1 + 0.02) ** (i))
             )
             results_CS.append(result_CS)
         total_CS = np.sum(results_CS)
@@ -180,7 +180,7 @@ def transfer_cost(pee=7.1, num_sites=78, solver="gurobi", pa=41.11, y=30, model=
 
     results_NCE_base = []
     for i in range(y):
-        result_NCE_base = -kappa * np.sum(dfz_np[i + 1]) + dfxdot[i]
+        result_NCE_base = -kappa * np.sum(dfz_np[i]) + dfxdot[i]
         results_NCE_base.append(result_NCE_base)
     total_NCE_base = np.sum(results_NCE_base) * 100
 
@@ -214,7 +214,7 @@ def transfer_cost(pee=7.1, num_sites=78, solver="gurobi", pa=41.11, y=30, model=
 
         results_NCE = []
         for i in range(y):
-            result_NCE = -kappa * np.sum(dfz_np[i + 1]) + dfxdot[i]
+            result_NCE = -kappa * np.sum(dfz_np[i]) + dfxdot[i]
             results_NCE.append(result_NCE)
         total_NCE = np.sum(results_NCE) * 100
 
@@ -222,7 +222,7 @@ def transfer_cost(pee=7.1, num_sites=78, solver="gurobi", pa=41.11, y=30, model=
         for i in range(y):
             result_NT2 = (
                 -b[order]
-                * (kappa * np.sum(dfz_np[i + 1]) - dfxdot[i])
+                * (kappa * np.sum(dfz_np[i]) - dfxdot[i])
                 / ((1 + 0.02) ** (i))
             )
 
