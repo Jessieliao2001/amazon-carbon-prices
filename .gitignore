@@ -9,7 +9,8 @@ test/
 bash/
 
 # Data
-# data/
+data/raw/
+data/clean/
 results/
 
 # Gams license
@@ -26,7 +27,7 @@ baseline
 *.o
 
 # Results
-output/
+# output/
 plot/
 plots/
 logs/
