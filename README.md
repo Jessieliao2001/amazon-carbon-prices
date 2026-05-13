@@ -1,4 +1,5 @@
 # Project Amazon
+This repository builds on the work from the original repository, which included contributions from Patricio Hernandez, Pengyu Chen, Leonardo Gomes, Sam, Phurichaya (Preach), and other collaborators. Since this repository was newly created, GitHub may not automatically display all of the original contributors in the contributors list, but we gratefully acknowledge their prior work and contributions to the project.
 
 ## Requirements
 - Python 3.9
