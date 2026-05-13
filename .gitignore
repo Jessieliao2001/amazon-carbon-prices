@@ -29,7 +29,7 @@ baseline
 # Results
 # output/
 plot/
-plots/
+# plots/
 logs/
 Casadi_Results/
 
