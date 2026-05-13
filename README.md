@@ -91,7 +91,7 @@ python pysrc/sampling/baseline.py --sites 78
 bash bash_files/hmc_shadow_price.sh
 ```
 
-9. Run:(update with new `pee`)
+9. Run:(update with new `pee`=6.7)
 ```bash
 python scripts/conduction_det.py
 ```
