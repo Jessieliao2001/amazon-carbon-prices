@@ -3,7 +3,7 @@
 .DS_Store
 
 
-
+bash/
 job-outs/
 test/
 
@@ -25,7 +25,7 @@ baseline
 *.o
 
 # Results
-output/
+# output/
 plot/
 plots/
 logs/
