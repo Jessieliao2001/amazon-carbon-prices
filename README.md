@@ -1,10 +1,11 @@
 # Project Amazon
-This repository builds on the work from the original repository, which included contributions from Patricio Hernandez, Pengyu Chen, Leonardo Gomes, Sam, Phurichaya (Preach), and other collaborators. Since this repository was newly created, GitHub may not automatically display all of the original contributors in the contributors list, but we gratefully acknowledge their prior work and contributions to the project.
+This repository builds on the work from the original repository, which included contributions from Patricio Hernandez, Pengyu Chen, Leonardo Gomes, Samuel Zhao, Phurichaya (Preach), and other collaborators. Since this repository was newly created, GitHub may not automatically display all of the original contributors in the contributors list, but we gratefully acknowledge their prior work and contributions to the project.
 
 ## Requirements
 - Python 3.9
 - Gurobi 11.0
 - gcc 12.2
+
 ## Data Requirements
 To replicate, make sure to download the raw data into the directory structure below:
 ```
@@ -83,18 +84,18 @@ source("rsrc/_masterfile_all.R")
 ### Run on Midway server
 #### When you use `sbatch` to run the code, remember to create a corresponding new folder in the job-out folder. 
 #### Deterministic Part
-7. Run the baseline script to get Table 23,24,25:
+1. Run the baseline script to get Table 23,24,25:
 ```bash
 python pysrc/sampling/baseline.py
 python pysrc/sampling/baseline.py --sites 78
 ```
 
-8. Run below to update the carbon prices for both 78 sites and 1043 sites (Table 1)
+2. Run below to update the carbon prices for both 78 sites and 1043 sites (Table 1)
 ```bash
 bash bash_files/hmc_shadow_price.sh
 ```
 
-9. Run below to get Table 2, 3, 13 and Figure 5 & 6 (update with new `pee`)
+3. Run below to get Table 2, 3, 13 and Figure 5 & 6 (update with new `pee`)
 ```bash
 python scripts/conduction_det.py
 ```
@@ -103,14 +104,19 @@ if not enough space, just run the bash file
 sbatch bash_files/det_conduction.sh
 ```
 
+4. Run below to get section 7.5's result
+```bash
+bash bash_files/det_time_consistency.sh
+```
+
 #### HMC Part
-10. Run below in server (update with new `pee`)
+1. Run below in server (update with new `pee`)
 ```bash
 bash bash_files/hmc_sampling.sh
 bash bash_files/hmc_relative_entropy.sh
 ```
 
-11. Run below in server to get Table 4, 14, 15, 16, 17, and Figure 9,10,11,12,13,17,18 (update with new `pee`, change in `scripts/conduction_hmc.py`)
+2. Run below in server to get Table 4, 14, 15, 16, 17, and Figure 9,10,11,12,13,17,18 (update with new `pee`, change in `scripts/conduction_hmc.py`)
 Remember to get the correct site id from the job-out of `relative_entropy` and then modify the site id in the Python code of density plot.
 ```bash
 python scripts/conduction_hmc.py
@@ -121,13 +127,13 @@ sbatch bash_files/hmc_conduction.sh
 ```
 
 #### MPC Part
-12. Run below with current script:
+1. Run below with current script:
 ```bash
 bash bash_files/mpc_prepare.sh
 bash bash_files/mpc_hmc_sp.sh
 ```
 
-13. Run below to update the carbon prices (Table 5)
+2. Run below to update the carbon prices (Table 5)
 ```bash
 python pysrc/mpc/mpc_compute_sp.py
 ```
@@ -137,7 +143,7 @@ sbatch bash_files/mpc_compute_sp.sh
 ```
 Then get shadow price of MPC and update the python file line 84-93
 
-14. Run MPC HMC sampling:
+3. Run MPC HMC sampling:
 ```bash
 bash bash_files/mpc_hmc.sh
 ```
@@ -151,7 +157,7 @@ bash bash_files/mpc_hmc.sh
   - b=0,10,15,20,25
   - unconstrained and constrained
 
-15. Run the following with `id=1`, `trig=2` to compute day-0 solutions for Table 6, 8, 12, 18, 19 and 21
+4. Run the following with `id=1`, `trig=2` to compute day-0 solutions for Table 6, 8, 12, 18, 19 and 21
 ```python
 python3 pysrc/mpc/mpc_hmc.py --id 1 --pe 6.1 --xi 0.5 --trig 2 --type "unconstrained"
 python3 pysrc/mpc/mpc_compute_day0.py
@@ -164,7 +170,7 @@ bash bash_files/mpc_hmc.sh
 sbatch bash_files/mpc_compute_day0.sh
 ```
 
-16. Compute results to get value decomposition under simulation (Table 18)
+5. Compute results to get value decomposition under simulation (Table 18)
 ```bash
 python pysrc/mpc/mpc_compute.py
 ```
@@ -174,7 +180,7 @@ sbatch bash_files/mpc_compute.sh
 ```
 update with mpc new `pee`
 
-17. Plot MPC trajectories to get Figure 14
+6. Plot MPC trajectories to get Figure 14
 ```bash
 python scripts/mpc_trajectory.py
 ```
@@ -184,7 +190,8 @@ sbatch bash_files/mpc_trajectory.sh
 ```
 update with mpc new `pee`
 
-18. Run below to get Table 10, 11 and Figure 15:
+#### Appendix C Results
+1. Run below to get Table 10, 11 and Figure 15:
 ```bash
 python scripts/price_estimation.py
 ```
@@ -192,7 +199,7 @@ python scripts/price_estimation.py
 bash bash_files/price_estimation.sh
 ```
 
-19. Run below to get Figure 21:
+2. Run below to get Figure 21:
 ```bash
 python scripts/bayesian_R2.py
 ```
