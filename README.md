@@ -1,6 +1,8 @@
 # Project Amazon
 This repository builds on the work from the original repository, which included contributions from Patricio Hernandez, Pengyu Chen, Leonardo Gomes, Samuel Zhao, Phurichaya (Preach), and other collaborators. Since this repository was newly created, GitHub may not automatically display all of the original contributors in the contributors list, but we gratefully acknowledge their prior work and contributions to the project.
 
+The latest version of the paper can be found [here](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4414217). The raw data and calibrated used for computation can be downloaded [here](https://www.dropbox.com/scl/fo/n6gsyl7w2mki77eqew8ts/AMUKehiyaTFH2fjO5VotYwE?rlkey=iuk47v413domc1utvoa8x3yfp&st=ie2dyrzx&dl=0).
+
 ## Requirements
 - Python 3.9
 - Gurobi 11.0
