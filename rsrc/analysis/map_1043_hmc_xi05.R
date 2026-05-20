@@ -28,6 +28,19 @@ options(scipen = 999)
 
 # extract high and low price
 p_high <- 41.11
+carbon_prices <- readr::read_csv(
+  here::here("replication/derived/carbon_prices.csv"),
+  show_col_types = FALSE
+)
+pee <- carbon_prices |>
+  dplyr::filter(
+    context == "parameter_ambiguity",
+    model == "hmc",
+    sites == 1043,
+    xi == "0.5"
+  ) |>
+  dplyr::pull(pee) |>
+  dplyr::first()
 
 # # clear unnecessary objects
 # rm(matrixTransition.2prices, calibration.globalModel)
@@ -39,7 +52,7 @@ load(here::here("data/calibration/", "calibration_1043_sites.Rdata"))
 
 
 # 1043 SITES AGGREGATE PREDICTION
-aux.prices <- c(2.9, 12.9, 17.9, 22.9, 27.9)
+aux.prices <- pee + c(0, 10, 15, 20, 25)
 
 
 

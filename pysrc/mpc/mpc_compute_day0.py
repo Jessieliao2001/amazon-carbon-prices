@@ -1,13 +1,30 @@
 import os
-import numpy as np
-import pandas as pd
+import argparse
 import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+import numpy as np
+import pandas as pd
+from pysrc.replication.parameters import CarbonPriceKey, carbon_price, normalize_xi
 from pysrc.services.data_service import load_productivity_params
 from pysrc.services.file_service import get_path
 
 def format_float(value):
     return f"{value:.2f}"
+
+
+def write_simple_latex_table(path: Path, table: pd.DataFrame) -> None:
+    lines = ["\\begin{tabular}{" + "l" * len(table.columns) + "}"]
+    lines.append("\\toprule")
+    lines.append(" & ".join(str(column) for column in table.columns) + " \\\\")
+    lines.append("\\midrule")
+    for _, row in table.iterrows():
+        lines.append(" & ".join(str(row[column]) for column in table.columns) + " \\\\")
+    lines.append("\\bottomrule")
+    lines.append("\\end{tabular}")
+    path.write_text("\n".join(lines) + "\n")
 
 
 def read_theta(num_sites):
@@ -26,141 +43,7 @@ def read_file(result_directory):
 
     return (Z / 1e2, Xdot / 1e2, U / 1e2, V / 1e2)
 
-
-# def value_decom_mpc(pee=5.9, num_sites=78, solver="gurobi", model="unconstrained", b=0,xi=10000,mode=None,price_low=35.76,price_high = 44.25):
-#     pe = pee + b
-#     kappa = 2.094215255
-#     zeta_u = 1.66e-4 * 1e11
-#     zeta_v = 1.00e-4 * 1e11
-
-    
-#     dft_np = read_theta(num_sites)
-
-#     output_folder = str(get_path("output")) + "/mpc/"
-#     if not os.path.exists(output_folder):
-#         os.makedirs(output_folder)
-
-#     results = []
-#     for j in range(0):
-        
-        
-#         if mode =="converge":
-#             if price_low == 32.49:
-#                 pa_file_path = (
-#                     get_path("output", "simulation", "mpc_path","constrained",f"xi_{xi}",f"pe_{pe}") / f"mc_{j+1}.csv"
-#                 ) 
-#             else:
-#                 pa_file_path = (
-#                     get_path("output", "simulation", "mpc_path","unconstrained",f"xi_{xi}",f"pe_{pe}") / f"mc_{j+1}.csv"
-#                 ) 
-#         else:
-#             pa_file_path = (
-#                 get_path("output", "simulation", "mpc_path","baseline",f"{model}") / f"mc_{j+1}.csv"
-#             ) 
-
-#         p_a_values = np.array(pd.read_csv(pa_file_path))[:,1]
-#         p_a_values = np.where(p_a_values == 2, price_high, price_low)
-        
-#         if mode =="converge":
-#             result_directory = (
-#                 str(get_path("output"))
-#                 + f"/optimization/mpc_worstcase/{solver}/{num_sites}sites/xi_{xi}/pa_41.1/"
-#                 + f"pe_{pe}/mc_{j+1}/{model}"
-#             )            
-            
-#         else:
-#             result_directory = (
-#                 str(get_path("output"))
-#                 + f"/optimization/mpc/{solver}/{num_sites}sites/xi_{xi}/pa_41.1/"
-#                 + f"pe_{pe}/mc_{j+1}/{model}"
-#             )
-
-#         (dfz_np, dfxdot, dfu_np, dfv_np) = read_file(
-#             result_directory
-#         )
-
-
-#         results_AO = []
-#         for i in range(200):
-#             result_AO = p_a_values[i] * np.dot(dfz_np[i + 1], dft_np) / ((1 + 0.02) ** (i))
-#             results_AO.append(result_AO)
-#         total_AO = np.sum(results_AO)
-
-#         results_NT = []
-#         for i in range(200):
-#             result_NT = (
-#                 -b
-#                 * (kappa * np.sum(dfz_np[i + 1]) - dfxdot[i])
-#                 / ((1 + 0.02) ** (i))
-#             )
-#             results_NT.append(result_NT)
-#         total_NT = np.sum(results_NT)
-
-#         results_CS = []
-#         for i in range(200):
-#             result_CS = (
-#                 -pee * (kappa * np.sum(dfz_np[i + 1]) - dfxdot[i]) / ((1 + 0.02) ** (i))
-#             )
-#             results_CS.append(result_CS)
-#         total_CS = np.sum(results_CS)
-
-#         results_AC = []
-#         for i in range(200):
-#             result_AC = (
-#                 ((zeta_u / 2)
-#                 * (np.sum(dfu_np[i]) ) ** 2
-#                 +
-#                 (zeta_v / 2)
-#                 * (np.sum(dfv_np[i]) ) ** 2
-#                 )
-#                 / ((1 + 0.02) ** (i))
-#             )
-#             results_AC.append(result_AC)
-#         total_AC = np.sum(results_AC)
-
-#         total_PV = total_AO + total_NT + total_CS - total_AC
-
-#         iteration_results = {
-#             "j": j + 1,
-#             "b": b,
-#             "total_AO": total_AO,
-#             "total_NT": total_NT,
-#             "total_CS": total_CS,
-#             "total_AC": total_AC,
-#             "total_PV": total_PV,
-#         }
-
-#         results.append(iteration_results)
-
-#     results_df = pd.DataFrame(results)
-
-#     mean = results_df.mean()
-#     sd = results_df.std()
-#     sd / mean
-
-#     summary_table_df = pd.DataFrame(
-#         {
-#             "  ":  f"b = {b}",
-#             "agricultural output value": [format_float(mean["total_AO"])],
-#             "net transfers": [format_float(mean["total_NT"])],
-#             "forest services": [format_float(mean["total_CS"])],
-#             "adjustment costs": [format_float(mean["total_AC"])],
-#             "planner value": [format_float(mean["total_PV"])],
-#         }
-#     )
-
-
-#     if mode =="converge":
-#         with open(output_folder + f"converge_present_value_mpc_b{b}_sites{num_sites}_xi_{xi}_pee_{pee}_{model}.tex", "w") as file:
-#             file.write(summary_table_df.to_latex(index=False))
-#     else:
-#         with open(output_folder + f"present_value_mpc_b{b}_sites{num_sites}_xi_{xi}_pee_{pee}_{model}.tex", "w") as file:
-#             file.write(summary_table_df.to_latex(index=False))
-
-#     return print("done")
-
-
-def value_decom_mpc(pee=5.9, num_sites=78, solver="gurobi", model="unconstrained", b=0,xi=10000,mode=None,price_low=35.76,price_high = 44.25):
+def value_decom_mpc(pee=5.9, num_sites=78, solver="gurobi", model="unconstrained", b=0,xi=10000,mode=None,price_low=35.76,price_high = 44.25, quiet=False):
     pe = pee + b
     kappa = 2.094215255
     zeta_u = 1.66e-4 * 1e9
@@ -208,12 +91,13 @@ def value_decom_mpc(pee=5.9, num_sites=78, solver="gurobi", model="unconstrained
         pa = np.asarray(pa)
         theta = np.asarray(theta).reshape(-1)
 
-        print("Z shape:", Z.shape)
-        print("X shape:", X.shape)
-        print("U shape:", U.shape)
-        print("V shape:", V.shape)
-        print("pa shape:", pa.shape)
-        print("theta shape:", theta.shape)
+        if not quiet:
+            print("Z shape:", Z.shape)
+            print("X shape:", X.shape)
+            print("U shape:", U.shape)
+            print("V shape:", V.shape)
+            print("pa shape:", pa.shape)
+            print("theta shape:", theta.shape)
 
         # distorted probabilities
         p_C0_1 = float(prob_df.loc[0, "p_C0_1"])
@@ -286,7 +170,7 @@ def value_decom_mpc(pee=5.9, num_sites=78, solver="gurobi", model="unconstrained
             combined_forest_nt = forest + net_transfer
             original_combined_term = -pe * nt_term
 
-            if abs(combined_forest_nt - original_combined_term) > 1e-6:
+            if abs(combined_forest_nt - original_combined_term) > 1e-6 and not quiet:
                 print("Warning: forest + net_transfer does not equal -pe * nt_term")
                 print("t:", t, "j:", j)
                 print("forest + net_transfer:", combined_forest_nt)
@@ -548,183 +432,92 @@ def value_decom_mpc(pee=5.9, num_sites=78, solver="gurobi", model="unconstrained
 
     scale = 1 - np.exp(-0.02)
 
-    print("========================================")
-    print(f"xi={xi},b={b},model={model}")
-    print("Reconstructed Ct0:", Ct0)
-    print("Check sum:", check_sum)
-    print("Difference:", check_sum - Ct0)
+    if not quiet:
+        print("========================================")
+        print(f"xi={xi},b={b},model={model}")
+        print("Reconstructed Ct0:", Ct0)
+        print("Check sum:", check_sum)
+        print("Difference:", check_sum - Ct0)
 
-    print("Reconstructed Ct0 exp:", Ct0 / scale)
-    print("Agri exp:", Ct0_decomp["agri"] / scale)
-    print("Net transfer exp:", Ct0_decomp["net_transfer"] / scale)
-    print("Forest exp:", Ct0_decomp["forest"] / scale)
-    print("Adjustment exp:", Ct0_decomp["adjustment"] / scale)
+        print("Reconstructed Ct0 exp:", Ct0 / scale)
+        print("Agri exp:", Ct0_decomp["agri"] / scale)
+        print("Net transfer exp:", Ct0_decomp["net_transfer"] / scale)
+        print("Forest exp:", Ct0_decomp["forest"] / scale)
+        print("Adjustment exp:", Ct0_decomp["adjustment"] / scale)
+
+    summary_table_df = pd.DataFrame(
+        {
+            "  ": [f"b = {b}, xi = {xi}"],
+            "agricultural output value": [format_float(Ct0_decomp["agri"] / scale)],
+            "net transfers": [format_float(Ct0_decomp["net_transfer"] / scale)],
+            "forest services": [format_float(Ct0_decomp["forest"] / scale)],
+            "adjustment costs": [format_float(Ct0_decomp["adjustment"] / scale)],
+            "planner value": [format_float(Ct0 / scale)],
+        }
+    )
+    output_path = (
+        Path(output_folder)
+        / f"day0_present_value_mpc_b{b}_sites{num_sites}_xi_{xi}_pee_{pee}_{model}.tex"
+    )
+    write_simple_latex_table(output_path, summary_table_df)
 
     return 
 
-for b in [0,15,10,25]:    
-    value_decom_mpc(pee=6.7,num_sites=78,b=b,xi=10000.0)
-    # value_decom_mpc(pee=6.9,num_sites=78,b=b,xi=10000.0)
-    # value_decom_mpc(pee=6.4,num_sites=78,b=b,xi=1.0)
-    # value_decom_mpc(pee=6.1,num_sites=78,b=b,xi=0.5)
+def _b_values(values):
+    if values == ["all"]:
+        return [0, 10, 15, 20, 25]
+    return [int(value) for value in values]
 
 
-# for b in [0]:
-#     value_decom_mpc(pee=6.9,num_sites=78,b=b,xi=10000.0)
-#     value_decom_mpc(pee=6.9,num_sites=78,b=b,xi=1.0)
-#     value_decom_mpc(pee=6.9,num_sites=78,b=b,xi=0.5)
-# for b in [0]:
-#     value_decom_mpc(pee=6.9,num_sites=78,b=b,xi=10000.0)
-#     value_decom_mpc(pee=6.4,num_sites=78,b=b,xi=1.0)
-#     value_decom_mpc(pee=6.1,num_sites=78,b=b,xi=0.5)
-# for b in [0]:
-#     value_decom_mpc(pee=6.9,num_sites=78,b=b,xi=10000.0)
-#     value_decom_mpc(pee=6.9,num_sites=78,b=b,xi=1.0,mode="converge")
-#     value_decom_mpc(pee=6.9,num_sites=78,b=b,xi=0.5,mode="converge")
-# for b in [0,10,15,25]:
-#     value_decom_mpc(pee=6.9,num_sites=78,b=b,xi=10000.0)
-#     value_decom_mpc(pee=6.4,num_sites=78,b=b,xi=1.0,mode="converge")
-#     value_decom_mpc(pee=6.1,num_sites=78,b=b,xi=0.5,mode="converge")
+def _xi_values(values):
+    if values == ["all"]:
+        return ["inf", "1", "0.5"]
+    return [normalize_xi(value) for value in values]
 
 
+def main():
+    parser = argparse.ArgumentParser(description="Create MPC day-0 decomposition outputs.")
+    parser.add_argument("--model", choices=["unconstrained", "constrained"], default="unconstrained")
+    parser.add_argument("--b", nargs="+", default=["0", "15", "10", "25"])
+    parser.add_argument("--xi", nargs="+", default=["inf"])
+    parser.add_argument("--num-sites", type=int, default=78)
+    parser.add_argument("--mode", choices=["auto", "baseline", "converge"], default="auto")
+    parser.add_argument("--quiet", action="store_true")
+    args = parser.parse_args()
 
-# # ####### Appendix tables
+    price_model = "common_variance" if args.model == "constrained" else "distinct_variance"
+    price_low, price_high = (32.49, 42.85) if args.model == "constrained" else (35.76, 44.32)
 
-# for b in [0,10,15,20,25]:
-#     value_decom_mpc(pee=6.6,num_sites=78,b=b,xi=10000.0,model="constrained",price_low=32.49,price_high = 42.85)
-#     value_decom_mpc(pee=6.2,num_sites=78,b=b,xi=1.0,mode="converge",model="constrained",price_low=32.49,price_high = 42.85)
-#     value_decom_mpc(pee=5.6,num_sites=78,b=b,xi=0.5,mode="converge",model="constrained",price_low=32.49,price_high = 42.85)
-    
-# for b in [0,10,15,20,25]:
-#     value_decom_mpc(pee=6.6,num_sites=78,b=b,xi=10000.0,model="constrained",price_low=32.49,price_high = 42.85)
-#     value_decom_mpc(pee=6.2,num_sites=78,b=b,xi=1.0,model="constrained",price_low=32.49,price_high = 42.85)
-#     value_decom_mpc(pee=5.6,num_sites=78,b=b,xi=0.5,model="constrained",price_low=32.49,price_high = 42.85)
-    
-
-    
-    
-    
-    
-    
-    
-    
-# def transfer_cost_mpc(pee=5.9, y=30,num_sites=78, solver="gurobi", model="unconstrained", b=0,xi=10000,mode=None,price_low=35.76,price_high = 44.25):
-#     kappa = 2.094215255
-#     pe = pee + b
-
-#     output_folder = str(get_path("output")) + "/mpc/"
-#     if not os.path.exists(output_folder):
-#         os.makedirs(output_folder)
-
-#     results = []
-#     for j in range(49):
-        
-#         if mode =="converge":
-#             result_directory = (
-#                 str(get_path("output"))
-#                 + f"/optimization/mpc_worstcase/{solver}/{num_sites}sites/xi_{xi}/pa_41.1/"
-#                 + f"pe_{pe}/mc_{j+1}/{model}"
-#             )            
-#             baseline_folder = (
-#                 str(get_path("output"))
-#                 + f"/optimization/mpc_worstcase/{solver}/{num_sites}sites/xi_{xi}/pa_41.1/"
-#                 + f"pe_{pee}/mc_{j+1}/{model}"
-#             )            
-#         else:
-#             result_directory = (
-#                 str(get_path("output"))
-#                 + f"/optimization/mpc/{solver}/{num_sites}sites/xi_{xi}/pa_41.1/"
-#                 + f"pe_{pe}/mc_{j+1}/{model}"
-#             )
-#             baseline_folder = (
-#                 str(get_path("output"))
-#                 + f"/optimization/mpc/{solver}/{num_sites}sites/xi_{xi}/pa_41.1/"
-#                 + f"pe_{pee}/mc_{j+1}/{model}"
-#             )
-
-#         (dfz_np, dfxdot, dfu_np, dfv_np) = read_file(baseline_folder)
-
-#         results_NCE_base = []
-#         for i in range(y):
-#             result_NCE_base = -kappa * np.sum(dfz_np[i + 1]) + dfxdot[i]
-#             results_NCE_base.append(result_NCE_base)
-#         total_NCE_base = np.sum(results_NCE_base) * 100
-
-#         (dfz_np, dfxdot, dfu_np, dfv_np) = read_file(
-#             result_directory
-#         )
-    
-
-#         results_NCE = []
-#         for i in range(y):
-#             result_NCE = -kappa * np.sum(dfz_np[i + 1]) + dfxdot[i]
-#             results_NCE.append(result_NCE)
-#         total_NCE = np.sum(results_NCE) * 100
-
-#         results_NT2 = []
-#         for i in range(y):
-#             result_NT2 = (
-#                 -b
-#                 * (kappa * np.sum(dfz_np[i + 1]) - dfxdot[i])
-#                 / ((1 + 0.02) ** (i))
-#             )
-
-#             results_NT2.append(result_NT2)
-#         total_NT2 = np.sum(results_NT2)
-
-#         total_EC = total_NT2 / (total_NCE - total_NCE_base) * 100
-
-#         iteration_results = {
-#             "j": j + 1,
-#             "b": b,
-#             "NCE": total_NCE,
-#             "NT2": total_NT2,
-#             "EC": total_EC,
-#         }
-
-#         results.append(iteration_results)
-
-#     results_df = pd.DataFrame(results)
-
-#     mean = results_df.mean()
-#     sd = results_df.std()
-#     sd / mean
-
-#     summary_table_df = pd.DataFrame(
-#         {
-#             "  ":  f"b = {b}",
-#             "net captured emissions": [format_float(mean["NCE"])],
-#             "discounted net transfers": [format_float(mean["NT2"])],
-#             "discounted effective costs": [format_float(mean["EC"])],
-#         }
-#     )
+    for xi_label in _xi_values(args.xi):
+        xi_value = 10000.0 if xi_label == "inf" else float(xi_label)
+        pee = carbon_price(
+            CarbonPriceKey(
+                context="price_stochasticity",
+                model=args.model,
+                sites=args.num_sites,
+                xi=xi_label,
+                price_model=price_model,
+            )
+        )
+        if args.mode == "auto":
+            mode = None if xi_label == "inf" else "converge"
+        elif args.mode == "baseline":
+            mode = None
+        else:
+            mode = "converge"
+        for b in _b_values(args.b):
+            value_decom_mpc(
+                pee=pee,
+                num_sites=args.num_sites,
+                b=b,
+                xi=xi_value,
+                mode=mode,
+                model=args.model,
+                price_low=price_low,
+                price_high=price_high,
+                quiet=args.quiet,
+            )
 
 
-#     if mode =="converge":
-#         with open(output_folder + f"converge_transfer_mpc_b{b}_sites{num_sites}_xi_{xi}_pee_{pee}_{model}.tex", "w") as file:
-#             file.write(summary_table_df.to_latex(index=False))
-#     else:
-#         with open(output_folder + f"transfer_mpc_b{b}_sites{num_sites}_xi_{xi}_pee_{pee}_{model}.tex", "w") as file:
-#             file.write(summary_table_df.to_latex(index=False))
-
-#     return print("done")
-
-
-# for b in [0,10,15,25]:
-#     transfer_cost_mpc(pee=6.3,num_sites=78,b=b,xi=10000.0)
-    
-# for b in [0,10,15,25]:
-#     transfer_cost_mpc(pee=5.7,num_sites=78,b=b,xi=1.0,mode="converge")
-    
-# for b in [0,10,15,25]:
-#     transfer_cost_mpc(pee=5.5,num_sites=78,b=b,xi=0.2,mode="converge")
-
-
-
-
-
-
-
-
-
-
+if __name__ == "__main__":
+    main()

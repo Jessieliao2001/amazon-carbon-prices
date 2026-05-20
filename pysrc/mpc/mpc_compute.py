@@ -1,6 +1,13 @@
 import os
+import argparse
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
 import numpy as np
 import pandas as pd
+from pysrc.replication.parameters import CarbonPriceKey, carbon_price, normalize_xi
 from pysrc.services.data_service import load_productivity_params
 from pysrc.services.file_service import get_path
 
@@ -159,48 +166,78 @@ def value_decom_mpc(pee=5.9, num_sites=78, solver="gurobi", model="unconstrained
 
 
 
-    
-# for b in [0,15,10,25]:    
-#     # value_decom_mpc(pee=6.7,num_sites=78,b=b,xi=10000.0)
-#     value_decom_mpc(pee=6.9,num_sites=78,b=b,xi=10000.0)
-#     value_decom_mpc(pee=6.4,num_sites=78,b=b,xi=1.0)
-#     value_decom_mpc(pee=6.1,num_sites=78,b=b,xi=0.5)
+def _xi_values(values):
+    if values == ["all"]:
+        return ["inf", "1", "0.5"]
+    return [normalize_xi(value) for value in values]
 
 
-# for b in [0]:
-#     value_decom_mpc(pee=6.9,num_sites=78,b=b,xi=10000.0)
-#     value_decom_mpc(pee=6.9,num_sites=78,b=b,xi=1.0)
-#     value_decom_mpc(pee=6.9,num_sites=78,b=b,xi=0.5)
-# for b in [0]:
-#     value_decom_mpc(pee=6.9,num_sites=78,b=b,xi=10000.0)
-#     value_decom_mpc(pee=6.4,num_sites=78,b=b,xi=1.0)
-#     value_decom_mpc(pee=6.1,num_sites=78,b=b,xi=0.5)
-# for b in [0]:
-#     value_decom_mpc(pee=6.9,num_sites=78,b=b,xi=10000.0)
-#     value_decom_mpc(pee=6.9,num_sites=78,b=b,xi=1.0,mode="converge")
-#     value_decom_mpc(pee=6.9,num_sites=78,b=b,xi=0.5,mode="converge")
-# for b in [0,10,15,25]:
-#     value_decom_mpc(pee=6.9,num_sites=78,b=b,xi=10000.0)
-#     value_decom_mpc(pee=6.4,num_sites=78,b=b,xi=1.0,mode="converge")
-#     value_decom_mpc(pee=6.1,num_sites=78,b=b,xi=0.5,mode="converge")
+def _b_values(values):
+    if values == ["all"]:
+        return [0, 10, 15, 20, 25]
+    return [int(value) for value in values]
 
 
-# # ####### Appendix tables
+def _price_model(model):
+    return "common_variance" if model == "constrained" else "distinct_variance"
 
-# for b in [0,10,15,20,25]:
-#     value_decom_mpc(pee=6.6,num_sites=78,b=b,xi=10000.0,model="constrained",price_low=32.49,price_high = 42.85)
-#     value_decom_mpc(pee=6.2,num_sites=78,b=b,xi=1.0,mode="converge",model="constrained",price_low=32.49,price_high = 42.85)
-#     value_decom_mpc(pee=5.6,num_sites=78,b=b,xi=0.5,mode="converge",model="constrained",price_low=32.49,price_high = 42.85)
-    
-# for b in [0,10,15,20,25]:
-#     value_decom_mpc(pee=6.6,num_sites=78,b=b,xi=10000.0,model="constrained",price_low=32.49,price_high = 42.85)
-#     value_decom_mpc(pee=6.2,num_sites=78,b=b,xi=1.0,model="constrained",price_low=32.49,price_high = 42.85)
-#     value_decom_mpc(pee=5.6,num_sites=78,b=b,xi=0.5,model="constrained",price_low=32.49,price_high = 42.85)
-    
-for b in [0]:
-    value_decom_mpc(pee=6.6,num_sites=78,b=b,xi=10000.0,model="constrained",price_low=32.49,price_high = 42.85)
-    value_decom_mpc(pee=6.6,num_sites=78,b=b,xi=1.0,model="constrained",price_low=32.49,price_high = 42.85)
-    value_decom_mpc(pee=6.6,num_sites=78,b=b,xi=0.5,model="constrained",price_low=32.49,price_high = 42.85)
+
+def _price_bounds(model):
+    if model == "constrained":
+        return 32.49, 42.85
+    return 35.76, 44.32
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Create MPC present-value tables.")
+    parser.add_argument("--model", choices=["unconstrained", "constrained"], default="unconstrained")
+    parser.add_argument("--b", nargs="+", default=["0"], help="transfer levels or `all`")
+    parser.add_argument("--xi", nargs="+", default=["all"], help="xi values or `all`")
+    parser.add_argument("--solver", default="gurobi")
+    parser.add_argument("--num-sites", type=int, default=78)
+    parser.add_argument(
+        "--mode",
+        choices=["auto", "baseline", "converge"],
+        default="auto",
+        help="auto uses baseline for xi=infinity and converge for finite xi.",
+    )
+    args = parser.parse_args()
+
+    price_low, price_high = _price_bounds(args.model)
+    for xi_label in _xi_values(args.xi):
+        xi_value = 10000.0 if xi_label == "inf" else float(xi_label)
+        pee = carbon_price(
+            CarbonPriceKey(
+                context="price_stochasticity",
+                model=args.model,
+                sites=args.num_sites,
+                xi=xi_label,
+                price_model=_price_model(args.model),
+            )
+        )
+        if args.mode == "auto":
+            mode = None if xi_label == "inf" else "converge"
+        elif args.mode == "baseline":
+            mode = None
+        else:
+            mode = "converge"
+
+        for b in _b_values(args.b):
+            value_decom_mpc(
+                pee=pee,
+                num_sites=args.num_sites,
+                solver=args.solver,
+                model=args.model,
+                b=b,
+                xi=xi_value,
+                mode=mode,
+                price_low=price_low,
+                price_high=price_high,
+            )
+
+
+if __name__ == "__main__":
+    main()
     
     
     
@@ -307,20 +344,4 @@ for b in [0]:
 #             file.write(summary_table_df.to_latex(index=False))
 
 #     return print("done")
-
-
-# for b in [0,10,15,25]:
-#     transfer_cost_mpc(pee=6.3,num_sites=78,b=b,xi=10000.0)
-    
-# for b in [0,10,15,25]:
-#     transfer_cost_mpc(pee=5.7,num_sites=78,b=b,xi=1.0,mode="converge")
-    
-# for b in [0,10,15,25]:
-#     transfer_cost_mpc(pee=5.5,num_sites=78,b=b,xi=0.2,mode="converge")
-
-
-
-
-
-
 

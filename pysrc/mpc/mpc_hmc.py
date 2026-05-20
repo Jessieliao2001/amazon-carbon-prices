@@ -1,6 +1,7 @@
 import os
 import numpy as np
 from pathlib import Path
+from pysrc.replication.parameters import CarbonPriceKey, carbon_price, normalize_xi
 from pysrc.services.file_service import get_path
 from pysrc.services.data_service import load_productivity_params, load_site_data
 from pysrc.services.file_service import get_path
@@ -10,17 +11,30 @@ from pysrc.optimization import PlannerSolution
 import argparse
 parser = argparse.ArgumentParser(description="parameter settings")
 parser.add_argument("--id",type=int,default=1)
-parser.add_argument("--pe",type=float,default=20.76)
+parser.add_argument("--pe",type=float,default=None)
+parser.add_argument("--b",type=float,default=0)
 parser.add_argument("--xi",type=float,default=10000)
 parser.add_argument("--trig",type=int,default=0)
 parser.add_argument("--type",type=str,default="unconstrained")
 args = parser.parse_args()
 
-pe = args.pe
 id = args.id
 xi = args.xi
 trig=args.trig
 type = args.type
+price_model = "common_variance" if type == "constrained" else "distinct_variance"
+xi_label = normalize_xi(xi)
+pe = args.pe
+if pe is None:
+    pe = carbon_price(
+        CarbonPriceKey(
+            context="price_stochasticity",
+            model=type,
+            sites=78,
+            xi=xi_label,
+            price_model=price_model,
+        )
+    ) + args.b
 
 if type =="constrained":
 
@@ -138,6 +152,7 @@ def save_planner_solution(results: PlannerSolution, output_dir: Path):
 if trig != 2:
     save_planner_solution(results, output_folder)
 else:
+    output_folder.mkdir(parents=True, exist_ok=True)
     np.save(output_folder / "Z.npy", results.Z)
     np.save(output_folder / "X.npy", results.X)
     np.save(output_folder / "U.npy", results.U)

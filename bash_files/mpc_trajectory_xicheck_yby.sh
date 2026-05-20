@@ -1,3 +1,9 @@
+#!/bin/bash
+set -e
+
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$REPO_ROOT"
+
 xiarray=(1.0 0.5)
 
 action_name="mpc_trajectory_xicheck_yby"
@@ -35,7 +41,7 @@ echo "\$SLURM_JOB_NAME"
 echo "Program starts \$(date)"
 start_time=\$(date +%s)
 
-python3 -u /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/scripts/mpc_trajectory_xi_yby.py --xi ${xi}
+python3 -u scripts/mpc_trajectory_xi_yby.py --xi ${xi}
 
 echo "Program ends \$(date)"
 end_time=\$(date +%s)

@@ -3,12 +3,21 @@ import os
 import pandas as pd
 from pysrc.services.file_service import get_path
 from pysrc.services.data_service import load_site_data
+from pysrc.replication.parameters import CarbonPriceKey, carbon_price
 
 solver = "gurobi"
 num_sites = 78
 
 xi = 0.5
-pe = 6.9
+pe = carbon_price(
+    CarbonPriceKey(
+        context="price_stochasticity",
+        model="unconstrained",
+        sites=78,
+        xi="inf",
+        price_model="distinct_variance",
+    )
+)
 pa = 41.1
 
 simulation_ids = range(1, 51)

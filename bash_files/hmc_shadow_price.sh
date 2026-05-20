@@ -1,3 +1,8 @@
+#!/bin/bash
+set -e
+
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$REPO_ROOT"
 
 
 
@@ -58,7 +63,7 @@ echo "\$SLURM_JOB_NAME"
 echo "Program starts \$(date)"
 start_time=\$(date +%s)
 
-python -u /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/pysrc/bash/shadow_price.py --id ${id} --xi ${xi} --sites ${sites} 
+python -u pysrc/bash/shadow_price.py --id ${id} --xi ${xi} --sites ${sites} 
 echo "Program ends \$(date)"
 end_time=\$(date +%s)
 elapsed=\$((end_time - start_time))

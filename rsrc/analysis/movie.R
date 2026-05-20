@@ -47,7 +47,27 @@ load(here::here("data/calibration/hmc/", "calibration_1043_sites.Rdata"))
 
 
 # 1043 SITES AGGREGATE PREDICTION
-aux.prices <- c(6.6, 16.6, 21.6, 26.6, 31.6)
+carbon_prices <- readr::read_csv(
+  here::here("replication", "derived", "carbon_prices.csv"),
+  show_col_types = FALSE
+)
+
+pee <- carbon_prices |>
+  dplyr::mutate(xi = dplyr::if_else(as.character(xi) %in% c("10000", "10000.0", "Inf", "inf", "infty"), "inf", as.character(xi))) |>
+  dplyr::filter(
+    context == "parameter_ambiguity",
+    model == "det",
+    sites == 1043,
+    xi == "inf"
+  ) |>
+  dplyr::pull(pee) |>
+  dplyr::first()
+
+if (is.na(pee)) {
+  stop("Missing deterministic carbon price. Run scripts/derive_carbon_prices.py first.")
+}
+
+aux.prices <- pee + c(0, 10, 15, 20, 25)
 
 
 
@@ -162,7 +182,7 @@ saveGIF(
     for (y in seq_along(aux.years)) {
       plot_b15 <-
         ggplot2::ggplot(data = prediction.1043SitesModel %>%
-          dplyr::filter(time == aux.years[y] - 2017, p_e == 21.6) %>%
+          dplyr::filter(time == aux.years[y] - 2017, p_e == pee + 15) %>%
           dplyr::mutate(z_t = factor(
           cut(z_t,
               breaks = c(0, 0.0001, 20, 40, 60, 80, 105),
@@ -201,7 +221,7 @@ saveGIF(
 
       plot_b0 <-
         ggplot2::ggplot(data = prediction.1043SitesModel %>%
-          dplyr::filter(time == aux.years[y] - 2017, p_e == 6.6) %>%
+          dplyr::filter(time == aux.years[y] - 2017, p_e == pee) %>%
           dplyr::mutate(z_t = factor(
             cut(z_t,
                 breaks = c(0, 0.0001, 20, 40, 60, 80, 105),

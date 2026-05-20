@@ -1,17 +1,28 @@
 import re
+import argparse
 from pathlib import Path
 
-# ====== 你可以改这里 ======
-BASE_DIR = Path("/project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/job-outs/mpc")
+from pysrc.replication.parameters import CarbonPriceKey, carbon_price
+from pysrc.services.file_service import get_path
 
-# xi 和 pe 一一对应
+
+def _price_for_xi(model, price_model, xi):
+    return f"{carbon_price(CarbonPriceKey(context='price_stochasticity', model=model, sites=78, xi=xi, price_model=price_model)):g}"
+
+
+parser = argparse.ArgumentParser(description="Check non-empty MPC .err files.")
+parser.add_argument("--base-dir", type=Path, default=get_path("job-outs", "mpc"))
+args = parser.parse_args()
+
+BASE_DIR = args.base_dir
+
 XI_PE_PAIRS = [
-    ("0.5", "6.1"),
-    ("1", "6.4"),
-    ("10000", "6.9"),
-    ("0.5", "5.6"),
-    ("1", "6.2"),
-    ("10000", "6.6"),
+    ("0.5", _price_for_xi("unconstrained", "distinct_variance", 0.5)),
+    ("1", _price_for_xi("unconstrained", "distinct_variance", 1)),
+    ("10000", _price_for_xi("unconstrained", "distinct_variance", "inf")),
+    ("0.5", _price_for_xi("constrained", "common_variance", 0.5)),
+    ("1", _price_for_xi("constrained", "common_variance", 1)),
+    ("10000", _price_for_xi("constrained", "common_variance", "inf")),
 ]
 
 # 排除检查的 id

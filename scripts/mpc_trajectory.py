@@ -1,9 +1,15 @@
 import numpy as np
 import pandas as pd
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 from pysrc.services.file_service import get_path
 import os
 from pysrc.services.data_service import load_site_data
 import matplotlib.pyplot as plt
+from pysrc.replication.parameters import CarbonPriceKey, carbon_price
 
 
 solver="gurobi"
@@ -11,9 +17,9 @@ num_sites=78
 xi1=10000.0
 xi2=1.0
 xi3=0.5
-pe1=6.9
-pe2=6.4
-pe3=6.1
+pe1=carbon_price(CarbonPriceKey(context="price_stochasticity", model="unconstrained", sites=78, xi="inf", price_model="distinct_variance"))
+pe2=carbon_price(CarbonPriceKey(context="price_stochasticity", model="unconstrained", sites=78, xi=1.0, price_model="distinct_variance"))
+pe3=carbon_price(CarbonPriceKey(context="price_stochasticity", model="unconstrained", sites=78, xi=0.5, price_model="distinct_variance"))
 # b=15
 for b in [0,15]:
     (zbar, _, _) = load_site_data(num_sites)
@@ -104,5 +110,5 @@ for b in [0,15]:
     plt.ylim(0,20)
     plt.xlim(0,50)
     plt.legend()
-    plt.savefig(os.path.join(output_folder, f"figures/mpc_landallocation_b_{b}_adjust"))
+    plt.savefig(os.path.join(output_folder, f"figures/mpc_landallocation_b_{b}_adjust.png"))
     plt.show()

@@ -1,55 +1,147 @@
-from pysrc.services.get_opt import get_optimization
-from pysrc.analysis.figures import trajectory_diff
-from pysrc.analysis.tables import transfer_cost,ambiguity_decom
+import argparse
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from pysrc.analysis.figures import density, trajectory_diff
 from pysrc.analysis.map import spatial_allocation
-from pysrc.analysis.figures import density
+from pysrc.analysis.tables import ambiguity_decom, transfer_cost
+from pysrc.replication.parameters import CarbonPriceKey, carbon_price, normalize_xi
+from pysrc.services.get_opt import get_optimization
 
 
-## Section 7.3 Results with robustness to parameter uncertainty
-
-pee_xi_0p5 = 2.8
-pee_xi_1 = 4.8
-pee_xi_2 = 5.6
-pee_xi_10000 = 6.8
-
-# ## xi1
-# get_optimization(num_sites=1043,pee=pee_xi_10000,model="det",solver="gurobi")
-# get_optimization(num_sites=1043,pee=pee_xi_1,model="hmc",xi=1.0,solver="gurobi")
-# get_optimization(num_sites=1043,pee=pee_xi_10000,model="hmc",xi=1.0,solver="gurobi")
-
-# ambiguity_decom(num_sites=1043,pe_det=pee_xi_10000,pe_hmc=pee_xi_1,xi=1.0,solver="gurobi") 
-# trajectory_diff(num_sites=1043,pe_hmc=pee_xi_10000,pe_det=pee_xi_10000,b=0,solver="gurobi",pa=41.11,xi=1.0) # Figure 11
-trajectory_diff(num_sites=1043,pe_hmc=pee_xi_1,pe_det=pee_xi_10000,b=0,solver="gurobi",pa=41.11,xi=1.0) # Figure 14
-trajectory_diff(num_sites=1043,pe_hmc=pee_xi_1,pe_det=pee_xi_10000,b=15,solver="gurobi",pa=41.11,xi=1.0) # Figure 14
-
-# transfer_cost(num_sites=1043,pee=pee_xi_1,xi=1.0,solver="gurobi",y=30,model="hmc") 
-# transfer_cost(num_sites=1043,pee=pee_xi_1,xi=1.0,solver="gurobi",y=15,model="hmc") 
+def _xi_values(values):
+    if values == ["all"]:
+        return [1.0, 2.0, 0.5]
+    return [float(value) for value in values]
 
 
-# spatial_allocation(num_sites=1043,pe_hmc=pee_xi_10000,pe_det=pee_xi_10000,xi=1.0,solver="gurobi",b=0) # Figure 12
-# spatial_allocation(num_sites=1043,pe_hmc=pee_xi_1,pe_det=pee_xi_10000,xi=1.0,solver="gurobi",b=0) 
-# spatial_allocation(num_sites=1043,pe_hmc=pee_xi_1,pe_det=pee_xi_10000,xi=1.0,solver="gurobi",b=15) 
+def _hmc_price(xi: float) -> float:
+    return carbon_price(
+        CarbonPriceKey(context="parameter_ambiguity", model="hmc", sites=1043, xi=xi)
+    )
 
 
+def _det_price() -> float:
+    return carbon_price(
+        CarbonPriceKey(context="parameter_ambiguity", model="det", sites=1043, xi="inf")
+    )
 
 
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Run parameter-ambiguity outputs.")
+    parser.add_argument("--xi", nargs="+", default=["1"], help="xi values or `all`")
+    parser.add_argument("--solver", default="gurobi")
+    parser.add_argument("--pa", type=float, default=41.11)
+    parser.add_argument("--skip-optimization", action="store_true")
+    parser.add_argument("--all", action="store_true")
+    parser.add_argument(
+        "--tables",
+        nargs="+",
+        choices=["ambiguity", "transfer-cost"],
+        default=[],
+    )
+    parser.add_argument(
+        "--figures",
+        nargs="+",
+        choices=["density", "histograms", "trajectories"],
+        default=[],
+    )
+    args = parser.parse_args()
 
-# # xi0_5
-# get_optimization(num_sites=1043,pee=pee_xi_0p5,model="hmc",xi=0.5,solver="gurobi")
-# ambiguity_decom(num_sites=1043,pe_det=pee_xi_10000,pe_hmc=pee_xi_0p5,xi=0.5,solver="gurobi") 
+    if args.all:
+        args.tables = ["ambiguity", "transfer-cost"]
+        args.figures = ["density", "histograms", "trajectories"]
+
+    det_pee = _det_price()
+    for xi in _xi_values(args.xi):
+        hmc_pee = _hmc_price(xi)
+        xi_label = normalize_xi(xi)
+        print(f"Running HMC outputs for xi={xi_label}, Pee={hmc_pee}")
+
+        if not args.skip_optimization:
+            get_optimization(
+                num_sites=1043,
+                pee=hmc_pee,
+                model="hmc",
+                xi=xi,
+                solver=args.solver,
+                pa=args.pa,
+            )
+
+        if "ambiguity" in args.tables:
+            ambiguity_decom(
+                num_sites=1043,
+                pe_det=det_pee,
+                pe_hmc=hmc_pee,
+                xi=xi,
+                solver=args.solver,
+                pa=args.pa,
+            )
+        if "transfer-cost" in args.tables:
+            transfer_cost(
+                num_sites=1043,
+                pee=hmc_pee,
+                xi=xi,
+                solver=args.solver,
+                y=30,
+                model="hmc",
+                pa=args.pa,
+            )
+            transfer_cost(
+                num_sites=1043,
+                pee=hmc_pee,
+                xi=xi,
+                solver=args.solver,
+                y=15,
+                model="hmc",
+                pa=args.pa,
+            )
+
+        if "density" in args.figures:
+            density(num_sites=1043, pee=hmc_pee, xi=xi, solver=args.solver, pa=args.pa)
+        if "trajectories" in args.figures:
+            trajectory_diff(
+                num_sites=1043,
+                pe_hmc=hmc_pee,
+                pe_det=det_pee,
+                b=0,
+                solver=args.solver,
+                pa=args.pa,
+                xi=xi,
+            )
+            trajectory_diff(
+                num_sites=1043,
+                pe_hmc=hmc_pee,
+                pe_det=det_pee,
+                b=15,
+                solver=args.solver,
+                pa=args.pa,
+                xi=xi,
+            )
+        if "histograms" in args.figures:
+            spatial_allocation(
+                num_sites=1043,
+                pe_hmc=hmc_pee,
+                pe_det=det_pee,
+                b=0,
+                solver=args.solver,
+                pa=args.pa,
+                xi=xi,
+            )
+            spatial_allocation(
+                num_sites=1043,
+                pe_hmc=hmc_pee,
+                pe_det=det_pee,
+                b=15,
+                solver=args.solver,
+                pa=args.pa,
+                xi=xi,
+            )
+
+    print("hmc All done!")
 
 
-
-# # xi2
-# get_optimization(num_sites=1043,pee=pee_xi_2,model="hmc",xi=2.0,solver="gurobi")
-# ambiguity_decom(num_sites=1043,pe_det=pee_xi_10000,pe_hmc=pee_xi_2,xi=2.0,solver="gurobi") 
-
-
-# density(num_sites=1043,pee=pee_xi_1,xi=1.0,solver="gurobi")
-# density(num_sites=1043,pee=pee_xi_2,xi=2.0,solver="gurobi")
-# density(num_sites=1043,pee=pee_xi_0p5,xi=0.5,solver="gurobi")
-
-
-print("hmc All done!")
-
-
+if __name__ == "__main__":
+    main()

@@ -26,6 +26,19 @@ options(scipen = 999)
 
 # extract high and low price
 p_high <- 41.11
+carbon_prices <- readr::read_csv(
+  here::here("replication/derived/carbon_prices.csv"),
+  show_col_types = FALSE
+)
+pee <- carbon_prices |>
+  dplyr::filter(
+    context == "parameter_ambiguity",
+    model == "hmc",
+    sites == 1043,
+    xi == "1"
+  ) |>
+  dplyr::pull(pee) |>
+  dplyr::first()
 
 
 # 1043 SITES MODEL CALIBRATION VARIABLES
@@ -33,7 +46,7 @@ load(here::here("data/calibration", "calibration_1043_sites.Rdata"))
 
 
 # 1043 SITES AGGREGATE PREDICTION
-aux.prices <- c(4.7, 14.7, 19.7, 24.7, 29.7)
+aux.prices <- pee + c(0, 10, 15, 20, 25)
 
 
 

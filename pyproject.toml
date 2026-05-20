@@ -2,8 +2,8 @@
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools]
-packages = ["pysrc", "pysrc.services", "pysrc.sampling"]
+[tool.setuptools.packages.find]
+include = ["pysrc*"]
 
 [project]
 name = "amazon-carbon-prices"

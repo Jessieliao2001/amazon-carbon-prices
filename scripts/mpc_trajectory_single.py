@@ -3,15 +3,25 @@ from pysrc.services.file_service import get_path
 import os
 from pysrc.services.data_service import load_site_data
 import matplotlib.pyplot as plt
+from pysrc.replication.parameters import CarbonPriceKey, carbon_price
 
 solver = "gurobi"
 num_sites = 78
 xi1 = 10000.0
 xi2 = 1.0
 xi3 = 0.5
-pe1 = 6.9
-pe2 = 6.9
-pe3 = 6.9
+pe_common = carbon_price(
+    CarbonPriceKey(
+        context="price_stochasticity",
+        model="unconstrained",
+        sites=78,
+        xi="inf",
+        price_model="distinct_variance",
+    )
+)
+pe1 = pe_common
+pe2 = pe_common
+pe3 = pe_common
 
 target_i = 1     
 site_idx = 34     

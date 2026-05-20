@@ -1,8 +1,13 @@
 import os
 import shutil
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 import numpy as np
 import pandas as pd
+from pysrc.replication.parameters import CarbonPriceKey, carbon_price, normalize_xi
 from pysrc.services.file_service import get_path
 import argparse
 parser = argparse.ArgumentParser(description="mpc simulation")
@@ -64,6 +69,57 @@ def mc_samples(location,p_low,p_high,price_low=35.76,price_high=44.32):
         markov_chain_df.to_csv(output + csv_filename, index=False)
 
     return "mc sampling is done"
+
+
+def _mpc_pee(model, xi):
+    price_model = "common_variance" if model == "constrained" else "distinct_variance"
+    return carbon_price(
+        CarbonPriceKey(
+            context="price_stochasticity",
+            model=model,
+            sites=78,
+            xi=xi,
+            price_model=price_model,
+        )
+    )
+
+
+def _load_converge_probabilities(model):
+    path = get_path("replication", "derived", "mpc_transition_probabilities.csv")
+    if not path.exists():
+        raise FileNotFoundError(
+            f"Missing {path}. Run `python scripts/derive_mpc_transition_probabilities.py` "
+            "after generating MPC day-0 probability outputs."
+        )
+    df = pd.read_csv(path)
+    if df.empty:
+        raise RuntimeError(
+            f"{path} has no transition-probability rows. Generate MPC day-0 "
+            "probability outputs before running converge simulations."
+        )
+    df = df[df["model"] == model].copy()
+    if df.empty:
+        raise RuntimeError(f"{path} has no rows for model `{model}`.")
+
+    df["xi"] = df["xi"].map(normalize_xi)
+    df = df.dropna(subset=["b"])
+    grouped = (
+        df.groupby(["xi", "b"], as_index=False)[
+            ["prob_from_low_to_low", "prob_from_high_to_high"]
+        ]
+        .mean()
+        .sort_values(["xi", "b"])
+    )
+
+    probabilities = {}
+    for _, row in grouped.iterrows():
+        xi_key = float(row["xi"])
+        b_key = f"b{int(round(float(row['b'])))}"
+        probabilities.setdefault(xi_key, {})[b_key] = {
+            "prob_ll": float(row["prob_from_low_to_low"]),
+            "prob_hh": float(row["prob_from_high_to_high"]),
+        }
+    return probabilities
 
 
 
@@ -187,39 +243,16 @@ if type == "shadow_price":
 if type =="converge_uncon":
 
 
-    # xi_values = [1.0,0.5]
-    xi_values = [0.9,0.7]
+    xi_values = [1.0,0.5]
     b_values = [0, 10, 15, 20, 25]
 
 
-    prob_dict = {
-        0.5: {
-            # "b0": {"prob_ll": 0.983, "prob_hh": 1-0.836},# original
-            "b0": {"prob_ll": 0.974, "prob_hh": 1-0.769}, # pee=6.9
-            "b10": {"prob_ll": 0.791, "prob_hh": 1-0.249},
-            "b15": {"prob_ll": 0.741, "prob_hh": 1-0.200},
-            "b20": {"prob_ll": 0.726, "prob_hh": 1-0.188},
-            "b25": {"prob_ll": 0.716, "prob_hh": 1-0.181},
-        },
-        0.7: {"b0": {"prob_ll": 0.916, "prob_hh": 1-0.488},},
-        0.9: {"b0": {"prob_ll": 0.916, "prob_hh": 1-0.488},},
-        1.0: {
-            # "b0": {"prob_ll": 0.916, "prob_hh": 1-0.488}, # original
-            "b0": {"prob_ll": 0.906, "prob_hh": 1-0.456}, # pee=6.9
-            "b10": {"prob_ll": 0.750, "prob_hh": 1-0.207},
-            "b15": {"prob_ll": 0.723, "prob_hh": 1-0.186},
-            "b20": {"prob_ll": 0.716, "prob_hh": 1-0.181},
-            "b25": {"prob_ll":  0.712, "prob_hh": 1-0.177},
-        }
-    }
+    prob_dict = _load_converge_probabilities("unconstrained")
 
 
     for xi in xi_values:
         for b in b_values:
-            if xi==0.5:
-                pee=6.9
-            elif xi==1.0:
-                pee=6.9
+            pee = _mpc_pee("unconstrained", xi)
             pe = pee +b
             # Get the probability values for the current b value
             p_low = prob_dict[xi][f"b{b}"]["prob_ll"]
@@ -258,30 +291,12 @@ if type =="converge_con":
     b_values = [0, 10, 15, 20, 25]
 
 
-    prob_dict = {
-        0.5: {
-            "b0": {"prob_ll": 0.994, "prob_hh": 1-0.684},
-            "b10": {"prob_ll": 0.843, "prob_hh": 1-0.067},
-            "b15": {"prob_ll":  0.796, "prob_hh": 1-0.050},
-            "b20": {"prob_ll": 0.780, "prob_hh": 1-0.045},
-            "b25": {"prob_ll": 0.772, "prob_hh": 1-0.043},
-        },
-        1.0: {
-            "b0": {"prob_ll": 0.949, "prob_hh": 1-0.200},
-            "b10": {"prob_ll": 0.802, "prob_hh": 1-0.051},
-            "b15": {"prob_ll": 0.778, "prob_hh": 1-0.045},
-            "b20": {"prob_ll": 0.770, "prob_hh": 1-0.043},
-            "b25": {"prob_ll": 0.767, "prob_hh": 1-0.042},
-        }
-    }
+    prob_dict = _load_converge_probabilities("constrained")
 
 
     for xi in xi_values:
         for b in b_values:
-            if xi==0.5:
-                pee=5.6
-            elif xi==1.0:
-                pee=6.2
+            pee = _mpc_pee("constrained", xi)
             pe = pee +b
             # Get the probability values for the current b value
             p_low = prob_dict[xi][f"b{b}"]["prob_ll"]

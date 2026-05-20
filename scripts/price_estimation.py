@@ -7,9 +7,13 @@ import warnings
 import contextlib
 import sys
 import os
+from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.dates as mdates
+
+Path("output/tables").mkdir(parents=True, exist_ok=True)
+Path("output/figures").mkdir(parents=True, exist_ok=True)
 
 @contextlib.contextmanager
 def suppress_output():

@@ -1,0 +1,41 @@
+# Replication Outputs
+
+This directory records the current replication post-processing logic. The files here are generated from code outputs and repo-internal metadata, not from OCR or manual transcription from the PDF.
+
+## Regenerate
+
+Run the local post-processing check with:
+
+```bash
+./run.sh --steps postprocess-only
+```
+
+The normal replication workflow is self-contained and does not require any manuscript TeX or PDF file outside the repository. Maintainers can optionally pass `--paper-tex` directly to `scripts/build_paper_numbers.py` or `scripts/build_aux_input_tables.py` only when intentionally refreshing `paper_figure_inputs.csv`.
+
+For long local runs, use the staged aliases documented in the root `README.md`:
+`stage-data`, `stage-hmm`, `stage-deterministic`, `stage-hmc`, and `stage-mpc`.
+For example:
+
+```bash
+./run.sh --steps stage-hmc --backend local --jobs 3
+./run.sh --steps stage-mpc --backend local --jobs 4
+```
+
+## Logic
+
+- `scripts/derive_carbon_prices.py` builds `derived/carbon_prices.csv` from generated shadow-price outputs and logs. Downstream tables read `P^{ee}` from this file.
+- `scripts/derive_mpc_transition_probabilities.py` builds `derived/mpc_transition_probabilities.csv` from MPC `run.out` logs. For each log it finds the first `year done: 1`, reads the immediately preceding `Parameters from current iteration` vector, uses the second-to-last value as "Prob from low to low", and uses `1 - last value` as "Prob from high to high".
+- `replication/paper_figure_inputs.csv` is the repo-internal source of truth for figures used in the paper. `pysrc/replication/paper_assets.py` reads this file during normal replication and can optionally refresh it from a TeX source for maintenance.
+- `scripts/build_paper_numbers.py` writes `exhibit_manifest.csv`, `paper_numbers.csv`, and `paper_numbers_missing_summary.csv`.
+- `scripts/build_aux_input_tables.py` writes `aux_input_table_manifest.csv`, `aux_input_figure_manifest.csv`, and refreshes `aux_input/` so it contains only generated `Table<number>_*.tex` and `Figure<number>_*` files.
+- `replication/aux_input_table_templates/` stores stable table-format references so rerunning after `aux_input/` cleanup does not depend on removed unprefixed table files.
+
+## Files
+
+- `paper_figure_inputs.csv`: required repo-internal list of paper figure inputs used for replication tracking.
+- `exhibit_manifest.csv`: tables plus the repo-internal figure list used for replication tracking.
+- `paper_numbers.csv`: output-derived table cells, carbon prices, and MPC transition probabilities.
+- `paper_numbers_missing_summary.csv`: generated-output coverage by table/figure.
+- `aux_input_table_manifest.csv`: source files and optional numeric-format checks for generated aux input tables.
+- `aux_input_table_templates/`: cached table-format references used by `aux_input_table_manifest.csv`.
+- `aux_input_figure_manifest.csv`: paper figure inputs matched to generated figure files copied into `aux_input/`.

@@ -63,33 +63,19 @@ def mpc_sp(pee=5.9, num_sites=78, solver="gurobi", model="unconstrained", b=0,xi
     return ratio
 
 
+def main():
+    for xi in (0.5, 1.0, 10000.0):
+        for pe in np.linspace(5.0, 7.0, num=21):
+            print("xi",xi,"pe",pe,"model unconstrained")
+            print("ratio",mpc_sp(pee=pe,num_sites=78,b=0,xi=xi,model="unconstrained"))
+            print("------------------------------")
+
+    for xi in (0.5, 1.0, 10000.0):
+        for pe in np.linspace(5.0, 7.0, num=21):
+            print("xi",xi,"pe",pe,"model constrained")
+            print("ratio",mpc_sp(pee=pe,num_sites=78,b=0,xi=xi,model="constrained"))
+            print("------------------------------")
 
 
-
-
-for xi in (0.5, 1.0, 10000.0):
-    for pe in np.linspace(5.0, 7.0, num=21):
-        print("xi",xi,"pe",pe,"model unconstrained")
-        print("ratio",mpc_sp(pee=pe,num_sites=78,b=0,xi=xi,model="unconstrained"))
-        print("------------------------------")
-
-for xi in (0.5, 1.0, 10000.0):
-    for pe in np.linspace(5.0, 7.0, num=21):
-        print("xi",xi,"pe",pe,"model constrained")
-        print("ratio",mpc_sp(pee=pe,num_sites=78,b=0,xi=xi,model="constrained"))
-        print("------------------------------")
-
-
-
-
-
-#### unconstrained model
-#### 6.9 for xi=10000
-#### 6.4 for xi=1
-#### 6.1 for xi=0.5
-
-
-#### constrained model
-#### 6.6 for xi=10000
-#### 6.2 for xi=1
-#### 5.6 for xi=0.5
+if __name__ == "__main__":
+    main()

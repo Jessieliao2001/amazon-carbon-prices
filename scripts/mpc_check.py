@@ -1,16 +1,27 @@
 import re
 import csv
+import argparse
 from pathlib import Path
 from collections import defaultdict
 
-# ====== 你可以改这里 ======
-BASE_DIR = Path("/project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/job-outs/mpc")
+from pysrc.replication.parameters import CarbonPriceKey, carbon_price
+from pysrc.services.file_service import get_path
 
-# 一一对应的 (xi, pe)
+
+def _price_for_xi(xi):
+    return f"{carbon_price(CarbonPriceKey(context='price_stochasticity', model='unconstrained', sites=78, xi=xi, price_model='distinct_variance')):g}"
+
+
+parser = argparse.ArgumentParser(description="Summarize MPC run.out parameter logs.")
+parser.add_argument("--base-dir", type=Path, default=get_path("job-outs", "mpc"))
+args = parser.parse_args()
+
+BASE_DIR = args.base_dir
+
 XI_PE_PAIRS = [
-    ("0.5", "6.1"),
-    ("1", "6.4"),
-    ("10000", "6.9"),
+    ("0.5", _price_for_xi(0.5)),
+    ("1", _price_for_xi(1)),
+    ("10000", _price_for_xi("inf")),
 ]
 
 YEAR_MIN = 25

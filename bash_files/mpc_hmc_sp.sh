@@ -1,3 +1,8 @@
+#!/bin/bash
+set -e
+
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$REPO_ROOT"
 
 
 xiarray=(0.5 1 10000)
@@ -48,7 +53,7 @@ echo "\$SLURM_JOB_NAME"
 echo "Program starts \$(date)"
 start_time=\$(date +%s)
 
-python3 -u /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/pysrc/mpc/mpc_hmc_sp.py --pe ${pe} --xi ${xi} --type ${type}
+python3 -u pysrc/mpc/mpc_hmc_sp.py --pe ${pe} --xi ${xi} --type ${type}
 echo "Program ends \$(date)"
 end_time=\$(date +%s)
 elapsed=\$((end_time - start_time))

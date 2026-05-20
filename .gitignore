@@ -4,11 +4,18 @@
 
 
 
-job-outs/
+job-outs/**
+!job-outs/
+!job-outs/shadow_price/
+!job-outs/shadow_price/**/
+!job-outs/shadow_price/**/run.out
+!job-outs/mpc_compute_sp/
+!job-outs/mpc_compute_sp/run.out
 test/
 
 # Data
-# data/
+data/raw/
+data/clean/
 results/
 
 # Gams license

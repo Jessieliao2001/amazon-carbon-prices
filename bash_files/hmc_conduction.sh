@@ -10,6 +10,9 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
 
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$REPO_ROOT"
+
 module load python/anaconda-2022.05 gurobi/11.0 gcc/12.2.0
 source .venv/bin/activate
 
@@ -18,7 +21,7 @@ echo "$SLURM_JOB_NAME"
 echo "Program starts $(date)"
 start_time=$(date +%s)
 
-python3 -u /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/scripts/conduction_hmc.py
+python3 -u scripts/conduction_hmc.py
 
 echo "Program ends $(date)"
 end_time=$(date +%s)

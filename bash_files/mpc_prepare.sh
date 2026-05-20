@@ -1,3 +1,8 @@
+#!/bin/bash
+set -e
+
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$REPO_ROOT"
 
 
 idarray=($(seq 1 1))
@@ -49,7 +54,7 @@ echo "\$SLURM_JOB_NAME"
 echo "Program starts \$(date)"
 start_time=\$(date +%s)
 
-python3 -u /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/pysrc/mpc/mpc_simulating.py --type ${type} 
+python3 -u pysrc/mpc/mpc_simulating.py --type ${type} 
 
 
 echo "Program ends \$(date)"
