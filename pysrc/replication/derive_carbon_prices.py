@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pandas as pd
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from pysrc.replication.parameters import CARBON_PRICE_FILE, normalize_xi
 from pysrc.services.file_service import get_path

@@ -12,12 +12,17 @@ same steps through Slurm.
 ## Repository Layout
 
 - `data/raw/`: raw input data, supplied separately.
-- `data/clean/` and `data/calibration/`: cleaned and calibrated data generated
-  from the raw inputs.
+- `data/processed/`, `data/clean/` and `data/calibration/`: processed, cleaned and calibrated data generated from the raw inputs.
 - `rsrc/`: R data-cleaning, calibration, and map/figure scripts.
 - `pysrc/`: Python package code for sampling, optimization, MPC, and shared
   helpers.
-- `scripts/`: user-facing Python scripts and replication post-processing.
+- `pysrc/scripts/`: user-facing Python scripts that run analysis, estimation,
+  figures, and workflow orchestration.
+- `pysrc/replication/`: replication post-processing code that turns raw model
+  outputs and logs into derived CSVs, manifests, paper numbers, and `aux_input`
+  assets.
+  The previous top-level `scripts` layout has been folded into `pysrc/` so
+  Python code lives under one importable package tree.
 - `bash_files/`: legacy cluster helper scripts.
 - `job-outs/`: selected original run logs used to derive reported carbon prices.
   Only the `run.out` files needed for the replication audit are intended to be
@@ -232,10 +237,37 @@ REPLICATION_SLURM_MEM="32G"
 REPLICATION_SLURM_PARTITION="<partition-name>"
 ```
 
+Slurm wrapper scripts and their driver-level `out`/`err` files are written under
+`job-outs/slurm/`.
+
 To inspect commands without running them:
 
 ```bash
 ./run.sh --steps all --dry-run
+```
+
+With `--backend local`, the driver saves command logs by default directly under
+`job-outs/`, with one folder for each replication step:
+
+```text
+job-outs/
+  01_derive_prices/
+    0001/run.out
+    0001/run.err
+    0001/command.txt
+```
+
+This mirrors the server habit of keeping `run.out` and `run.err` files for each
+job. To choose a subfolder under `job-outs/`, use:
+
+```bash
+./run.sh --steps stage-mpc --backend local --local-log-dir stage_mpc_logs
+```
+
+To stream output directly to the terminal instead, use:
+
+```bash
+./run.sh --steps postprocess-only --backend local --no-local-logs
 ```
 
 You can also run specific steps:
@@ -362,7 +394,7 @@ but reported numbers are generated from code outputs.
 Carbon prices are derived by:
 
 ```bash
-python scripts/derive_carbon_prices.py
+python pysrc/replication/derive_carbon_prices.py
 ```
 
 This script parses the original shadow-price and MPC run logs in `job-outs/`
@@ -379,7 +411,7 @@ number `8`.
 The manuscript-number audit is built by:
 
 ```bash
-python scripts/build_paper_numbers.py
+python pysrc/replication/build_paper_numbers.py
 ```
 
 It writes:
@@ -400,7 +432,7 @@ upstream model outputs.
 Paper-formatted LaTeX inputs for the manuscript tables are built by:
 
 ```bash
-python scripts/build_aux_input_tables.py
+python pysrc/replication/build_aux_input_tables.py
 ```
 
 This writes `aux_input/Table<number>_*.tex` files from generated outputs and
@@ -431,9 +463,9 @@ the build scripts is only for maintainers who intentionally want to refresh
 - The old workflow required manually updating `pee` values in several scripts.
   The current workflow derives and reuses them from
   `replication/derived/carbon_prices.csv`.
-- `scripts/build_paper_numbers.py` deliberately ignores the manuscript PDF and
+- `pysrc/replication/build_paper_numbers.py` deliberately ignores the manuscript PDF and
   extracts numbers only from generated outputs.
-- `scripts/derive_mpc_transition_probabilities.py` derives representative MPC
+- `pysrc/replication/derive_mpc_transition_probabilities.py` derives representative MPC
   transition probabilities from `job-outs/mpc/.../run.out`: for each log it
   finds `year done: 1`, reads the immediately preceding `Parameters from
   current iteration` vector, uses the second-to-last entry as `low -> low`, and

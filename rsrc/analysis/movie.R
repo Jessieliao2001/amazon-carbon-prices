@@ -64,7 +64,7 @@ pee <- carbon_prices |>
   dplyr::first()
 
 if (is.na(pee)) {
-  stop("Missing deterministic carbon price. Run scripts/derive_carbon_prices.py first.")
+  stop("Missing deterministic carbon price. Run pysrc/replication/derive_carbon_prices.py first.")
 }
 
 aux.prices <- pee + c(0, 10, 15, 20, 25)

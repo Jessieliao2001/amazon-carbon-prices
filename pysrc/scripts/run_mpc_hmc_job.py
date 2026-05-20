@@ -6,7 +6,7 @@ import sys
 import time
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from pysrc.replication.parameters import CarbonPriceKey, carbon_price, normalize_xi
 
@@ -56,7 +56,7 @@ def main() -> int:
     parser.add_argument("--python", default=sys.executable)
     args = parser.parse_args()
 
-    root = Path(__file__).resolve().parents[1]
+    root = Path(__file__).resolve().parents[2]
     xi_arg = xi_for_command(args.xi)
     pe = mpc_price(args.type, args.xi, args.b, args.pe)
     pe_label = format_float(pe)

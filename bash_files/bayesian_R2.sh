@@ -21,7 +21,7 @@ echo "$SLURM_JOB_NAME"
 echo "Program starts $(date)"
 start_time=$(date +%s)
 
-python3 -u scripts/bayesian_R2.py
+python3 -u pysrc/scripts/bayesian_R2.py
 
 echo "Program ends $(date)"
 end_time=$(date +%s)

@@ -43,7 +43,7 @@ def load_carbon_prices(path: Path | str | None = None) -> pd.DataFrame:
     price_path = Path(path) if path else CARBON_PRICE_FILE
     if not price_path.exists():
         raise FileNotFoundError(
-            f"Missing {price_path}. Run `python scripts/derive_carbon_prices.py` "
+            f"Missing {price_path}. Run `python pysrc/replication/derive_carbon_prices.py` "
             "after the shadow-price/MPC shadow-price jobs have produced logs."
         )
     df = pd.read_csv(price_path)

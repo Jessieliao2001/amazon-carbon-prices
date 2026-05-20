@@ -6,10 +6,11 @@ import shlex
 import shutil
 import subprocess
 import sys
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from pysrc.services.file_service import get_path
 
@@ -60,8 +61,8 @@ def base_steps() -> dict[str, list[list[str]]]:
             [PY, "pysrc/sampling/baseline.py", "--sites", "1043"],
             [PY, "pysrc/sampling/baseline.py", "--sites", "78"],
         ],
-        "derive-prices": [[PY, "scripts/derive_carbon_prices.py"]],
-        "deterministic": [[PY, "scripts/conduction_det.py"]],
+        "derive-prices": [[PY, "pysrc/replication/derive_carbon_prices.py"]],
+        "deterministic": [[PY, "pysrc/scripts/conduction_det.py"]],
         "hmc": hmc_commands(),
         "mpc-prepare": [
             [PY, "pysrc/mpc/mpc_simulating.py", "--type", "baseline"],
@@ -76,10 +77,10 @@ def base_steps() -> dict[str, list[list[str]]]:
         "mpc-hmc-pre": mpc_hmc_pre_commands(),
         "mpc-hmc-figure14": mpc_hmc_figure14_commands(),
         "mpc-tables": mpc_table_commands(),
-        "mpc-figures": [[PY, "scripts/mpc_trajectory.py"]],
-        "mpc-probabilities": [[PY, "scripts/derive_mpc_transition_probabilities.py"]],
-        "price-estimation": [[PY, "scripts/price_estimation.py"]],
-        "bayesian-r2": [[PY, "scripts/bayesian_R2.py"]],
+        "mpc-figures": [[PY, "pysrc/scripts/mpc_trajectory.py"]],
+        "mpc-probabilities": [[PY, "pysrc/replication/derive_mpc_transition_probabilities.py"]],
+        "price-estimation": [[PY, "pysrc/scripts/price_estimation.py"]],
+        "bayesian-r2": [[PY, "pysrc/scripts/bayesian_R2.py"]],
         "maps": [
             ["Rscript", "rsrc/analysis/carbon_capture_curves/_masterfile.R"],
             ["Rscript", "rsrc/analysis/calibration_maps_1043_sites.R"],
@@ -94,8 +95,8 @@ def base_steps() -> dict[str, list[list[str]]]:
         "postprocess": [
             [PY, "pysrc/mpc/mpc_compute_day0.py", "--model", "unconstrained", "--b", "0", "10", "15", "25", "--xi", "all", "--quiet"],
             [PY, "pysrc/mpc/mpc_compute_day0.py", "--model", "constrained", "--b", "all", "--xi", "all", "--quiet"],
-            [PY, "scripts/build_paper_numbers.py"],
-            [PY, "scripts/build_aux_input_tables.py"],
+            [PY, "pysrc/replication/build_paper_numbers.py"],
+            [PY, "pysrc/replication/build_aux_input_tables.py"],
         ],
     }
 
@@ -130,7 +131,7 @@ def hmc_commands() -> list[list[str]]:
     return [
         [
             PY,
-            "scripts/conduction_hmc.py",
+            "pysrc/scripts/conduction_hmc.py",
             "--xi",
             "1",
             "--tables",
@@ -143,7 +144,7 @@ def hmc_commands() -> list[list[str]]:
         ],
         [
             PY,
-            "scripts/conduction_hmc.py",
+            "pysrc/scripts/conduction_hmc.py",
             "--xi",
             "2",
             "--tables",
@@ -153,7 +154,7 @@ def hmc_commands() -> list[list[str]]:
         ],
         [
             PY,
-            "scripts/conduction_hmc.py",
+            "pysrc/scripts/conduction_hmc.py",
             "--xi",
             "0.5",
             "--tables",
@@ -229,7 +230,7 @@ def mpc_hmc_commands(
                     commands.append(
                         [
                             PY,
-                            "scripts/run_mpc_hmc_job.py",
+                            "pysrc/scripts/run_mpc_hmc_job.py",
                             "--id",
                             str(run_id),
                             "--xi",
@@ -297,9 +298,67 @@ def parallel_steps(values: list[str]) -> set[str]:
     return set(values)
 
 
-def run_local(command: list[str], root: Path) -> int:
-    print(f"+ {shlex.join(command)}")
-    return subprocess.run(command, cwd=root).returncode
+def safe_name(value: str) -> str:
+    return "".join(char if char.isalnum() else "_" for char in value).strip("_")
+
+
+def local_log_dir(base_dir: Path, *, step_index: int, step: str, command_index: int) -> Path:
+    return base_dir / f"{step_index:02d}_{safe_name(step)}" / f"{command_index:04d}"
+
+
+def resolve_local_log_base(root: Path, value: Path) -> Path:
+    if value.is_absolute():
+        return value
+    if value.parts and value.parts[0] == "job-outs":
+        return root / value
+    return root / "job-outs" / value
+
+
+def display_path(path: Path, root: Path) -> str:
+    try:
+        return str(path.relative_to(root))
+    except ValueError:
+        return str(path)
+
+
+def elapsed_text(seconds: int) -> str:
+    days, rem = divmod(seconds, 86400)
+    hours, rem = divmod(rem, 3600)
+    minutes, secs = divmod(rem, 60)
+    return f"{days} days {hours:02d} hr {minutes:02d} min {secs:02d} sec"
+
+
+def run_local(command: list[str], root: Path, log_dir: Path | None = None) -> int:
+    command_text = shlex.join(command)
+    if log_dir is None:
+        print(f"+ {command_text}")
+        return subprocess.run(command, cwd=root).returncode
+
+    log_dir.mkdir(parents=True, exist_ok=True)
+    out_path = log_dir / "run.out"
+    err_path = log_dir / "run.err"
+    (log_dir / "command.txt").write_text(command_text + "\n")
+
+    print(f"+ {command_text}")
+    print(f"  logs: {display_path(out_path, root)}")
+
+    start = time.time()
+    with out_path.open("w") as stdout, err_path.open("w") as stderr:
+        stdout.write(f"Command: {command_text}\n")
+        stdout.write(f"Working directory: {root}\n")
+        stdout.write(f"Program starts {time.ctime(start)}\n\n")
+        stdout.flush()
+
+        result = subprocess.run(command, cwd=root, stdout=stdout, stderr=stderr)
+
+        end = time.time()
+        stdout.write(f"\nProgram ends {time.ctime(end)}\n")
+        stdout.write(f"Exit code: {result.returncode}\n")
+        stdout.write(f"Elapsed time: {elapsed_text(int(end - start))}\n")
+
+    if result.returncode != 0:
+        print(f"  failed; stderr: {display_path(err_path, root)}")
+    return result.returncode
 
 
 def run_local_step(
@@ -307,13 +366,25 @@ def run_local_step(
     commands: list[list[str]],
     root: Path,
     *,
+    step_index: int,
     jobs: int,
     can_parallelize: bool,
+    log_base_dir: Path | None,
 ) -> list[tuple[str, list[str], int]]:
     failures: list[tuple[str, list[str], int]] = []
     if not can_parallelize or jobs <= 1 or len(commands) <= 1:
-        for command in commands:
-            code = run_local(command, root)
+        for command_index, command in enumerate(commands, start=1):
+            command_log_dir = (
+                local_log_dir(
+                    log_base_dir,
+                    step_index=step_index,
+                    step=step,
+                    command_index=command_index,
+                )
+                if log_base_dir
+                else None
+            )
+            code = run_local(command, root, command_log_dir)
             if code != 0:
                 failures.append((step, command, code))
                 break
@@ -322,7 +393,20 @@ def run_local_step(
     workers = min(jobs, len(commands))
     with ThreadPoolExecutor(max_workers=workers) as executor:
         futures = {
-            executor.submit(run_local, command, root): command for command in commands
+            executor.submit(
+                run_local,
+                command,
+                root,
+                local_log_dir(
+                    log_base_dir,
+                    step_index=step_index,
+                    step=step,
+                    command_index=command_index,
+                )
+                if log_base_dir
+                else None,
+            ): command
+            for command_index, command in enumerate(commands, start=1)
         }
         for future in as_completed(futures):
             command = futures[future]
@@ -464,13 +548,31 @@ def main() -> int:
         default="afterok",
         help="Dependency mode between Slurm steps.",
     )
+    parser.add_argument(
+        "--local-log-dir",
+        type=Path,
+        default=Path("job-outs"),
+        help=(
+            "Directory for local backend run.out/run.err logs. Defaults to job-outs. "
+            "Relative paths not starting with job-outs are created under job-outs. "
+            "Use --no-local-logs to stream directly to the terminal."
+        ),
+    )
+    parser.add_argument(
+        "--no-local-logs",
+        action="store_true",
+        help="Disable local run.out/run.err files and stream command output directly.",
+    )
     parser.add_argument("--continue-on-error", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--root", type=Path, default=get_path())
     args = parser.parse_args()
 
     root = args.root.resolve()
-    slurm_dir = root / "replication" / "slurm"
+    slurm_dir = root / "job-outs" / "slurm"
+    local_log_base = (
+        None if args.no_local_logs else resolve_local_log_base(root, args.local_log_dir)
+    )
     failures: list[tuple[str, list[str], int]] = []
     selected_parallel_steps = parallel_steps(args.parallel_steps)
     previous_slurm_jobs: list[str] = []
@@ -501,8 +603,10 @@ def main() -> int:
                 step,
                 commands,
                 root,
+                step_index=step_index,
                 jobs=args.jobs,
                 can_parallelize=can_parallelize,
+                log_base_dir=local_log_base,
             )
 
         failures.extend(step_failures)

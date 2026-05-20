@@ -88,7 +88,7 @@ def _load_converge_probabilities(model):
     path = get_path("replication", "derived", "mpc_transition_probabilities.csv")
     if not path.exists():
         raise FileNotFoundError(
-            f"Missing {path}. Run `python scripts/derive_mpc_transition_probabilities.py` "
+            f"Missing {path}. Run `python pysrc/replication/derive_mpc_transition_probabilities.py` "
             "after generating MPC day-0 probability outputs."
         )
     df = pd.read_csv(path)

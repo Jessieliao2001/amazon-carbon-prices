@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pandas as pd
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from pysrc.replication.paper_assets import (
     DEFAULT_PAPER_TEX,
@@ -58,7 +58,7 @@ EXHIBITS = [
         "kind": "figure",
         "description": "Agricultural area and cumulative CO2 capture",
         "output_pattern": "output/figures/pred_zshare_1043_sites_det.png|output/figures/plot_pred_x_1043_sites_det.png",
-        "program": "python scripts/conduction_det.py",
+        "program": "python pysrc/scripts/conduction_det.py",
         "status_note": "",
     },
     {
@@ -66,7 +66,7 @@ EXHIBITS = [
         "kind": "figure",
         "description": "Evolution of transfer payments",
         "output_pattern": "output/figures/net_transfers.png",
-        "program": "python scripts/conduction_det.py",
+        "program": "python pysrc/scripts/conduction_det.py",
         "status_note": "",
     },
     {
@@ -90,7 +90,7 @@ EXHIBITS = [
         "kind": "figure",
         "description": "Ambiguity-adjusted densities for four sites",
         "output_pattern": "output/figures/density/site_1043/xi1*/**/*.png",
-        "program": "python scripts/conduction_hmc.py --figures density --xi 1",
+        "program": "python pysrc/scripts/conduction_hmc.py --figures density --xi 1",
         "status_note": "",
     },
     {
@@ -98,7 +98,7 @@ EXHIBITS = [
         "kind": "figure",
         "description": "Timing histogram at common business-as-usual carbon price",
         "output_pattern": "output/figures/decision_histogram_pehmc_*_pedet_*_xi_1.0.png",
-        "program": "python scripts/conduction_hmc.py --figures histograms --xi 1",
+        "program": "python pysrc/scripts/conduction_hmc.py --figures histograms --xi 1",
         "status_note": "",
     },
     {
@@ -106,7 +106,7 @@ EXHIBITS = [
         "kind": "figure",
         "description": "Agricultural area under ambiguity neutrality and aversion at common price",
         "output_pattern": "output/figures/aggregate_percentage_Z_b0_pehmc_*_pedet_*_xi_1.0.png",
-        "program": "python scripts/conduction_hmc.py --figures trajectories --xi 1",
+        "program": "python pysrc/scripts/conduction_hmc.py --figures trajectories --xi 1",
         "status_note": "",
     },
     {
@@ -114,7 +114,7 @@ EXHIBITS = [
         "kind": "figure",
         "description": "Timing histograms using corresponding shadow prices",
         "output_pattern": "output/figures/decision_histogram_pehmc_*_pedet_*_xi_1.0.png",
-        "program": "python scripts/conduction_hmc.py --figures histograms --xi 1",
+        "program": "python pysrc/scripts/conduction_hmc.py --figures histograms --xi 1",
         "status_note": "",
     },
     {
@@ -122,7 +122,7 @@ EXHIBITS = [
         "kind": "figure",
         "description": "Agricultural area using corresponding shadow prices",
         "output_pattern": "output/figures/aggregate_percentage_Z_b*_pehmc_*_pedet_*_xi_1.0.png",
-        "program": "python scripts/conduction_hmc.py --figures trajectories --xi 1",
+        "program": "python pysrc/scripts/conduction_hmc.py --figures trajectories --xi 1",
         "status_note": "",
     },
     {
@@ -130,7 +130,7 @@ EXHIBITS = [
         "kind": "figure",
         "description": "Agricultural area under price uncertainty",
         "output_pattern": "output/figures/mpc_landallocation_b_0_adjust.png|output/figures/mpc_landallocation_b_15_adjust.png",
-        "program": "python scripts/mpc_trajectory.py",
+        "program": "python pysrc/scripts/mpc_trajectory.py",
         "status_note": "",
     },
     {
@@ -138,7 +138,7 @@ EXHIBITS = [
         "kind": "figure",
         "description": "Smoothed hidden-state probabilities",
         "output_pattern": "output/figures/smooth_prob_uncon.png|output/figures/smooth_prob_con.png",
-        "program": "python scripts/price_estimation.py",
+        "program": "python pysrc/scripts/price_estimation.py",
         "status_note": "",
     },
     {
@@ -154,7 +154,7 @@ EXHIBITS = [
         "kind": "figure",
         "description": "Ambiguity-adjusted densities, xi=2",
         "output_pattern": "output/figures/density/site_1043/xi2*/**/*.png",
-        "program": "python scripts/conduction_hmc.py --figures density --xi 2",
+        "program": "python pysrc/scripts/conduction_hmc.py --figures density --xi 2",
         "status_note": "",
     },
     {
@@ -162,7 +162,7 @@ EXHIBITS = [
         "kind": "figure",
         "description": "Ambiguity-adjusted densities, xi=0.5",
         "output_pattern": "output/figures/density/site_1043/xi0.5*/**/*.png",
-        "program": "python scripts/conduction_hmc.py --figures density --xi 0.5",
+        "program": "python pysrc/scripts/conduction_hmc.py --figures density --xi 0.5",
         "status_note": "",
     },
     {
@@ -186,7 +186,7 @@ EXHIBITS = [
         "kind": "figure",
         "description": "Bayesian R-squared densities",
         "output_pattern": "output/figures/bayesian_r2_gamma_1043.png|output/figures/bayesian_r2_theta_1043.png",
-        "program": "python scripts/bayesian_R2.py",
+        "program": "python pysrc/scripts/bayesian_R2.py",
         "status_note": "",
     },
     {
@@ -194,7 +194,7 @@ EXHIBITS = [
         "kind": "table",
         "description": "Business-as-usual prices under parameter ambiguity",
         "output_pattern": "replication/derived/carbon_prices.csv",
-        "program": "python scripts/derive_carbon_prices.py",
+        "program": "python pysrc/replication/derive_carbon_prices.py",
         "status_note": "xi infinity is represented as xi=inf, not as 8",
     },
     {
@@ -202,7 +202,7 @@ EXHIBITS = [
         "kind": "table",
         "description": "Present-value decomposition under ambiguity neutrality",
         "output_pattern": "output/tables/present_value_site1043_pa41.11_det.tex",
-        "program": "python scripts/conduction_det.py",
+        "program": "python pysrc/scripts/conduction_det.py",
         "status_note": "",
     },
     {
@@ -210,7 +210,7 @@ EXHIBITS = [
         "kind": "table",
         "description": "Transfer costs under ambiguity neutrality",
         "output_pattern": "output/tables/transfer_cost_1043site_41.11pa_15year_det.tex|output/tables/transfer_cost_1043site_41.11pa_30year_det.tex",
-        "program": "python scripts/conduction_det.py",
+        "program": "python pysrc/scripts/conduction_det.py",
         "status_note": "",
     },
     {
@@ -218,7 +218,7 @@ EXHIBITS = [
         "kind": "table",
         "description": "Present-value decomposition under parameter ambiguity, xi=1",
         "output_pattern": "output/tables/present_value_site_ambiguity_comparison_xi_1.0.tex",
-        "program": "python scripts/conduction_hmc.py --tables ambiguity --xi 1",
+        "program": "python pysrc/scripts/conduction_hmc.py --tables ambiguity --xi 1",
         "status_note": "",
     },
     {
@@ -226,7 +226,7 @@ EXHIBITS = [
         "kind": "table",
         "description": "Business-as-usual prices with stochastic agricultural prices",
         "output_pattern": "replication/derived/carbon_prices.csv",
-        "program": "python scripts/derive_carbon_prices.py",
+        "program": "python pysrc/replication/derive_carbon_prices.py",
         "status_note": "uses MPC shadow-price logs",
     },
     {
@@ -242,7 +242,7 @@ EXHIBITS = [
         "kind": "table",
         "description": "Uncertainty-adjusted transition probabilities for b=0",
         "output_pattern": "replication/derived/mpc_transition_probabilities.csv",
-        "program": "python scripts/derive_mpc_transition_probabilities.py",
+        "program": "python pysrc/replication/derive_mpc_transition_probabilities.py",
         "status_note": "derived from MPC run.out logs at year done: 1, not from the paper",
     },
     {
@@ -258,7 +258,7 @@ EXHIBITS = [
         "kind": "table",
         "description": "Uncertainty-adjusted transition probabilities for b=15",
         "output_pattern": "replication/derived/mpc_transition_probabilities.csv",
-        "program": "python scripts/derive_mpc_transition_probabilities.py",
+        "program": "python pysrc/replication/derive_mpc_transition_probabilities.py",
         "status_note": "derived from MPC run.out logs at year done: 1, not from the paper",
     },
     {
@@ -266,7 +266,7 @@ EXHIBITS = [
         "kind": "table",
         "description": "Hidden-state Markov estimates",
         "output_pattern": "output/tables/hmm_results_table.tex",
-        "program": "python scripts/price_estimation.py",
+        "program": "python pysrc/scripts/price_estimation.py",
         "status_note": "",
     },
     {
@@ -274,7 +274,7 @@ EXHIBITS = [
         "kind": "table",
         "description": "Hidden-state likelihood and information criteria",
         "output_pattern": "output/tables/hmm_information_criteria.tex",
-        "program": "python scripts/price_estimation.py",
+        "program": "python pysrc/scripts/price_estimation.py",
         "status_note": "",
     },
     {
@@ -290,7 +290,7 @@ EXHIBITS = [
         "kind": "table",
         "description": "Present-value decomposition under ambiguity neutrality for 78 sites",
         "output_pattern": "output/tables/present_value_site78_pa41.11_det.tex",
-        "program": "python scripts/conduction_det.py",
+        "program": "python pysrc/scripts/conduction_det.py",
         "status_note": "",
     },
     {
@@ -298,7 +298,7 @@ EXHIBITS = [
         "kind": "table",
         "description": "Transfer costs under ambiguity, 15 years",
         "output_pattern": "output/tables/transfer_cost_1043site_41.11pa_15year_hmc_xi_1.0.tex",
-        "program": "python scripts/conduction_hmc.py --tables transfer-cost --xi 1",
+        "program": "python pysrc/scripts/conduction_hmc.py --tables transfer-cost --xi 1",
         "status_note": "",
     },
     {
@@ -306,7 +306,7 @@ EXHIBITS = [
         "kind": "table",
         "description": "Transfer costs under ambiguity, 30 years",
         "output_pattern": "output/tables/transfer_cost_1043site_41.11pa_30year_hmc_xi_1.0.tex",
-        "program": "python scripts/conduction_hmc.py --tables transfer-cost --xi 1",
+        "program": "python pysrc/scripts/conduction_hmc.py --tables transfer-cost --xi 1",
         "status_note": "",
     },
     {
@@ -314,7 +314,7 @@ EXHIBITS = [
         "kind": "table",
         "description": "Present-value decomposition under parameter ambiguity, xi=2",
         "output_pattern": "output/tables/present_value_site_ambiguity_comparison_xi_2.0.tex",
-        "program": "python scripts/conduction_hmc.py --tables ambiguity --xi 2",
+        "program": "python pysrc/scripts/conduction_hmc.py --tables ambiguity --xi 2",
         "status_note": "",
     },
     {
@@ -322,7 +322,7 @@ EXHIBITS = [
         "kind": "table",
         "description": "Present-value decomposition under parameter ambiguity, xi=0.5",
         "output_pattern": "output/tables/present_value_site_ambiguity_comparison_xi_0.5.tex",
-        "program": "python scripts/conduction_hmc.py --tables ambiguity --xi 0.5",
+        "program": "python pysrc/scripts/conduction_hmc.py --tables ambiguity --xi 0.5",
         "status_note": "",
     },
     {
@@ -346,7 +346,7 @@ EXHIBITS = [
         "kind": "table",
         "description": "Representative distorted transition probabilities, b=10",
         "output_pattern": "replication/derived/mpc_transition_probabilities.csv",
-        "program": "python scripts/derive_mpc_transition_probabilities.py",
+        "program": "python pysrc/replication/derive_mpc_transition_probabilities.py",
         "status_note": "derived from MPC run.out logs at year done: 1, not from the paper",
     },
     {
@@ -362,7 +362,7 @@ EXHIBITS = [
         "kind": "table",
         "description": "Representative distorted transition probabilities, b=25",
         "output_pattern": "replication/derived/mpc_transition_probabilities.csv",
-        "program": "python scripts/derive_mpc_transition_probabilities.py",
+        "program": "python pysrc/replication/derive_mpc_transition_probabilities.py",
         "status_note": "derived from MPC run.out logs at year done: 1, not from the paper",
     },
     {

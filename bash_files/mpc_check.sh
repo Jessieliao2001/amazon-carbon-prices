@@ -21,7 +21,7 @@ echo "$SLURM_JOB_NAME"
 echo "Program starts $(date)"
 start_time=$(date +%s)
 
-python3 -u scripts/mpc_check.py
+python3 -u pysrc/scripts/mpc_check.py
 
 echo "Program ends $(date)"
 end_time=$(date +%s)

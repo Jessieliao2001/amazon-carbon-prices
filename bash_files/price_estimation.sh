@@ -49,7 +49,7 @@ echo "\$SLURM_JOB_NAME"
 echo "Program starts \$(date)"
 start_time=\$(date +%s)
 
-python3 -u scripts/price_estimation.py
+python3 -u pysrc/scripts/price_estimation.py
 
 
 echo "Program ends \$(date)"
