@@ -301,41 +301,73 @@ def ordered_steps(selection: list[str]) -> list[str]:
     return expanded
 
 
-def execution_plan(selection: list[str]) -> list[ExecutionItem]:
-    grouped_steps: list[tuple[str, list[str]]] = []
-    if selection == ["all"]:
-        grouped_steps = [
-            (stage, STAGE_ALIASES[stage])
-            for stage in FULL_STAGE_SEQUENCE
-        ]
-    elif selection == ["postprocess-only"]:
-        grouped_steps = [("postprocess-only", POSTPROCESS_STEPS)]
-    else:
-        custom_steps: list[str] = []
-        for value in selection:
-            if value in STAGE_ALIASES:
-                if custom_steps:
-                    grouped_steps.append(("custom-steps", custom_steps))
-                    custom_steps = []
-                grouped_steps.append((value, STAGE_ALIASES[value]))
-            else:
-                custom_steps.append(value)
-        if custom_steps:
-            grouped_steps.append(("custom-steps", custom_steps))
+def stage_items(stage: str, steps: list[str], order_index: int) -> list[ExecutionItem]:
+    return [
+        ExecutionItem(
+            order_index=order_index + index - 1,
+            stage=stage,
+            stage_step_index=index,
+            step=step,
+        )
+        for index, step in enumerate(steps, start=1)
+    ]
 
+
+def canonical_step_location(
+    step: str,
+    preferred_stage: str | None = None,
+) -> tuple[str, int] | None:
+    if preferred_stage in STAGE_ALIASES:
+        preferred_steps = STAGE_ALIASES[preferred_stage]
+        if step in preferred_steps:
+            return preferred_stage, preferred_steps.index(step) + 1
+
+    for stage in FULL_STAGE_SEQUENCE:
+        steps = STAGE_ALIASES[stage]
+        if step in steps:
+            return stage, steps.index(step) + 1
+    return None
+
+
+def execution_plan(selection: list[str]) -> list[ExecutionItem]:
     plan: list[ExecutionItem] = []
     order_index = 1
-    for stage, steps in grouped_steps:
-        for stage_step_index, step in enumerate(steps, start=1):
-            plan.append(
-                ExecutionItem(
-                    order_index=order_index,
-                    stage=stage,
-                    stage_step_index=stage_step_index,
-                    step=step,
+
+    if selection == ["all"]:
+        for stage in FULL_STAGE_SEQUENCE:
+            items = stage_items(stage, STAGE_ALIASES[stage], order_index)
+            plan.extend(items)
+            order_index += len(items)
+        return plan
+
+    elif selection == ["postprocess-only"]:
+        return stage_items("postprocess-only", POSTPROCESS_STEPS, order_index)
+
+    else:
+        current_stage: str | None = None
+        for value in selection:
+            if value in STAGE_ALIASES:
+                items = stage_items(value, STAGE_ALIASES[value], order_index)
+                plan.extend(items)
+                order_index += len(items)
+                current_stage = value
+            else:
+                location = canonical_step_location(value, current_stage)
+                if location is None:
+                    stage = "custom-steps"
+                    stage_step_index = order_index
+                else:
+                    stage, stage_step_index = location
+                    current_stage = stage
+                plan.append(
+                    ExecutionItem(
+                        order_index=order_index,
+                        stage=stage,
+                        stage_step_index=stage_step_index,
+                        step=value,
+                    )
                 )
-            )
-            order_index += 1
+                order_index += 1
     return plan
 
 

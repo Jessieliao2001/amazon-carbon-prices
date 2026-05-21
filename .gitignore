@@ -17,6 +17,7 @@ test/
 data/raw/
 data/clean/
 data/processed/
+data/calibration/carbon_capture_curves/
 results/
 
 # Gams license

@@ -186,61 +186,36 @@ optimization, and post-processing steps are run.
 The single driver is `run.sh`. It runs commands locally by default and saves
 local command logs under `job-outs/`.
 
-For a complete local run:
+#### 3.1 Local Machine
+
+1. Run the full workflow in one command when you are comfortable letting the
+   machine run for a long time:
 
 ```bash
 ./run.sh --steps all --backend local --jobs 1
 ```
 
-For a complete Slurm run after the R-based data step has been run locally or
-after prepared data have been synced to the server:
+2. Or run the workflow in shorter local stages, which is easier to monitor:
 
 ```bash
-./run.sh --steps all --backend slurm
-```
-
-On a laptop or desktop, staged execution is easier to monitor. Run these stages
-in order:
-
-```bash
-# 1. Data processing
 ./run.sh --steps stage-data --backend local
-
-# 2. HMM, baseline posterior summaries, and Bayesian R2
 ./run.sh --steps stage-hmm --backend local --jobs 2
-
-# 3. Deterministic shadow prices, deterministic model, and non-HMC maps
 ./run.sh --steps stage-deterministic --backend local --jobs 2
-
-# 4. HMC shadow prices, ambiguity outputs, and HMC maps
 ./run.sh --steps stage-hmc --backend local --jobs 2
-
-# 5. MPC outputs and final post-processing audit
 ./run.sh --steps stage-mpc --backend local --jobs 2
 ```
 
-The same staged commands work on Slurm by replacing `--backend local` with
-`--backend slurm`. Slurm writes driver logs to the same stage folders as local
-runs, for example
-`job-outs/stage_deterministic/01_shadow_prices_det/0001_run.out`.
-When submitting stages separately on Slurm, wait for one stage to finish before
-starting the next.
+3. If you ran the heavy computations elsewhere and only need to refresh the
+   final replication outputs locally, run:
 
-`stage-deterministic` runs only the deterministic parameter-ambiguity shadow
-prices (`xi=\infty`, represented in code as `xi=10000`) before refreshing
-`replication/derived/carbon_prices.csv`. `stage-hmc` then runs the finite-`xi`
-shadow prices (`xi=0.5,1,2`) and refreshes the same carbon-price file before
-constructing HMC tables and figures.
+```bash
+./run.sh --steps maps hmc-maps --backend local --jobs 1
+./run.sh --steps postprocess-only --backend local
+```
 
-The Slurm backend skips `Rscript` commands by default because the server may not
-have R installed. Run R-based data and plot steps locally, such as
-`./run.sh --steps stage-data --backend local`,
-`./run.sh --steps maps --backend local`, and
-`./run.sh --steps hmc-maps --backend local`. If a server has R available, add
-`--run-r-on-slurm` to submit those commands to Slurm as well.
-
-For long local stages, run inside `tmux` and use macOS `caffeinate` so the job
-continues if the terminal window is closed and the machine does not sleep:
+4. For long local stages, run inside `tmux` and use macOS `caffeinate` so the
+   job continues if the terminal window is closed and the machine does not
+   sleep:
 
 ```bash
 brew install tmux
@@ -253,6 +228,82 @@ Detach from the tmux session with `Ctrl-b` then `d`, and return later with:
 ```bash
 tmux attach -t amazon
 ```
+
+#### 3.2 Slurm Server
+
+1. Use the same driver on Slurm. The server backend uses the same stage aliases
+   and command lists as the local backend. The only intentional difference is
+   that `Rscript` commands are skipped on Slurm unless `--run-r-on-slurm` is
+   supplied.
+
+2. If the server does not have R, run the R data step locally first, then sync
+   `data/processed/`, `data/clean/`, and `data/calibration/` to the server.
+   Submit the non-R computation stages on the server with:
+
+```bash
+./run.sh --steps stage-hmm stage-deterministic stage-hmc stage-mpc --backend slurm
+```
+
+This submits all Slurm jobs at once, but step order is preserved through Slurm
+dependencies. Commands inside parallel-safe steps are submitted together; later
+steps wait for upstream jobs to finish successfully.
+
+3. If prepared data already exist on the server but R is not available, this is
+   also valid. It skips `Rscript` steps and runs the Python/Gurobi/CmdStan
+   parts:
+
+```bash
+./run.sh --steps all --backend slurm
+```
+
+4. If the server has R and the R environment has been restored there, submit the
+   complete workflow including R data and plot steps with:
+
+```bash
+./run.sh --steps all --backend slurm --run-r-on-slurm
+```
+
+5. Before submitting a long server run, inspect the exact Slurm plan:
+
+```bash
+./run.sh --steps stage-hmm stage-deterministic stage-hmc stage-mpc --backend slurm --dry-run
+./run.sh --steps all --backend slurm --run-r-on-slurm --dry-run
+```
+
+6. Monitor submitted jobs with:
+
+```bash
+squeue -u $USER
+sacct -u $USER --format=JobID,JobName,State,ExitCode
+```
+
+7. After Slurm jobs finish, sync `job-outs/`, `output/`, `plots/`, and
+   `replication/derived/` back to the local machine. If R was skipped on the
+   server, run the R plot steps and final audit locally:
+
+```bash
+./run.sh --steps maps hmc-maps --backend local --jobs 1
+./run.sh --steps postprocess-only --backend local
+```
+
+8. Slurm writes driver logs to the same stage folders as local runs, for
+   example `job-outs/stage_deterministic/01_shadow_prices_det/0001_run.out`.
+   When submitting stages separately on Slurm, wait for one stage to finish
+   before starting the next, because dependencies are tracked only within one
+   `run.sh` invocation.
+
+#### 3.3 Stage Notes
+
+1. `stage-deterministic` runs only the deterministic parameter-ambiguity shadow
+   prices (`xi=\infty`, represented in code as `xi=10000`) before refreshing
+   `replication/derived/carbon_prices.csv`.
+
+2. `stage-hmc` runs the finite-`xi` shadow prices (`xi=0.5,1,2`) and refreshes
+   the same carbon-price file before constructing HMC tables and figures.
+
+3. The Slurm backend skips `Rscript` commands by default because the server may
+   not have R installed. Add `--run-r-on-slurm` only when R is available and the
+   R environment has been restored on the server.
 
 ### Step 4. Process Generated Raw Results And Check Paper Outputs
 
@@ -347,6 +398,9 @@ job-outs/
 
 MPC-HMC jobs also keep their original parseable logs under `job-outs/mpc/...`.
 Slurm driver-level `out`/`err` files use the same stage folders shown above.
+Running an individual named step also uses its canonical stage folder; for
+example, `./run.sh --steps maps --backend local` writes to
+`job-outs/stage_deterministic/04_maps/`.
 
 To inspect commands without running them:
 
@@ -426,6 +480,11 @@ The legacy server helper `bash_files/hmc_shadow_price.sh` now delegates to
 `run.sh` so its Slurm logs use the same numbered `job-outs/` format. Use
 `bash_files/hmc_shadow_price.sh det` for only `xi=\infty` shadow prices, or
 `bash_files/hmc_shadow_price.sh hmc` for only finite-`xi` HMC shadow prices.
+The other replication helper scripts in `bash_files/` that correspond directly
+to named driver steps, such as `price_estimation.sh`, `det_conduction.sh`,
+`hmc_conduction.sh`, `mpc_prepare.sh`, and `mpc_compute.sh`, also delegate to
+`run.sh --backend slurm`. Low-level diagnostic or sampler helpers that are not
+part of the staged driver keep their raw output layouts.
 
 ### Step 6. Reproducibility Notes
 

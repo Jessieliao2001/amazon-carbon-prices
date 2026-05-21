@@ -1,0 +1,3 @@
+context,model,sites,xi,price_model,pee,metric,abs_metric,source_kind,source_file
+parameter_ambiguity,det,78,inf,,6.7,0.006837416196769177,0.006837416196769177,shadow_price_local_log,job-outs/stage_deterministic/01_shadow_prices_det/0019_run.out
+parameter_ambiguity,det,1043,inf,,6.8,-0.0036686558689059826,0.0036686558689059826,shadow_price_local_log,job-outs/stage_deterministic/01_shadow_prices_det/0009_run.out

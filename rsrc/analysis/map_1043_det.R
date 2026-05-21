@@ -31,9 +31,20 @@ options(scipen = 999)
 p_high <- 41.11
 carbon_prices <- readr::read_csv(
   here::here("replication/derived/carbon_prices.csv"),
+  col_types = readr::cols(
+    .default = readr::col_guess(),
+    xi = readr::col_character()
+  ),
   show_col_types = FALSE
 )
 pee <- carbon_prices |>
+  dplyr::mutate(
+    xi = dplyr::if_else(
+      tolower(as.character(xi)) %in% c("10000", "10000.0", "inf", "infty", "infinite", "infinity"),
+      "inf",
+      as.character(xi)
+    )
+  ) |>
   dplyr::filter(
     context == "parameter_ambiguity",
     model == "det",
@@ -42,6 +53,10 @@ pee <- carbon_prices |>
   ) |>
   dplyr::pull(pee) |>
   dplyr::first()
+
+if (length(pee) == 0 || is.na(pee)) {
+  stop("Missing deterministic carbon price for 1043 sites. Run the shadow-prices-det and derive-prices steps first.")
+}
 
 # # clear unnecessary objects
 # rm(matrixTransition.2prices, calibration.globalModel)

@@ -23,6 +23,12 @@ library(here)
 # START TIMER
 tictoc::tic(msg = "mapsCalibration_1043SitesModel.R script", log = T)
 
+dir.create(
+  here::here("plots/calibration/1043SitesModel"),
+  recursive = TRUE,
+  showWarnings = FALSE
+)
+
 # DATA INPUT
 
 map_basin <- st_read(
