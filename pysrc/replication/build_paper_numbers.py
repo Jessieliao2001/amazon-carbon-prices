@@ -243,7 +243,7 @@ EXHIBITS = [
         "description": "Uncertainty-adjusted transition probabilities for b=0",
         "output_pattern": "replication/derived/mpc_transition_probabilities.csv",
         "program": "python pysrc/replication/derive_mpc_transition_probabilities.py",
-        "status_note": "derived from MPC run.out logs at year done: 1, not from the paper",
+        "status_note": "derived from MPC run logs at year done: 1, not from the paper",
     },
     {
         "exhibit": "Table 8",
@@ -259,7 +259,7 @@ EXHIBITS = [
         "description": "Uncertainty-adjusted transition probabilities for b=15",
         "output_pattern": "replication/derived/mpc_transition_probabilities.csv",
         "program": "python pysrc/replication/derive_mpc_transition_probabilities.py",
-        "status_note": "derived from MPC run.out logs at year done: 1, not from the paper",
+        "status_note": "derived from MPC run logs at year done: 1, not from the paper",
     },
     {
         "exhibit": "Table 10",
@@ -347,7 +347,7 @@ EXHIBITS = [
         "description": "Representative distorted transition probabilities, b=10",
         "output_pattern": "replication/derived/mpc_transition_probabilities.csv",
         "program": "python pysrc/replication/derive_mpc_transition_probabilities.py",
-        "status_note": "derived from MPC run.out logs at year done: 1, not from the paper",
+        "status_note": "derived from MPC run logs at year done: 1, not from the paper",
     },
     {
         "exhibit": "Table 21",
@@ -363,7 +363,7 @@ EXHIBITS = [
         "description": "Representative distorted transition probabilities, b=25",
         "output_pattern": "replication/derived/mpc_transition_probabilities.csv",
         "program": "python pysrc/replication/derive_mpc_transition_probabilities.py",
-        "status_note": "derived from MPC run.out logs at year done: 1, not from the paper",
+        "status_note": "derived from MPC run logs at year done: 1, not from the paper",
     },
     {
         "exhibit": "Table 23",

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import re
+import shlex
 import sys
 from pathlib import Path
 
@@ -35,69 +36,196 @@ def _source_file(path: Path, root: Path) -> str:
         return str(path)
 
 
+def _unique_paths(paths: list[Path]) -> list[Path]:
+    seen: set[Path] = set()
+    unique: list[Path] = []
+    for path in sorted(paths):
+        resolved = path.resolve()
+        if resolved in seen:
+            continue
+        seen.add(resolved)
+        unique.append(path)
+    return unique
+
+
+def _command_path_for(log_path: Path) -> Path:
+    if log_path.name.endswith("_run.out"):
+        return log_path.with_name(log_path.name.replace("_run.out", "_command.txt"))
+    return log_path.with_name("command.txt")
+
+
+def _command_from_log(log_path: Path, text: str | None = None) -> list[str]:
+    command_path = _command_path_for(log_path)
+    command_text = ""
+    if command_path.exists():
+        command_text = command_path.read_text(errors="ignore").strip()
+    else:
+        if text is None:
+            text = log_path.read_text(errors="ignore")
+        for line in text.splitlines()[:5]:
+            if line.startswith("Command:"):
+                command_text = line.split(":", 1)[1].strip()
+                break
+    if not command_text:
+        return []
+    try:
+        return shlex.split(command_text)
+    except ValueError:
+        return []
+
+
+def _command_contains(command: list[str], script_name: str) -> bool:
+    return any(part.replace("\\", "/").endswith(script_name) for part in command)
+
+
+def _option_value(command: list[str], option: str) -> str | None:
+    try:
+        index = command.index(option)
+    except ValueError:
+        return None
+    if index + 1 >= len(command):
+        return None
+    return command[index + 1]
+
+
+def _local_driver_logs(log_root: Path) -> list[Path]:
+    candidates = list(log_root.rglob("*_run.out"))
+    candidates.extend(
+        path
+        for path in log_root.rglob("run.out")
+        if path.with_name("command.txt").exists()
+    )
+    return _unique_paths(candidates)
+
+
+def _shadow_row(
+    *,
+    path: Path,
+    root: Path,
+    text: str,
+    xi: str | None,
+    sites: int | None,
+    source_kind: str,
+) -> dict[str, object] | None:
+    match = SHADOW_RE.search(text)
+    if not match or xi is None or sites is None:
+        return None
+    xi = normalize_xi(xi)
+    metric = float(match.group("metric"))
+    return {
+        "context": "parameter_ambiguity",
+        "model": "det" if xi == "inf" else "hmc",
+        "sites": sites,
+        "xi": xi,
+        "price_model": "",
+        "pee": float(match.group("pee")),
+        "metric": metric,
+        "abs_metric": abs(metric),
+        "source_kind": source_kind,
+        "source_file": _source_file(path, root),
+    }
+
+
 def parse_shadow_price_logs(log_root: Path, root: Path) -> list[dict[str, object]]:
     rows: list[dict[str, object]] = []
     for path in sorted(log_root.glob("shadow_price/xi_*/id_*/sites_*/run.out")):
         text = path.read_text(errors="ignore")
-        match = SHADOW_RE.search(text)
-        if not match:
-            continue
-        xi = normalize_xi(_part_value(path, "xi_"))
-        sites = int(_part_value(path, "sites_") or 0)
-        metric = float(match.group("metric"))
-        rows.append(
-            {
-                "context": "parameter_ambiguity",
-                "model": "det" if xi == "inf" else "hmc",
-                "sites": sites,
-                "xi": xi,
-                "price_model": "",
-                "pee": float(match.group("pee")),
-                "metric": metric,
-                "abs_metric": abs(metric),
-                "source_kind": "shadow_price_log",
-                "source_file": _source_file(path, root),
-            }
+        row = _shadow_row(
+            path=path,
+            root=root,
+            text=text,
+            xi=_part_value(path, "xi_"),
+            sites=int(_part_value(path, "sites_") or 0),
+            source_kind="shadow_price_log",
         )
+        if row is not None:
+            rows.append(row)
+
+    for path in _local_driver_logs(log_root):
+        text = path.read_text(errors="ignore")
+        command = _command_from_log(path, text)
+        if not _command_contains(command, "pysrc/bash/shadow_price.py"):
+            continue
+        sites = _option_value(command, "--sites")
+        row = _shadow_row(
+            path=path,
+            root=root,
+            text=text,
+            xi=_option_value(command, "--xi"),
+            sites=int(sites) if sites is not None else None,
+            source_kind="shadow_price_local_log",
+        )
+        if row is not None:
+            rows.append(row)
+    return rows
+
+
+def _parse_mpc_shadow_price_file(
+    path: Path,
+    root: Path,
+    *,
+    source_kind: str,
+) -> list[dict[str, object]]:
+    rows: list[dict[str, object]] = []
+    current: dict[str, object] | None = None
+    for line in path.read_text(errors="ignore").splitlines():
+        header = MPC_HEADER_RE.search(line)
+        if header:
+            current = {
+                "xi": normalize_xi(header.group("xi")),
+                "pee": float(header.group("pee")),
+                "model": header.group("model"),
+            }
+            continue
+        ratio = RATIO_RE.search(line)
+        if ratio and current is not None:
+            metric = float(ratio.group("metric"))
+            model = str(current["model"])
+            rows.append(
+                {
+                    "context": "price_stochasticity",
+                    "model": model,
+                    "sites": 78,
+                    "xi": current["xi"],
+                    "price_model": (
+                        "common_variance"
+                        if model == "constrained"
+                        else "distinct_variance"
+                    ),
+                    "pee": current["pee"],
+                    "metric": metric,
+                    "abs_metric": abs(metric),
+                    "source_kind": source_kind,
+                    "source_file": _source_file(path, root),
+                }
+            )
+            current = None
     return rows
 
 
 def parse_mpc_shadow_price_logs(log_root: Path, root: Path) -> list[dict[str, object]]:
     rows: list[dict[str, object]] = []
     for path in sorted(log_root.glob("mpc_compute_sp/run.out")):
-        current: dict[str, object] | None = None
-        for line in path.read_text(errors="ignore").splitlines():
-            header = MPC_HEADER_RE.search(line)
-            if header:
-                current = {
-                    "xi": normalize_xi(header.group("xi")),
-                    "pee": float(header.group("pee")),
-                    "model": header.group("model"),
-                }
-                continue
-            ratio = RATIO_RE.search(line)
-            if ratio and current is not None:
-                metric = float(ratio.group("metric"))
-                model = str(current["model"])
-                rows.append(
-                    {
-                        "context": "price_stochasticity",
-                        "model": model,
-                        "sites": 78,
-                        "xi": current["xi"],
-                        "price_model": (
-                            "common_variance"
-                            if model == "constrained"
-                            else "distinct_variance"
-                        ),
-                        "pee": current["pee"],
-                        "metric": metric,
-                        "abs_metric": abs(metric),
-                        "source_kind": "mpc_shadow_price_log",
-                        "source_file": _source_file(path, root),
-                    }
-                )
-                current = None
+        rows.extend(
+            _parse_mpc_shadow_price_file(
+                path,
+                root,
+                source_kind="mpc_shadow_price_log",
+            )
+        )
+
+    for path in _local_driver_logs(log_root):
+        text = path.read_text(errors="ignore")
+        command = _command_from_log(path, text)
+        if not _command_contains(command, "pysrc/mpc/mpc_compute_sp.py"):
+            continue
+        rows.extend(
+            _parse_mpc_shadow_price_file(
+                path,
+                root,
+                source_kind="mpc_shadow_price_local_log",
+            )
+        )
     return rows
 
 

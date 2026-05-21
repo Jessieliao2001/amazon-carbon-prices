@@ -45,67 +45,55 @@ On the Midway server, a typical module setup is:
 module load python/anaconda-2022.05 gurobi/11.0 gcc/12.2.0
 ```
 
-## Local Environment Setup
+## Replication Workflow
 
-Set up the local environment before running any replication step. The Python
-package versions used by the replication code are pinned in `pyproject.toml`;
-the external tools that must be installed separately are Gurobi, a C/C++
-compiler, CmdStan, and R.
+Follow these steps in order. The commands work locally with `--backend local`
+and on a Slurm server with `--backend slurm`.
 
-Clone the repository:
+### Step 1. Prepare The Environment
+
+The setup can be run as one command from the repository root. Use `source` if
+you want the environment to remain active in the current shell after setup
+finishes.
 
 ```bash
 git clone <repo-url>
 cd amazon-carbon-prices
 ```
 
-Recommended local Python setup with conda or mamba:
+#### 1.1 Local Setup
+
+Install Gurobi 11.0.x with a valid license, R, and a C/C++ compiler first.
+
+Academic users can request a free academic license from the Gurobi Academic
+License Program or Gurobi User Portal; after installing Gurobi, copy the
+portal-provided `grbgetkey ...` command and run it on the local machine to
+create `gurobi.lic`. Put `gurobi.lic` in a default Gurobi license directory, or
+export `GRB_LICENSE_FILE=/full/path/to/gurobi.lic` before running this repo so
+Gurobi and Pyomo can find the license.
+
+On macOS, the compiler setup is usually:
 
 ```bash
-conda create -n amazon-carbon python=3.9.12 pip -y
-conda activate amazon-carbon
-python -m pip install -U pip setuptools wheel
-python -m pip install -e ".[all]"
+xcode-select --install
+brew install gcc@12
 ```
 
-If geospatial dependencies are difficult to build with `pip`, install the main
-Python stack from conda-forge first, then install this repository without
-reinstalling dependencies:
+Then run:
 
 ```bash
-mamba install -c conda-forge \
-  numpy=1.25.2 pandas=2.1.0 geopandas=0.14.4 pyomo=6.6.2 \
-  cmdstanpy=1.2.0 scipy=1.11.1 matplotlib=3.7.3 seaborn=0.13.2 \
-  jinja2=3.1.6 hmmlearn=0.3.3 ipykernel black ruff pre-commit -y
-python -m pip install -e . --no-deps
+source ./setup_env.sh local
 ```
 
-A plain virtual environment also works when system libraries are already
-available:
+The script creates `.venv`, installs the pinned Python dependencies from
+`pyproject.toml`, installs `gurobipy==11.0.*`, installs CmdStan through
+`cmdstanpy`, restores the R packages from `renv.lock`, and checks that Gurobi is
+visible. If you do not want the script to activate `.venv` in the current
+shell, run `./setup_env.sh local` instead. If you need to force a fresh CmdStan
+install, add `--overwrite-cmdstan`.
 
-```bash
-python3.9 -m venv .venv
-source .venv/bin/activate
-python -m pip install -U pip setuptools wheel
-python -m pip install -e ".[all]"
-```
-
-Install Gurobi 11.0.x locally and configure a valid license. The server module
-uses `gurobi/11.0`; local patch versions such as 11.0.3 are fine. After
-installation, confirm both the command-line solver and Pyomo interface work:
-
-```bash
-gurobi_cl --version
-python -m pip install "gurobipy==11.0.*"
-python - <<'PY'
-import pyomo.environ as pyo
-solver = pyo.SolverFactory("gurobi")
-print("gurobi available:", solver.available())
-PY
-```
-
-On macOS, Gurobi usually also needs shell environment variables. Adjust the
-folder name to your installed version:
+If Gurobi on macOS is not found automatically, set these variables before
+running the setup command. Adjust the folder name to your installed version:
 
 ```bash
 export GUROBI_HOME="/Library/gurobi1103/macos_universal2"
@@ -114,54 +102,46 @@ export DYLD_LIBRARY_PATH="$GUROBI_HOME/lib:${DYLD_LIBRARY_PATH:-}"
 export GRB_LICENSE_FILE="$HOME/gurobi.lic"
 ```
 
-Install a C/C++ compiler for Stan. On the server this is `gcc/12.2.0`; on macOS,
-Apple Clang plus Homebrew GCC 12 is usually sufficient:
+#### 1.2 Server Setup
+
+On the server, the same setup is also one command:
 
 ```bash
-xcode-select --install
-brew install gcc@12
-gcc-12 --version
-g++-12 --version
+source ./setup_env.sh server
 ```
 
-Install CmdStan if it is not already available:
+This loads the server modules, creates `.venv`, installs the Python package and
+R environment, installs CmdStan, and leaves the environment active in the
+current shell. Internally it uses the same server setup as:
 
 ```bash
-install_cmdstan --overwrite
+module avail python gurobi gcc
+module load python/anaconda-2022.05 gurobi/11.0 gcc/12.2.0
+/software/python-anaconda-2022.05-el8-x86_64/bin/python3 -m venv .venv
+source .venv/bin/activate
 ```
-
-or equivalently:
+For later server sessions:
 
 ```bash
-python -m cmdstanpy.install_cmdstan --overwrite
+cd amazon-carbon-prices
+module load python/anaconda-2022.05 gurobi/11.0 gcc/12.2.0
+source .venv/bin/activate
 ```
 
-Restore the R environment recorded in `renv.lock`:
+### Step 2. Prepare The Data Inputs
+
+The raw data and calibrated inputs used for computation can be downloaded
+[here](https://www.dropbox.com/scl/fo/n6gsyl7w2mki77eqew8ts/AMUKehiyaTFH2fjO5VotYwE?rlkey=iuk47v413domc1utvoa8x3yfp&st=ie2dyrzx&dl=0).
+
+1. Create the data folder:
 
 ```bash
-Rscript -e 'install.packages("renv")'
-Rscript -e 'renv::restore()'
+mkdir -p data
 ```
 
-Finally, run a quick local environment check:
+2. Download the `raw` data folder from the link above.
 
-```bash
-python --version
-python - <<'PY'
-import numpy, pandas, geopandas, pyomo, cmdstanpy, scipy, matplotlib, seaborn, hmmlearn
-print("python packages ok")
-PY
-gurobi_cl --version
-Rscript -e 'renv::status()'
-```
-
-Activate the Python environment in every new shell before running replication
-commands. For conda, use `conda activate amazon-carbon`; for a virtual
-environment, use `source .venv/bin/activate`.
-
-## Data Inputs
-
-Place the raw data folder at `data/raw/` with the following structure:
+3. Move `raw` into `data/`, so the final structure is:
 
 ```text
 data/raw/
@@ -177,109 +157,50 @@ data/raw/
   worldclim/
 ```
 
-Then generate the cleaned data:
+If the download also includes prepared `processed`, `clean`, or `calibration`
+folders, place them under `data/` with the same folder names.
+
+4. Generate processed, cleaned, and calibration data when starting from raw
+   inputs:
 
 ```bash
-./run.sh --steps data
+./run.sh --steps stage-data --backend local
 ```
 
-The full workflow assumes the cleaned and calibration data have been produced
-before the estimation and optimization steps are run.
-
-## Main Driver
-
-The main replication entry point is:
+If the server has R available, the same data step can be submitted to Slurm
+with:
 
 ```bash
-./run.sh
+./run.sh --steps stage-data --backend slurm --run-r-on-slurm
 ```
 
-By default, this runs the lightweight post-processing workflow:
+If the server does not have R, run `stage-data` locally and sync the generated
+`data/processed/`, `data/clean/`, and `data/calibration/` folders to the server
+before starting non-R Slurm stages.
+
+The full workflow assumes these data outputs exist before estimation,
+optimization, and post-processing steps are run.
+
+### Step 3. Run The Whole Project
+
+The single driver is `run.sh`. It runs commands locally by default and saves
+local command logs under `job-outs/`.
+
+For a complete local run:
 
 ```bash
-./run.sh --steps postprocess-only
+./run.sh --steps all --backend local --jobs 1
 ```
 
-This validates the existing output chain, derives carbon prices from run logs,
-builds the exhibit manifest, and extracts manuscript numbers from generated
-output files. It does not run the computationally heavy estimation or
-optimization steps.
-
-To run the full workflow locally:
-
-```bash
-./run.sh --steps all --backend local
-```
-
-To run independent pieces in parallel on a local machine, add `--jobs`. A
-conservative laptop run might use:
-
-```bash
-./run.sh --steps all --backend local --jobs 4
-```
-
-To submit the same workflow on a Slurm server:
+For a complete Slurm run after the R-based data step has been run locally or
+after prepared data have been synced to the server:
 
 ```bash
 ./run.sh --steps all --backend slurm
 ```
 
-The Slurm backend submits a dependency chain: independent commands inside a
-parallel-safe step are submitted together, and later steps wait on them with
-`afterok` dependencies. The following environment variables can tune the Slurm
-job wrapper without editing code:
-
-```bash
-REPLICATION_MODULES="python/anaconda-2022.05 gurobi/11.0 gcc/12.2.0"
-REPLICATION_SLURM_TIME="1-11:00:00"
-REPLICATION_SLURM_CPUS="8"
-REPLICATION_SLURM_MEM="32G"
-REPLICATION_SLURM_PARTITION="<partition-name>"
-```
-
-Slurm wrapper scripts and their driver-level `out`/`err` files are written under
-`job-outs/slurm/`.
-
-To inspect commands without running them:
-
-```bash
-./run.sh --steps all --dry-run
-```
-
-With `--backend local`, the driver saves command logs by default directly under
-`job-outs/`, with one folder for each replication step:
-
-```text
-job-outs/
-  01_derive_prices/
-    0001/run.out
-    0001/run.err
-    0001/command.txt
-```
-
-This mirrors the server habit of keeping `run.out` and `run.err` files for each
-job. To choose a subfolder under `job-outs/`, use:
-
-```bash
-./run.sh --steps stage-mpc --backend local --local-log-dir stage_mpc_logs
-```
-
-To stream output directly to the terminal instead, use:
-
-```bash
-./run.sh --steps postprocess-only --backend local --no-local-logs
-```
-
-You can also run specific steps:
-
-```bash
-./run.sh --steps data price-estimation baseline shadow-prices derive-prices deterministic postprocess
-```
-
-## Staged Local Replication
-
-For a local machine, it is often easier to run the replication in separate
-stages. Run them in this order:
+On a laptop or desktop, staged execution is easier to monitor. Run these stages
+in order:
 
 ```bash
 # 1. Data processing
@@ -289,51 +210,150 @@ stages. Run them in this order:
 ./run.sh --steps stage-hmm --backend local --jobs 2
 
 # 3. Deterministic model, carbon prices, and non-HMC maps
-./run.sh --steps stage-deterministic --backend local --jobs 4
+./run.sh --steps stage-deterministic --backend local --jobs 2
 
 # 4. HMC ambiguity outputs and HMC maps
-./run.sh --steps stage-hmc --backend local --jobs 3
+./run.sh --steps stage-hmc --backend local --jobs 2
 
 # 5. MPC outputs and final post-processing audit
-./run.sh --steps stage-mpc --backend local --jobs 4
+./run.sh --steps stage-mpc --backend local --jobs 2
 ```
 
-The `stage-hmm` stage includes `baseline` because the Bayesian R2 figures and
-posterior quantile tables use the baseline posterior/calibration outputs. The
-`stage-deterministic` stage includes `shadow-prices` and `derive-prices` because
-the downstream deterministic and HMC/MPC tables read carbon prices from
-`replication/derived/carbon_prices.csv`.
-
-If the original shadow-price logs are already available in `job-outs/` and you
-only want a faster deterministic refresh, you can skip recomputing the
-shadow-price jobs and run:
-
-```bash
-./run.sh --steps derive-prices deterministic maps --backend local --jobs 4
-```
-
-After any partial rerun, refresh the audit files with:
-
-```bash
-./run.sh --steps postprocess-only --backend local --jobs 4
-```
-
-The same stages work on Slurm:
-
-```bash
-./run.sh --steps stage-data --backend slurm
-./run.sh --steps stage-hmm --backend slurm
-./run.sh --steps stage-deterministic --backend slurm
-./run.sh --steps stage-hmc --backend slurm
-./run.sh --steps stage-mpc --backend slurm
-```
-
+The same staged commands work on Slurm by replacing `--backend local` with
+`--backend slurm`. Slurm writes driver logs to the same stage folders as local
+runs, for example `job-outs/stage_deterministic/01_shadow_prices/0001_run.out`.
 When submitting stages separately on Slurm, wait for one stage to finish before
-starting the next. If you want Slurm dependencies across the entire workflow in
-one submission, use:
+starting the next.
+
+The Slurm backend skips `Rscript` commands by default because the server may not
+have R installed. Run R-based data and plot steps locally, such as
+`./run.sh --steps stage-data --backend local`,
+`./run.sh --steps maps --backend local`, and
+`./run.sh --steps hmc-maps --backend local`. If a server has R available, add
+`--run-r-on-slurm` to submit those commands to Slurm as well.
+
+For long local stages, run inside `tmux` and use macOS `caffeinate` so the job
+continues if the terminal window is closed and the machine does not sleep:
 
 ```bash
-./run.sh --steps all --backend slurm
+brew install tmux
+tmux new -s amazon
+caffeinate -dimsu ./run.sh --steps stage-deterministic --backend local --jobs 4
+```
+
+Detach from the tmux session with `Ctrl-b` then `d`, and return later with:
+
+```bash
+tmux attach -t amazon
+```
+
+### Step 4. Process Generated Raw Results And Check Paper Outputs
+
+After model jobs have produced raw outputs in `job-outs/`, `output/`, and
+`plots/`, run the post-processing chain and lightweight replication audit:
+
+```bash
+./run.sh --steps postprocess-only --backend local
+```
+
+This expands to:
+
+```text
+derive-prices
+mpc-probabilities
+postprocess
+```
+
+Those steps do the following:
+
+- `pysrc/replication/derive_carbon_prices.py` parses shadow-price and MPC logs,
+  including original `run.out` logs and local numbered `0001_run.out` logs, and
+  writes `replication/derived/carbon_price_candidates.csv` and
+  `replication/derived/carbon_prices.csv`.
+- `pysrc/replication/derive_mpc_transition_probabilities.py` parses
+  `job-outs/mpc/.../run.out` plus compatible local numbered `*_run.out` logs
+  and writes
+  `replication/derived/mpc_transition_probabilities.csv`.
+- `pysrc/mpc/mpc_compute_day0.py` reconstructs day-0 MPC present-value tables
+  from generated optimization arrays.
+- `pysrc/replication/build_paper_numbers.py` writes
+  `replication/exhibit_manifest.csv`, `replication/paper_numbers.csv`, and
+  `replication/paper_numbers_missing_summary.csv`.
+- `pysrc/replication/build_aux_input_tables.py` refreshes
+  `aux_input/Table<number>_*.tex`, `aux_input/Figure<number>_*`,
+  `replication/aux_input_table_manifest.csv`, and
+  `replication/aux_input_figure_manifest.csv`.
+
+The post-processing scripts do not read values from the manuscript PDF. Reported
+numbers are extracted from generated outputs and logs.
+
+After the command finishes, check these generated files:
+
+```text
+replication/exhibit_manifest.csv
+replication/paper_numbers.csv
+replication/paper_numbers_missing_summary.csv
+replication/aux_input_table_manifest.csv
+replication/aux_input_figure_manifest.csv
+aux_input/
+```
+
+If `paper_numbers_missing_summary.csv` reports missing outputs, generate the
+upstream outputs listed in `replication/exhibit_manifest.csv`, then rerun:
+
+```bash
+./run.sh --steps postprocess-only --backend local
+```
+
+The workflow is self-contained and does not require a manuscript TeX or PDF
+outside the repository. The optional `--paper-tex` argument in the build scripts
+is only for maintainers who intentionally want to refresh
+`replication/paper_figure_inputs.csv`.
+
+### Step 5. Logs, Parallelism, And Dry Runs
+
+Local and Slurm driver logs are saved under `job-outs/`, grouped first by
+replication stage and then by step. This keeps separate staged runs from all
+writing different `01_*` folders into the top level of `job-outs/`:
+
+```text
+job-outs/
+  stage_deterministic/
+    01_shadow_prices/
+      0001_run.out
+      0001_run.err
+      0001_command.txt
+      0002_run.out
+      0002_run.err
+      0002_command.txt
+  stage_mpc/
+    01_mpc_prepare/
+      0001_run.out
+      0001_run.err
+      0001_command.txt
+```
+
+MPC-HMC jobs also keep their original parseable logs under `job-outs/mpc/...`.
+Slurm driver-level `out`/`err` files use the same stage folders shown above.
+
+To inspect commands without running them:
+
+```bash
+./run.sh --steps all --dry-run
+```
+
+To choose a subfolder under `job-outs/` for local logs:
+
+```bash
+./run.sh --steps stage-mpc --backend local --local-log-dir stage_mpc_logs
+```
+
+That command writes logs under `job-outs/stage_mpc_logs/stage_mpc/...`.
+
+To stream output directly to the terminal:
+
+```bash
+./run.sh --steps postprocess-only --backend local --no-local-logs
 ```
 
 To choose local `--jobs`, first check your machine:
@@ -343,13 +363,10 @@ python -c "import os; print(os.cpu_count())"
 python -c "import os; print(round(os.sysconf('SC_PHYS_PAGES') * os.sysconf('SC_PAGE_SIZE') / 1024**3, 1), 'GB')"
 ```
 
-As a rule of thumb, start with `--jobs 2` for memory-heavy optimization stages
-and `--jobs 4` for a modern laptop or desktop. Increase only if CPU and memory
-pressure stay comfortable. Avoid setting `--jobs` equal to the full logical CPU
-count for the heavy HMC/MPC stages, because each job may also use solver,
-BLAS/R, or Python worker threads internally.
+Start with `--jobs 1` or `--jobs 2` for memory-heavy HMC/MPC stages. Increase
+only if CPU and memory pressure stay comfortable.
 
-Available step names are:
+Available step names:
 
 ```text
 data
@@ -360,10 +377,11 @@ derive-prices
 deterministic
 mpc-prepare
 mpc-prices
-mpc-day0
+mpc-hmc-pre
 mpc-probabilities
-mpc-converge-paths
+mpc-day0
 mpc-tables
+mpc-hmc-figure14
 mpc-figures
 bayesian-r2
 maps
@@ -379,108 +397,30 @@ stage-mpc
 all
 ```
 
-By default, the driver parallelizes independent commands within these steps:
-`baseline`, `shadow-prices`, `mpc-prepare`, `mpc-day0`, `mpc-converge-paths`,
-`mpc-tables`, `maps`, `hmc`, and `hmc-maps`. Use
-`--parallel-steps none` to force serial execution, or pass an explicit list such
-as `--parallel-steps hmc mpc-day0 mpc-tables`.
-
-## Reported Numbers
-
-The replication package does not read reported values from the manuscript PDF.
-The manuscript PDF is useful for checking exhibit order, labels, and formatting,
-but reported numbers are generated from code outputs.
-
-Carbon prices are derived by:
+Server module defaults can be tuned without editing code:
 
 ```bash
-python pysrc/replication/derive_carbon_prices.py
+REPLICATION_MODULES="python/anaconda-2022.05 gurobi/11.0 gcc/12.2.0"
+REPLICATION_SLURM_TIME="1-11:00:00"
+REPLICATION_SLURM_CPUS="8"
+REPLICATION_SLURM_MEM="32G"
+REPLICATION_SLURM_PARTITION="<partition-name>"
 ```
 
-This script parses the original shadow-price and MPC run logs in `job-outs/`
-and writes:
+### Step 6. Reproducibility Notes
 
-- `replication/derived/carbon_price_candidates.csv`
-- `replication/derived/carbon_prices.csv`
-
-Downstream scripts read these files through `pysrc.replication.parameters`
-instead of requiring manual edits to `pee` values. The infinite ambiguity case
-is represented internally as `xi=inf` and displayed as `\infty`; it is not the
-number `8`.
-
-The manuscript-number audit is built by:
-
-```bash
-python pysrc/replication/build_paper_numbers.py
-```
-
-It writes:
-
-- `replication/exhibit_manifest.csv`: one row for each manuscript table or
-  figure. Figure rows come from the repo-internal
-  `replication/paper_figure_inputs.csv`, while table rows track the generated
-  code outputs.
-- `replication/paper_numbers.csv`: numbers extracted from generated outputs,
-  including derived carbon prices and generated LaTeX tables.
-- `replication/paper_numbers_missing_summary.csv`: which expected outputs are
-  currently present, missing, or not yet generated in the working tree.
-
-If an exhibit is marked as missing, run the command listed in the `program`
-column of `replication/exhibit_manifest.csv` after creating the required
-upstream model outputs.
-
-Paper-formatted LaTeX inputs for the manuscript tables are built by:
-
-```bash
-python pysrc/replication/build_aux_input_tables.py
-```
-
-This writes `aux_input/Table<number>_*.tex` files from generated outputs and
-derived CSV files, reads the repo-internal figure list in
-`replication/paper_figure_inputs.csv`, and copies only those generated figures
-to `aux_input/Figure<number>_*`. By default, it removes stale files from
-`aux_input/` so the folder contains only the current code-generated manuscript
-inputs. The table and figure numbers follow the current manuscript/PDF order
-recorded in the repository. It also writes
-`replication/aux_input_table_manifest.csv`,
-`replication/paper_figure_inputs.csv`, and
-`replication/aux_input_figure_manifest.csv`, which record the source output
-files for the generated assets.
-
-Table-format comparisons use stable cached templates in
-`replication/aux_input_table_templates/`, not the cleaned `aux_input/` folder.
-If old unprefixed table inputs are present, they are cached there before
-cleanup; otherwise the cache is bootstrapped from the current generated
-`Table<number>_*.tex` files.
-
-The replication workflow is self-contained and does not require the manuscript
-TeX file or PDF as an external input. The optional `--paper-tex` argument in
-the build scripts is only for maintainers who intentionally want to refresh
-`replication/paper_figure_inputs.csv`.
-
-## Important Reproducibility Notes
-
-- The old workflow required manually updating `pee` values in several scripts.
-  The current workflow derives and reuses them from
-  `replication/derived/carbon_prices.csv`.
-- `pysrc/replication/build_paper_numbers.py` deliberately ignores the manuscript PDF and
-  extracts numbers only from generated outputs.
-- `pysrc/replication/derive_mpc_transition_probabilities.py` derives representative MPC
-  transition probabilities from `job-outs/mpc/.../run.out`: for each log it
-  finds `year done: 1`, reads the immediately preceding `Parameters from
-  current iteration` vector, uses the second-to-last entry as `low -> low`, and
-  uses one minus the last entry as `high -> high`. If those logs are absent, the
-  corresponding tables remain marked as missing in
-  `replication/paper_numbers_missing_summary.csv`.
+- Downstream scripts read `P^{ee}` from
+  `replication/derived/carbon_prices.csv`; do not manually edit `pee` values.
+- The infinite ambiguity case is represented internally as `xi=inf` and
+  displayed as `\infty`; it is not the number `8`.
+- `pysrc/replication/derive_mpc_transition_probabilities.py` finds
+  `year done: 1` in each MPC log, reads the immediately preceding
+  `Parameters from current iteration` vector, uses the second-to-last entry as
+  `low -> low`, and uses one minus the last entry as `high -> high`.
 - `pysrc/mpc/mpc_simulating.py --type converge_uncon` and
   `--type converge_con` read those derived transition probabilities; they do
   not rely on manually edited probability dictionaries.
-- The current repo-internal figure list references a small number of inputs whose
-  generated source files are not present in `output/` or `plots`; see
-  `replication/paper_numbers_missing_summary.csv` and
-  `replication/aux_input_figure_manifest.csv` for the exact list.
-- The heavy steps require substantial compute and commercial solver access.
-  For a laptop or non-server check, use `--steps postprocess-only`.
+- For a laptop or non-server check, use `--steps postprocess-only`.
 
 ## Legacy Scripts
 

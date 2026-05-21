@@ -16,6 +16,7 @@ test/
 # Data
 data/raw/
 data/clean/
+data/processed/
 results/
 
 # Gams license

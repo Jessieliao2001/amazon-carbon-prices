@@ -8,6 +8,7 @@ import subprocess
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import dataclass
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
@@ -52,6 +53,30 @@ STAGE_ALIASES = {
         "postprocess",
     ],
 }
+FULL_STAGE_SEQUENCE = [
+    "stage-data",
+    "stage-hmm",
+    "stage-deterministic",
+    "stage-hmc",
+    "stage-mpc",
+]
+POSTPROCESS_STEPS = ["derive-prices", "mpc-probabilities", "postprocess"]
+
+
+@dataclass(frozen=True)
+class ExecutionItem:
+    order_index: int
+    stage: str
+    stage_step_index: int
+    step: str
+
+
+@dataclass(frozen=True)
+class LocalLogFiles:
+    step_dir: Path
+    out: Path
+    err: Path
+    command: Path
 
 
 def base_steps() -> dict[str, list[list[str]]]:
@@ -249,33 +274,55 @@ def mpc_hmc_commands(
 def ordered_steps(selection: list[str]) -> list[str]:
     if selection == ["all"]:
         return [
-            "data",
-            "price-estimation",
-            "baseline",
-            "bayesian-r2",
-            "shadow-prices",
-            "derive-prices",
-            "deterministic",
-            "mpc-prepare",
-            "mpc-prices",
-            "derive-prices",
-            "mpc-day0",
-            "mpc-probabilities",
-            "mpc-converge-paths",
-            "mpc-tables",
-            "mpc-figures",
-            "maps",
-            "hmc",
-            "hmc-maps",
-            "postprocess",
+            step
+            for stage in FULL_STAGE_SEQUENCE
+            for step in STAGE_ALIASES[stage]
         ]
     if selection == ["postprocess-only"]:
-        return ["derive-prices", "mpc-probabilities", "postprocess"]
+        return list(POSTPROCESS_STEPS)
 
     expanded: list[str] = []
     for step in selection:
         expanded.extend(STAGE_ALIASES.get(step, [step]))
     return expanded
+
+
+def execution_plan(selection: list[str]) -> list[ExecutionItem]:
+    grouped_steps: list[tuple[str, list[str]]] = []
+    if selection == ["all"]:
+        grouped_steps = [
+            (stage, STAGE_ALIASES[stage])
+            for stage in FULL_STAGE_SEQUENCE
+        ]
+    elif selection == ["postprocess-only"]:
+        grouped_steps = [("postprocess-only", POSTPROCESS_STEPS)]
+    else:
+        custom_steps: list[str] = []
+        for value in selection:
+            if value in STAGE_ALIASES:
+                if custom_steps:
+                    grouped_steps.append(("custom-steps", custom_steps))
+                    custom_steps = []
+                grouped_steps.append((value, STAGE_ALIASES[value]))
+            else:
+                custom_steps.append(value)
+        if custom_steps:
+            grouped_steps.append(("custom-steps", custom_steps))
+
+    plan: list[ExecutionItem] = []
+    order_index = 1
+    for stage, steps in grouped_steps:
+        for stage_step_index, step in enumerate(steps, start=1):
+            plan.append(
+                ExecutionItem(
+                    order_index=order_index,
+                    stage=stage,
+                    stage_step_index=stage_step_index,
+                    step=step,
+                )
+            )
+            order_index += 1
+    return plan
 
 
 def commands_for_step(step: str) -> list[list[str]]:
@@ -302,8 +349,26 @@ def safe_name(value: str) -> str:
     return "".join(char if char.isalnum() else "_" for char in value).strip("_")
 
 
-def local_log_dir(base_dir: Path, *, step_index: int, step: str, command_index: int) -> Path:
-    return base_dir / f"{step_index:02d}_{safe_name(step)}" / f"{command_index:04d}"
+def local_log_files(
+    base_dir: Path,
+    *,
+    stage: str,
+    step_index: int,
+    step: str,
+    command_index: int,
+) -> LocalLogFiles:
+    step_dir = (
+        base_dir
+        / safe_name(stage)
+        / f"{step_index:02d}_{safe_name(step)}"
+    )
+    stem = f"{command_index:04d}"
+    return LocalLogFiles(
+        step_dir=step_dir,
+        out=step_dir / f"{stem}_run.out",
+        err=step_dir / f"{stem}_run.err",
+        command=step_dir / f"{stem}_command.txt",
+    )
 
 
 def resolve_local_log_base(root: Path, value: Path) -> Path:
@@ -328,22 +393,20 @@ def elapsed_text(seconds: int) -> str:
     return f"{days} days {hours:02d} hr {minutes:02d} min {secs:02d} sec"
 
 
-def run_local(command: list[str], root: Path, log_dir: Path | None = None) -> int:
+def run_local(command: list[str], root: Path, log_files: LocalLogFiles | None = None) -> int:
     command_text = shlex.join(command)
-    if log_dir is None:
+    if log_files is None:
         print(f"+ {command_text}")
         return subprocess.run(command, cwd=root).returncode
 
-    log_dir.mkdir(parents=True, exist_ok=True)
-    out_path = log_dir / "run.out"
-    err_path = log_dir / "run.err"
-    (log_dir / "command.txt").write_text(command_text + "\n")
+    log_files.step_dir.mkdir(parents=True, exist_ok=True)
+    log_files.command.write_text(command_text + "\n")
 
     print(f"+ {command_text}")
-    print(f"  logs: {display_path(out_path, root)}")
+    print(f"  logs: {display_path(log_files.out, root)}")
 
     start = time.time()
-    with out_path.open("w") as stdout, err_path.open("w") as stderr:
+    with log_files.out.open("w") as stdout, log_files.err.open("w") as stderr:
         stdout.write(f"Command: {command_text}\n")
         stdout.write(f"Working directory: {root}\n")
         stdout.write(f"Program starts {time.ctime(start)}\n\n")
@@ -357,11 +420,12 @@ def run_local(command: list[str], root: Path, log_dir: Path | None = None) -> in
         stdout.write(f"Elapsed time: {elapsed_text(int(end - start))}\n")
 
     if result.returncode != 0:
-        print(f"  failed; stderr: {display_path(err_path, root)}")
+        print(f"  failed; stderr: {display_path(log_files.err, root)}")
     return result.returncode
 
 
 def run_local_step(
+    stage: str,
     step: str,
     commands: list[list[str]],
     root: Path,
@@ -374,9 +438,10 @@ def run_local_step(
     failures: list[tuple[str, list[str], int]] = []
     if not can_parallelize or jobs <= 1 or len(commands) <= 1:
         for command_index, command in enumerate(commands, start=1):
-            command_log_dir = (
-                local_log_dir(
+            command_log_files = (
+                local_log_files(
                     log_base_dir,
+                    stage=stage,
                     step_index=step_index,
                     step=step,
                     command_index=command_index,
@@ -384,7 +449,7 @@ def run_local_step(
                 if log_base_dir
                 else None
             )
-            code = run_local(command, root, command_log_dir)
+            code = run_local(command, root, command_log_files)
             if code != 0:
                 failures.append((step, command, code))
                 break
@@ -397,8 +462,9 @@ def run_local_step(
                 run_local,
                 command,
                 root,
-                local_log_dir(
+                local_log_files(
                     log_base_dir,
+                    stage=stage,
                     step_index=step_index,
                     step=step,
                     command_index=command_index,
@@ -416,11 +482,15 @@ def run_local_step(
     return failures
 
 
+def is_r_command(command: list[str]) -> bool:
+    return bool(command) and Path(command[0]).name == "Rscript"
+
+
 def submit_slurm(
     command: list[str],
     root: Path,
     job_name: str,
-    slurm_dir: Path,
+    log_files: LocalLogFiles,
     *,
     depends_on: list[str] | None = None,
     dependency_mode: str = "afterok",
@@ -428,36 +498,48 @@ def submit_slurm(
     if shutil.which("sbatch") is None:
         raise RuntimeError("`sbatch` is not available. Use `--backend local` on non-server machines.")
 
-    slurm_dir.mkdir(parents=True, exist_ok=True)
-    script_path = slurm_dir / f"{job_name}.sh"
+    log_files.step_dir.mkdir(parents=True, exist_ok=True)
+    command_text = shlex.join(command)
+    log_files.command.write_text(command_text + "\n")
+
     modules = os.environ.get("REPLICATION_MODULES", "python/anaconda-2022.05 gurobi/11.0 gcc/12.2.0")
     slurm_time = os.environ.get("REPLICATION_SLURM_TIME", "1-11:00:00")
     slurm_cpus = os.environ.get("REPLICATION_SLURM_CPUS", "8")
     slurm_mem = os.environ.get("REPLICATION_SLURM_MEM", "32G")
     slurm_partition = os.environ.get("REPLICATION_SLURM_PARTITION")
-    script = [
-        "#!/bin/bash",
-        f"#SBATCH --job-name={job_name}",
-        f"#SBATCH --output={slurm_dir / (job_name + '.out')}",
-        f"#SBATCH --error={slurm_dir / (job_name + '.err')}",
-        f"#SBATCH --time={slurm_time}",
-        "#SBATCH --nodes=1",
-        f"#SBATCH --cpus-per-task={slurm_cpus}",
-        f"#SBATCH --mem={slurm_mem}",
-        f"cd {shlex.quote(str(root))}",
-        "command -v module >/dev/null 2>&1 && module load " + modules,
-        "[ -f .venv/bin/activate ] && source .venv/bin/activate",
-        shlex.join(command),
+    inner_command = "; ".join(
+        [
+            "set -euo pipefail",
+            f"cd {shlex.quote(str(root))}",
+            (
+                "if command -v module >/dev/null 2>&1; then "
+                f"module load {modules}; "
+                "fi"
+            ),
+            "if [ -f .venv/bin/activate ]; then source .venv/bin/activate; fi",
+            command_text,
+        ]
+    )
+    wrapped_command = "bash -lc " + shlex.quote(inner_command)
+
+    sbatch_command = [
+        "sbatch",
+        "--parsable",
+        f"--job-name={job_name}",
+        f"--output={log_files.out}",
+        f"--error={log_files.err}",
+        f"--time={slurm_time}",
+        "--nodes=1",
+        f"--cpus-per-task={slurm_cpus}",
+        f"--mem={slurm_mem}",
     ]
     if slurm_partition:
-        script.insert(4, f"#SBATCH --partition={slurm_partition}")
-    script_path.write_text("\n".join(script) + "\n")
-
-    sbatch_command = ["sbatch", "--parsable"]
+        sbatch_command.append(f"--partition={slurm_partition}")
     if depends_on and dependency_mode != "none":
         sbatch_command.append(f"--dependency={dependency_mode}:{':'.join(depends_on)}")
-    sbatch_command.append(str(script_path))
+    sbatch_command.extend(["--wrap", wrapped_command])
     print(f"+ {shlex.join(sbatch_command)}")
+    print(f"  logs: {display_path(log_files.out, root)}")
     result = subprocess.run(sbatch_command, cwd=root, capture_output=True, text=True)
     if result.stdout:
         print(result.stdout.strip())
@@ -470,28 +552,44 @@ def submit_slurm(
 
 
 def submit_slurm_step(
+    stage: str,
     step: str,
     commands: list[list[str]],
     root: Path,
-    slurm_dir: Path,
+    log_base_dir: Path,
     *,
     step_index: int,
     depends_on: list[str],
     dependency_mode: str,
     can_parallelize: bool,
+    run_r_on_slurm: bool,
 ) -> tuple[list[tuple[str, list[str], int]], list[str]]:
     failures: list[tuple[str, list[str], int]] = []
     submitted: list[str] = []
     current_dependency = depends_on
 
     for index, command in enumerate(commands, start=1):
-        job_name = f"{step_index:02d}_{step.replace('-', '_')}_{index}"
+        if is_r_command(command) and not run_r_on_slurm:
+            print(
+                "Skipping R command on Slurm; run this step locally instead: "
+                f"[{stage}/{step}] {shlex.join(command)}"
+            )
+            continue
+
+        log_files = local_log_files(
+            log_base_dir,
+            stage=stage,
+            step_index=step_index,
+            step=step,
+            command_index=index,
+        )
+        job_name = f"{safe_name(stage)}_{step_index:02d}_{safe_name(step)}_{index:04d}"
         try:
             code, job_id = submit_slurm(
                 command,
                 root,
                 job_name,
-                slurm_dir,
+                log_files,
                 depends_on=depends_on if can_parallelize else current_dependency,
                 dependency_mode=dependency_mode,
             )
@@ -510,6 +608,8 @@ def submit_slurm_step(
 
     if not can_parallelize and submitted:
         return failures, [submitted[-1]]
+    if not submitted:
+        return failures, depends_on
     return failures, submitted
 
 
@@ -549,11 +649,20 @@ def main() -> int:
         help="Dependency mode between Slurm steps.",
     )
     parser.add_argument(
+        "--run-r-on-slurm",
+        action="store_true",
+        help=(
+            "Submit Rscript commands to Slurm. By default, the Slurm backend skips "
+            "Rscript commands so R data/plot steps can be run locally."
+        ),
+    )
+    parser.add_argument(
         "--local-log-dir",
         type=Path,
         default=Path("job-outs"),
         help=(
-            "Directory for local backend run.out/run.err logs. Defaults to job-outs. "
+            "Directory for backend numbered *_run.out/*_run.err logs. Defaults to job-outs. "
+            "Logs are grouped by selected stage inside this directory. "
             "Relative paths not starting with job-outs are created under job-outs. "
             "Use --no-local-logs to stream directly to the terminal."
         ),
@@ -561,7 +670,7 @@ def main() -> int:
     parser.add_argument(
         "--no-local-logs",
         action="store_true",
-        help="Disable local run.out/run.err files and stream command output directly.",
+        help="Disable local run logs and stream command output directly.",
     )
     parser.add_argument("--continue-on-error", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
@@ -569,41 +678,50 @@ def main() -> int:
     args = parser.parse_args()
 
     root = args.root.resolve()
-    slurm_dir = root / "job-outs" / "slurm"
-    local_log_base = (
-        None if args.no_local_logs else resolve_local_log_base(root, args.local_log_dir)
-    )
+    log_base = resolve_local_log_base(root, args.local_log_dir)
+    local_log_base = None if args.no_local_logs else log_base
     failures: list[tuple[str, list[str], int]] = []
     selected_parallel_steps = parallel_steps(args.parallel_steps)
     previous_slurm_jobs: list[str] = []
 
-    for step_index, step in enumerate(ordered_steps(args.steps), start=1):
+    for item in execution_plan(args.steps):
+        step = item.step
         commands = commands_for_step(step)
         can_parallelize = step in selected_parallel_steps
         for index, command in enumerate(commands, start=1):
             if args.dry_run:
+                if (
+                    args.backend == "slurm"
+                    and is_r_command(command)
+                    and not args.run_r_on_slurm
+                ):
+                    print(f"[{item.stage}/{step} skipped-r-on-slurm] {shlex.join(command)}")
+                    continue
                 marker = "parallel" if can_parallelize else "serial"
-                print(f"[{step} {marker}] {shlex.join(command)}")
+                print(f"[{item.stage}/{step} {marker}] {shlex.join(command)}")
         if args.dry_run:
             continue
 
         if args.backend == "slurm":
             step_failures, previous_slurm_jobs = submit_slurm_step(
+                item.stage,
                 step,
                 commands,
                 root,
-                slurm_dir,
-                step_index=step_index,
+                log_base,
+                step_index=item.stage_step_index,
                 depends_on=previous_slurm_jobs,
                 dependency_mode=args.slurm_dependency_mode,
                 can_parallelize=can_parallelize,
+                run_r_on_slurm=args.run_r_on_slurm,
             )
         else:
             step_failures = run_local_step(
+                item.stage,
                 step,
                 commands,
                 root,
-                step_index=step_index,
+                step_index=item.stage_step_index,
                 jobs=args.jobs,
                 can_parallelize=can_parallelize,
                 log_base_dir=local_log_base,

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import re
+import shlex
 import sys
 from pathlib import Path
 
@@ -32,6 +33,14 @@ PARAMETERS_RE = re.compile(
     re.S,
 )
 YEAR_DONE_RE = re.compile(r"\byear done:\s*1\b")
+RUN_HEADER_RE = re.compile(
+    r"Running MPC-HMC job:\s+"
+    r"xi=(?P<xi>\S+)\s+"
+    r"pe=(?P<pe>\S+)\s+"
+    r"id=(?P<id>\S+)\s+"
+    r"trig=(?P<trig>\S+)\s+"
+    r"type=(?P<model>\S+)"
+)
 
 
 def _part_value(path: Path, prefix: str) -> str | None:
@@ -39,6 +48,114 @@ def _part_value(path: Path, prefix: str) -> str | None:
         if part.startswith(prefix):
             return part[len(prefix) :]
     return None
+
+
+def _source_file(path: Path, root: Path) -> str:
+    try:
+        return str(path.relative_to(root))
+    except ValueError:
+        return str(path)
+
+
+def _unique_paths(paths: list[Path]) -> list[Path]:
+    seen: set[Path] = set()
+    unique: list[Path] = []
+    for path in sorted(paths):
+        resolved = path.resolve()
+        if resolved in seen:
+            continue
+        seen.add(resolved)
+        unique.append(path)
+    return unique
+
+
+def _command_path_for(log_path: Path) -> Path:
+    if log_path.name.endswith("_run.out"):
+        return log_path.with_name(log_path.name.replace("_run.out", "_command.txt"))
+    return log_path.with_name("command.txt")
+
+
+def _command_from_log(log_path: Path, text: str) -> list[str]:
+    command_path = _command_path_for(log_path)
+    command_text = ""
+    if command_path.exists():
+        command_text = command_path.read_text(errors="ignore").strip()
+    else:
+        for line in text.splitlines()[:5]:
+            if line.startswith("Command:"):
+                command_text = line.split(":", 1)[1].strip()
+                break
+    if not command_text:
+        return []
+    try:
+        return shlex.split(command_text)
+    except ValueError:
+        return []
+
+
+def _option_value(command: list[str], option: str) -> str | None:
+    try:
+        index = command.index(option)
+    except ValueError:
+        return None
+    if index + 1 >= len(command):
+        return None
+    return command[index + 1]
+
+
+def _metadata_from_path(path: Path) -> dict[str, str]:
+    metadata: dict[str, str] = {}
+    for key, prefix in [
+        ("xi", "xi_"),
+        ("pe", "pe_"),
+        ("id", "id_"),
+        ("trig", "trig_"),
+        ("model", "type_"),
+    ]:
+        value = _part_value(path, prefix)
+        if value is not None:
+            metadata[key] = value
+    return metadata
+
+
+def _metadata_from_text(text: str) -> dict[str, str]:
+    match = RUN_HEADER_RE.search(text)
+    if match is None:
+        return {}
+    return {
+        "xi": match.group("xi"),
+        "pe": match.group("pe"),
+        "id": match.group("id"),
+        "trig": match.group("trig"),
+        "model": match.group("model"),
+    }
+
+
+def _metadata_from_command(command: list[str]) -> dict[str, str]:
+    metadata: dict[str, str] = {}
+    for key, option in [
+        ("xi", "--xi"),
+        ("pe", "--pe"),
+        ("id", "--id"),
+        ("trig", "--trig"),
+        ("model", "--type"),
+    ]:
+        value = _option_value(command, option)
+        if value is not None:
+            metadata[key] = value
+    return metadata
+
+
+def _candidate_logs(root: Path) -> list[Path]:
+    paths = list(root.glob("job-outs/mpc/xi_*/pe_*/id_*/trig_*/type_*/run.out"))
+    paths.extend(root.glob("job-outs/mpc/xi_*/pe_*/id_*/trig_*/type_*/*_run.out"))
+    paths.extend(root.glob("job-outs/**/*_mpc_hmc_*/*_run.out"))
+    paths.extend(
+        path
+        for path in root.glob("job-outs/**/*_mpc_hmc_*/run.out")
+        if path.with_name("command.txt").exists()
+    )
+    return _unique_paths(paths)
 
 
 def _infer_b(model: str, xi: str, pe: float, prices: pd.DataFrame) -> float | None:
@@ -91,12 +208,22 @@ def collect_probabilities(
     trig: str = "0",
 ) -> pd.DataFrame:
     rows: list[dict[str, object]] = []
-    pattern = f"job-outs/mpc/xi_*/pe_*/id_{run_id}/trig_{trig}/type_*/run.out"
-    for path in sorted(root.glob(pattern)):
-        xi = normalize_xi(_part_value(path, "xi_"))
-        pe = float(_part_value(path, "pe_") or "nan")
-        mc = _part_value(path, "id_")
-        model = _part_value(path, "type_") or ""
+    for path in _candidate_logs(root):
+        text = path.read_text(errors="ignore")
+        metadata = _metadata_from_path(path)
+        metadata.update({k: v for k, v in _metadata_from_text(text).items() if v})
+        command_metadata = _metadata_from_command(_command_from_log(path, text))
+        metadata.update(
+            {k: v for k, v in command_metadata.items() if v}
+        )
+        if metadata.get("id") != run_id or metadata.get("trig") != trig:
+            continue
+        if not {"xi", "pe", "model"}.issubset(metadata):
+            continue
+        xi = normalize_xi(metadata["xi"])
+        pe = float(metadata["pe"])
+        mc = metadata.get("id")
+        model = metadata["model"]
         probabilities = _year1_probabilities(path)
         if probabilities is None:
             continue
@@ -115,7 +242,7 @@ def collect_probabilities(
                 "mc": mc,
                 "prob_from_low_to_low": prob_from_low_to_low,
                 "prob_from_high_to_high": prob_from_high_to_high,
-                "source_file": str(path.relative_to(root)),
+                "source_file": _source_file(path, root),
             }
         )
     return pd.DataFrame(rows, columns=OUTPUT_COLUMNS)
