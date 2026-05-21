@@ -563,10 +563,10 @@ def value_decom_mpc(pee=5.9, num_sites=78, solver="gurobi", model="unconstrained
     return 
 
 for b in [0,15,10,25]:    
-    value_decom_mpc(pee=6.7,num_sites=78,b=b,xi=10000.0)
-    # value_decom_mpc(pee=6.9,num_sites=78,b=b,xi=10000.0)
-    # value_decom_mpc(pee=6.4,num_sites=78,b=b,xi=1.0)
-    # value_decom_mpc(pee=6.1,num_sites=78,b=b,xi=0.5)
+    # value_decom_mpc(pee=6.7,num_sites=78,b=b,xi=10000.0)
+    value_decom_mpc(pee=6.9,num_sites=78,b=b,xi=10000.0)
+    value_decom_mpc(pee=6.4,num_sites=78,b=b,xi=1.0)
+    value_decom_mpc(pee=6.1,num_sites=78,b=b,xi=0.5)
 
 
 # for b in [0]:
@@ -595,10 +595,10 @@ for b in [0,15,10,25]:
 #     value_decom_mpc(pee=6.2,num_sites=78,b=b,xi=1.0,mode="converge",model="constrained",price_low=32.49,price_high = 42.85)
 #     value_decom_mpc(pee=5.6,num_sites=78,b=b,xi=0.5,mode="converge",model="constrained",price_low=32.49,price_high = 42.85)
     
-# for b in [0,10,15,20,25]:
-#     value_decom_mpc(pee=6.6,num_sites=78,b=b,xi=10000.0,model="constrained",price_low=32.49,price_high = 42.85)
-#     value_decom_mpc(pee=6.2,num_sites=78,b=b,xi=1.0,model="constrained",price_low=32.49,price_high = 42.85)
-#     value_decom_mpc(pee=5.6,num_sites=78,b=b,xi=0.5,model="constrained",price_low=32.49,price_high = 42.85)
+for b in [0,10,15,20,25]:
+    value_decom_mpc(pee=6.6,num_sites=78,b=b,xi=10000.0,model="constrained",price_low=32.49,price_high = 42.85)
+    value_decom_mpc(pee=6.2,num_sites=78,b=b,xi=1.0,model="constrained",price_low=32.49,price_high = 42.85)
+    value_decom_mpc(pee=5.6,num_sites=78,b=b,xi=0.5,model="constrained",price_low=32.49,price_high = 42.85)
     
 
     

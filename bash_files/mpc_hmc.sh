@@ -3,9 +3,9 @@
 # idarray=($(seq 997 998))
 
 #### formal-stage ####
-# trig=2
-idarray=($(seq 1 50))
-# idarray=($(seq 1 1))
+trig=2
+# idarray=($(seq 1 50))
+idarray=($(seq 1 1))
 ### unconstrained ###
 # type="unconstrained"
 # trig=0
@@ -20,20 +20,20 @@ idarray=($(seq 1 50))
 
 ### constrained ###
 type="constrained"
-trig=0
+# trig=0
 # xi=10000
-pee=6.6
+# pee=6.6
 
 # trig=1
-xi=1
+# xi=1
 # pee=6.2
 
-# xi=0.5
-# pee=5.6
+xi=0.5
+pee=5.6
 
-# pearray=($pee $(echo "$pee + 10" | bc) $(echo "$pee + 15" | bc) $(echo "$pee + 20" | bc) $(echo "$pee + 25" | bc))
+pearray=($pee $(echo "$pee + 10" | bc) $(echo "$pee + 15" | bc) $(echo "$pee + 20" | bc) $(echo "$pee + 25" | bc))
 # pearray=($(echo "$pee + 10" | bc) $(echo "$pee + 15" | bc) $(echo "$pee + 20" | bc) $(echo "$pee + 25" | bc))
-pearray=($pee)
+# pearray=($pee)
 
 
 
