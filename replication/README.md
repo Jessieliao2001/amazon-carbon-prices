@@ -14,6 +14,9 @@ The normal replication workflow is self-contained and does not require any manus
 
 For long local runs, use the staged aliases documented in the root `README.md`:
 `stage-data`, `stage-hmm`, `stage-deterministic`, `stage-hmc`, and `stage-mpc`.
+The deterministic stage runs only the `xi=\infty` (`xi=10000`) shadow-price
+searches; the HMC stage runs the finite-`xi` shadow-price searches and refreshes
+the carbon-price file again before HMC outputs are built.
 For example:
 
 ```bash

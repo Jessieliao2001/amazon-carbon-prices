@@ -20,6 +20,8 @@ PY = sys.executable
 DEFAULT_PARALLEL_STEPS = {
     "baseline",
     "shadow-prices",
+    "shadow-prices-det",
+    "shadow-prices-hmc",
     "mpc-prepare",
     "mpc-hmc-pre",
     "mpc-hmc-figure14",
@@ -34,12 +36,12 @@ STAGE_ALIASES = {
     "stage-data": ["data"],
     "stage-hmm": ["price-estimation", "baseline", "bayesian-r2"],
     "stage-deterministic": [
-        "shadow-prices",
+        "shadow-prices-det",
         "derive-prices",
         "deterministic",
         "maps",
     ],
-    "stage-hmc": ["hmc", "hmc-maps"],
+    "stage-hmc": ["shadow-prices-hmc", "derive-prices", "hmc", "hmc-maps"],
     "stage-mpc": [
         "mpc-prepare",
         "mpc-prices",
@@ -126,15 +128,27 @@ def base_steps() -> dict[str, list[list[str]]]:
     }
 
 
-def shadow_price_commands() -> list[list[str]]:
-    commands: list[list[str]] = []
-    specs = [
+SHADOW_PRICE_SPECS = {
+    "hmc": [
         ("0.5", range(20, 40), 1043),
         ("1", range(40, 51), 1043),
         ("2", range(50, 61), 1043),
+    ],
+    "det": [
         ("10000", range(60, 71), 1043),
         ("10000", range(60, 71), 78),
-    ]
+    ],
+}
+
+
+def shadow_price_commands(kind: str = "all") -> list[list[str]]:
+    commands: list[list[str]] = []
+    if kind == "all":
+        specs = SHADOW_PRICE_SPECS["hmc"] + SHADOW_PRICE_SPECS["det"]
+    elif kind in SHADOW_PRICE_SPECS:
+        specs = SHADOW_PRICE_SPECS[kind]
+    else:
+        raise ValueError(f"Unknown shadow-price command kind: {kind}")
     for xi, ids, sites in specs:
         for run_id in ids:
             commands.append(
@@ -328,11 +342,19 @@ def execution_plan(selection: list[str]) -> list[ExecutionItem]:
 def commands_for_step(step: str) -> list[list[str]]:
     if step == "shadow-prices":
         return shadow_price_commands()
+    if step == "shadow-prices-det":
+        return shadow_price_commands("det")
+    if step == "shadow-prices-hmc":
+        return shadow_price_commands("hmc")
     if step == "mpc-day0":
         return mpc_day0_commands()
     steps = base_steps()
     if step not in steps:
-        available = sorted(steps) + ["shadow-prices"] + sorted(STAGE_ALIASES)
+        available = (
+            sorted(steps)
+            + ["shadow-prices", "shadow-prices-det", "shadow-prices-hmc"]
+            + sorted(STAGE_ALIASES)
+        )
         raise KeyError(f"Unknown step `{step}`. Available steps: {available}")
     return steps[step]
 
@@ -506,6 +528,7 @@ def submit_slurm(
     slurm_time = os.environ.get("REPLICATION_SLURM_TIME", "1-11:00:00")
     slurm_cpus = os.environ.get("REPLICATION_SLURM_CPUS", "8")
     slurm_mem = os.environ.get("REPLICATION_SLURM_MEM", "32G")
+    slurm_account = os.environ.get("REPLICATION_SLURM_ACCOUNT")
     slurm_partition = os.environ.get("REPLICATION_SLURM_PARTITION")
     inner_command = "; ".join(
         [
@@ -533,6 +556,8 @@ def submit_slurm(
         f"--cpus-per-task={slurm_cpus}",
         f"--mem={slurm_mem}",
     ]
+    if slurm_account:
+        sbatch_command.append(f"--account={slurm_account}")
     if slurm_partition:
         sbatch_command.append(f"--partition={slurm_partition}")
     if depends_on and dependency_mode != "none":

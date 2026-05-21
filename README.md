@@ -209,10 +209,10 @@ in order:
 # 2. HMM, baseline posterior summaries, and Bayesian R2
 ./run.sh --steps stage-hmm --backend local --jobs 2
 
-# 3. Deterministic model, carbon prices, and non-HMC maps
+# 3. Deterministic shadow prices, deterministic model, and non-HMC maps
 ./run.sh --steps stage-deterministic --backend local --jobs 2
 
-# 4. HMC ambiguity outputs and HMC maps
+# 4. HMC shadow prices, ambiguity outputs, and HMC maps
 ./run.sh --steps stage-hmc --backend local --jobs 2
 
 # 5. MPC outputs and final post-processing audit
@@ -221,9 +221,16 @@ in order:
 
 The same staged commands work on Slurm by replacing `--backend local` with
 `--backend slurm`. Slurm writes driver logs to the same stage folders as local
-runs, for example `job-outs/stage_deterministic/01_shadow_prices/0001_run.out`.
+runs, for example
+`job-outs/stage_deterministic/01_shadow_prices_det/0001_run.out`.
 When submitting stages separately on Slurm, wait for one stage to finish before
 starting the next.
+
+`stage-deterministic` runs only the deterministic parameter-ambiguity shadow
+prices (`xi=\infty`, represented in code as `xi=10000`) before refreshing
+`replication/derived/carbon_prices.csv`. `stage-hmc` then runs the finite-`xi`
+shadow prices (`xi=0.5,1,2`) and refreshes the same carbon-price file before
+constructing HMC tables and figures.
 
 The Slurm backend skips `Rscript` commands by default because the server may not
 have R installed. Run R-based data and plot steps locally, such as
@@ -319,13 +326,18 @@ writing different `01_*` folders into the top level of `job-outs/`:
 ```text
 job-outs/
   stage_deterministic/
-    01_shadow_prices/
+    01_shadow_prices_det/
       0001_run.out
       0001_run.err
       0001_command.txt
       0002_run.out
       0002_run.err
       0002_command.txt
+  stage_hmc/
+    01_shadow_prices_hmc/
+      0001_run.out
+      0001_run.err
+      0001_command.txt
   stage_mpc/
     01_mpc_prepare/
       0001_run.out
@@ -373,6 +385,8 @@ data
 price-estimation
 baseline
 shadow-prices
+shadow-prices-det
+shadow-prices-hmc
 derive-prices
 deterministic
 mpc-prepare
@@ -400,12 +414,18 @@ all
 Server module defaults can be tuned without editing code:
 
 ```bash
+REPLICATION_SLURM_ACCOUNT="pi-lhansen"
 REPLICATION_MODULES="python/anaconda-2022.05 gurobi/11.0 gcc/12.2.0"
 REPLICATION_SLURM_TIME="1-11:00:00"
 REPLICATION_SLURM_CPUS="8"
 REPLICATION_SLURM_MEM="32G"
 REPLICATION_SLURM_PARTITION="<partition-name>"
 ```
+
+The legacy server helper `bash_files/hmc_shadow_price.sh` now delegates to
+`run.sh` so its Slurm logs use the same numbered `job-outs/` format. Use
+`bash_files/hmc_shadow_price.sh det` for only `xi=\infty` shadow prices, or
+`bash_files/hmc_shadow_price.sh hmc` for only finite-`xi` HMC shadow prices.
 
 ### Step 6. Reproducibility Notes
 
