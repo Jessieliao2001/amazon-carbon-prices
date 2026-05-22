@@ -555,46 +555,46 @@ def submit_slurm(
     log_files.step_dir.mkdir(parents=True, exist_ok=True)
     command_text = shlex.join(command)
     log_files.command.write_text(command_text + "\n")
+    script_path = log_files.out.with_suffix(".sh")
 
     modules = os.environ.get("REPLICATION_MODULES", "python/anaconda-2022.05 gurobi/11.0 gcc/12.2.0")
-    slurm_time = os.environ.get("REPLICATION_SLURM_TIME", "1-11:00:00")
-    slurm_cpus = os.environ.get("REPLICATION_SLURM_CPUS", "8")
-    slurm_mem = os.environ.get("REPLICATION_SLURM_MEM", "32G")
-    slurm_account = os.environ.get("REPLICATION_SLURM_ACCOUNT")
-    slurm_partition = os.environ.get("REPLICATION_SLURM_PARTITION")
-    inner_command = "; ".join(
-        [
-            "set -euo pipefail",
-            f"cd {shlex.quote(str(root))}",
-            (
-                "if command -v module >/dev/null 2>&1; then "
-                f"module load {modules}; "
-                "fi"
-            ),
-            "if [ -f .venv/bin/activate ]; then source .venv/bin/activate; fi",
-            command_text,
-        ]
-    )
-    wrapped_command = "bash -lc " + shlex.quote(inner_command)
-
-    sbatch_command = [
-        "sbatch",
-        "--parsable",
-        f"--job-name={job_name}",
-        f"--output={log_files.out}",
-        f"--error={log_files.err}",
-        f"--time={slurm_time}",
-        "--nodes=1",
-        f"--cpus-per-task={slurm_cpus}",
-        f"--mem={slurm_mem}",
+    script_lines = [
+        "#!/usr/bin/env bash",
+        "set -euo pipefail",
+        f"cd {shlex.quote(str(root))}",
+        "if command -v module >/dev/null 2>&1; then "
+        f"module load {modules}; "
+        "fi",
+        "if [ -f .venv/bin/activate ]; then source .venv/bin/activate; fi",
+        "export PYTHONUNBUFFERED=1",
+        "export PYTHONIOENCODING=UTF-8",
+        f"echo {shlex.quote('Command: ' + command_text)}",
+        f"echo {shlex.quote('Working directory: ' + str(root))}",
+        'echo "Program starts $(date)"',
+        "echo",
+        "start=$(date +%s)",
+        "set +e",
+        command_text,
+        "code=$?",
+        "set -e",
+        "end=$(date +%s)",
+        "echo",
+        'echo "Program ends $(date)"',
+        'echo "Exit code: ${code}"',
+        'echo "Elapsed time: $((end - start)) seconds"',
+        'exit "${code}"',
     ]
-    if slurm_account:
-        sbatch_command.append(f"--account={slurm_account}")
-    if slurm_partition:
-        sbatch_command.append(f"--partition={slurm_partition}")
-    if depends_on and dependency_mode != "none":
-        sbatch_command.append(f"--dependency={dependency_mode}:{':'.join(depends_on)}")
-    sbatch_command.extend(["--wrap", wrapped_command])
+    script_path.write_text("\n".join(script_lines) + "\n")
+    script_path.chmod(0o755)
+
+    sbatch_command = slurm_batch_command(
+        job_name=job_name,
+        out=log_files.out,
+        err=log_files.err,
+        depends_on=depends_on,
+        dependency_mode=dependency_mode,
+    )
+    sbatch_command.append(str(script_path))
     print(f"+ {shlex.join(sbatch_command)}")
     print(f"  logs: {display_path(log_files.out, root)}")
     result = subprocess.run(sbatch_command, cwd=root, capture_output=True, text=True)
@@ -710,6 +710,13 @@ def submit_slurm_group(
         f"module load {modules}; "
         "fi",
         "if [ -f .venv/bin/activate ]; then source .venv/bin/activate; fi",
+        "export PYTHONUNBUFFERED=1",
+        "export PYTHONIOENCODING=UTF-8",
+        f"echo {shlex.quote('Grouped Slurm job: ' + job_name)}",
+        f"echo {shlex.quote('Working directory: ' + str(root))}",
+        f"echo {shlex.quote(f'Commands: {first_command_index:04d}-{last_command_index:04d}')}",
+        'echo "Group starts $(date)"',
+        "echo",
         "",
         "run_logged_command() {",
         "  local command_text=\"$1\"",
@@ -726,6 +733,7 @@ def submit_slurm_group(
         "  local start",
         "  local end",
         "  local code",
+        '  echo "[$(date)] starting: ${command_text}"',
         "  start=$(date +%s)",
         "  set +e",
         "  \"$@\" >> \"${stdout_path}\" 2>> \"${stderr_path}\"",
@@ -738,6 +746,7 @@ def submit_slurm_group(
         "    echo \"Exit code: ${code}\"",
         "    echo \"Elapsed time: $((end - start)) seconds\"",
         "  } >> \"${stdout_path}\"",
+        '  echo "[$(date)] finished exit ${code}: ${command_text}"',
         "  if [ \"${code}\" -ne 0 ]; then",
         "    echo \"Command failed with exit code ${code}: ${command_text}\" >&2",
         "    exit \"${code}\"",
@@ -763,6 +772,13 @@ def submit_slurm_group(
             f"{shlex.quote(str(command_log_files.err))} "
             f"{command_text}"
         )
+    script_lines.extend(
+        [
+            "",
+            "echo",
+            'echo "Group ends $(date)"',
+        ]
+    )
     group_script.write_text("\n".join(script_lines) + "\n")
     group_script.chmod(0o755)
 

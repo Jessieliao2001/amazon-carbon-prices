@@ -447,9 +447,15 @@ job-outs/
 
 MPC-HMC jobs also keep their original parseable logs under `job-outs/mpc/...`.
 Slurm driver-level `out`/`err` files use the same stage folders shown above.
+Slurm creates and writes those files only after the scheduled job actually
+starts, so a pending job may have no `Program starts` line yet. New Slurm
+submissions set `PYTHONUNBUFFERED=1`, so Python progress is written to logs
+while the command is running instead of waiting for process exit.
 For grouped Slurm submissions, the group-level files are named like
-`group_0001_0001_0010.out`, while each command inside the group still writes
-the numbered files shown above.
+`group_0001_0001_0010.out` and print the group start/end; each command inside
+the group still writes the numbered files shown above with its own command
+start/end. The group log also prints which numbered command is currently
+running.
 Running an individual named step also uses its canonical stage folder; for
 example, `./run.sh --steps maps --backend local` writes to
 `job-outs/stage_deterministic/04_maps/`.
