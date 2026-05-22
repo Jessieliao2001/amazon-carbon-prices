@@ -250,7 +250,25 @@ tmux attach -t amazon
    that `Rscript` commands are skipped on Slurm unless `--run-r-on-slurm` is
    supplied.
 
-2. If the server does not have R, run the R data step locally first, then sync
+2. On Midway, Slurm may require an account on every `sbatch` submission. Check
+   the account available to your user, then either export it once or pass it to
+   `run.sh`:
+
+```bash
+sacctmgr show assoc user=$USER format=Account,Partition,QOS%30
+export REPLICATION_SLURM_ACCOUNT="pi-lhansen"
+```
+
+   The same setting can be supplied inline:
+
+```bash
+./run.sh --steps stage-hmm --backend slurm --slurm-account pi-lhansen
+```
+
+   If your allocation uses a specific partition, also set
+   `REPLICATION_SLURM_PARTITION` or pass `--slurm-partition`.
+
+3. If the server does not have R, run the R data step locally first, then sync
    `data/processed/`, `data/clean/`, and `data/calibration/` to the server.
    Submit the non-R computation stages on the server with:
 
@@ -262,7 +280,7 @@ This submits all Slurm jobs at once, but step order is preserved through Slurm
 dependencies. Commands inside parallel-safe steps are submitted together; later
 steps wait for upstream jobs to finish successfully.
 
-3. If prepared data already exist on the server but R is not available, this is
+4. If prepared data already exist on the server but R is not available, this is
    also valid. It skips `Rscript` steps and runs the Python/Gurobi/CmdStan
    parts:
 
@@ -270,28 +288,28 @@ steps wait for upstream jobs to finish successfully.
 ./run.sh --steps all --backend slurm
 ```
 
-4. If the server has R and the R environment has been restored there, submit the
+5. If the server has R and the R environment has been restored there, submit the
    complete workflow including R data and plot steps with:
 
 ```bash
 ./run.sh --steps all --backend slurm --run-r-on-slurm
 ```
 
-5. Before submitting a long server run, inspect the exact Slurm plan:
+6. Before submitting a long server run, inspect the exact Slurm plan:
 
 ```bash
 ./run.sh --steps stage-hmm stage-deterministic stage-hmc stage-mpc --backend slurm --dry-run
 ./run.sh --steps all --backend slurm --run-r-on-slurm --dry-run
 ```
 
-6. Monitor submitted jobs with:
+7. Monitor submitted jobs with:
 
 ```bash
 squeue -u $USER
 sacct -u $USER --format=JobID,JobName,State,ExitCode
 ```
 
-7. After Slurm jobs finish, sync `job-outs/`, `output/`, `plots/`, and
+8. After Slurm jobs finish, sync `job-outs/`, `output/`, `plots/`, and
    `replication/derived/` back to the local machine. If R was skipped on the
    server, run the R plot steps and final audit locally:
 
@@ -300,7 +318,7 @@ sacct -u $USER --format=JobID,JobName,State,ExitCode
 ./run.sh --steps postprocess-only --backend local
 ```
 
-8. Slurm writes driver logs to the same stage folders as local runs, for
+9. Slurm writes driver logs to the same stage folders as local runs, for
    example `job-outs/stage_deterministic/01_shadow_prices_det/0001_run.out`.
    When submitting stages separately on Slurm, wait for one stage to finish
    before starting the next, because dependencies are tracked only within one

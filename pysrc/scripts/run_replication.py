@@ -602,6 +602,13 @@ def submit_slurm(
         print(result.stdout.strip())
     if result.stderr:
         print(result.stderr.strip(), file=sys.stderr)
+        if "Account is not specified" in result.stderr and not slurm_account:
+            print(
+                "Slurm rejected the job because no account was provided. "
+                "Rerun with `--slurm-account <account>` or set "
+                "`REPLICATION_SLURM_ACCOUNT=<account>`.",
+                file=sys.stderr,
+            )
     job_id = None
     if result.returncode == 0 and result.stdout.strip():
         job_id = result.stdout.strip().splitlines()[-1].split(";")[0]
@@ -714,6 +721,40 @@ def main() -> int:
         ),
     )
     parser.add_argument(
+        "--slurm-account",
+        help=(
+            "Slurm account to pass to sbatch. Equivalent to setting "
+            "REPLICATION_SLURM_ACCOUNT."
+        ),
+    )
+    parser.add_argument(
+        "--slurm-partition",
+        help=(
+            "Optional Slurm partition to pass to sbatch. Equivalent to setting "
+            "REPLICATION_SLURM_PARTITION."
+        ),
+    )
+    parser.add_argument(
+        "--slurm-time",
+        help=(
+            "Slurm time limit, for example 1-11:00:00. Equivalent to setting "
+            "REPLICATION_SLURM_TIME."
+        ),
+    )
+    parser.add_argument(
+        "--slurm-cpus",
+        help=(
+            "CPUs per Slurm task. Equivalent to setting REPLICATION_SLURM_CPUS."
+        ),
+    )
+    parser.add_argument(
+        "--slurm-mem",
+        help=(
+            "Slurm memory request, for example 32G. Equivalent to setting "
+            "REPLICATION_SLURM_MEM."
+        ),
+    )
+    parser.add_argument(
         "--local-log-dir",
         type=Path,
         default=Path("job-outs"),
@@ -733,6 +774,17 @@ def main() -> int:
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--root", type=Path, default=get_path())
     args = parser.parse_args()
+
+    slurm_env_overrides = {
+        "REPLICATION_SLURM_ACCOUNT": args.slurm_account,
+        "REPLICATION_SLURM_PARTITION": args.slurm_partition,
+        "REPLICATION_SLURM_TIME": args.slurm_time,
+        "REPLICATION_SLURM_CPUS": args.slurm_cpus,
+        "REPLICATION_SLURM_MEM": args.slurm_mem,
+    }
+    for name, value in slurm_env_overrides.items():
+        if value:
+            os.environ[name] = value
 
     root = args.root.resolve()
     log_base = resolve_local_log_base(root, args.local_log_dir)
