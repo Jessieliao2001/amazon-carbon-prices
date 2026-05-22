@@ -7,6 +7,7 @@ import warnings
 import contextlib
 import sys
 import os
+import time
 from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
@@ -29,6 +30,8 @@ def suppress_output():
             sys.stderr = old_stderr
 
 
+def log(message):
+    print(f"[price-estimation] {message}", flush=True)
 
 
 def format_latex_table(result_uncon, result_con):
@@ -128,6 +131,8 @@ def plot_hmm_results(mu,predict, price, var):
     plt.close()
 
 def est(s_low=0.5,s_high=0.5,var='uncon'):
+    step_start = time.time()
+    log(f"start HMM fit block var={var}, startprob=({s_low:.6f}, {s_high:.6f})")
     
     warnings.filterwarnings("ignore", message="KMeans is known to have a memory leak on Windows with MKL, when there are less chunks than available threads. You can avoid it by setting the environment variable OMP_NUM_THREADS=2.")
 
@@ -139,6 +144,7 @@ def est(s_low=0.5,s_high=0.5,var='uncon'):
     df = pd.read_csv(data_folder+"seriesPriceCattle_prepared.csv")
     price = df['price_real_mon_cattle'].values.astype(float) 
     logprice=np.log(price)
+    log(f"loaded {len(logprice)} monthly prices for var={var}")
     
     
     # estimating the model
@@ -166,6 +172,12 @@ def est(s_low=0.5,s_high=0.5,var='uncon'):
         if best_score is None or score > best_score:
             best_model = model
             best_score = score
+        if (idx + 1) % 50 == 0 or idx + 1 == n_fits:
+            elapsed = time.time() - step_start
+            log(
+                f"var={var} completed {idx + 1}/{n_fits} fits; "
+                f"best_score={best_score:.6f}; elapsed={elapsed:.1f}s"
+            )
       
     aic = best_model.aic(Q)
     bic = best_model.bic(Q)
@@ -185,6 +197,7 @@ def est(s_low=0.5,s_high=0.5,var='uncon'):
         
         
     plot_hmm_results(mus,predict, price, var)
+    log(f"finished HMM fit block var={var}; elapsed={time.time() - step_start:.1f}s")
         
     
     return(aic,ll,bic,mus_sorted,sigmas_sorted,P_sorted)
@@ -215,6 +228,7 @@ def iteration_est(initial_prob, num_iterations=5,var='uncon'):
     
     
     for i in range(num_iterations):
+        log(f"start stationary iteration {i + 1}/{num_iterations} for var={var}")
         if i == 0:
             s_low, s_high = initial_prob[0], initial_prob[1]
         else:
@@ -223,6 +237,10 @@ def iteration_est(initial_prob, num_iterations=5,var='uncon'):
         aic, ll, bic, mus, sigmas, P = est(s_low, s_high, var)
         sta_dist, sta_price = stationary(P, mus)
         annual_P=annual_transition(P)
+        log(
+            f"finished stationary iteration {i + 1}/{num_iterations} for var={var}; "
+            f"stationary_price={sta_price:.6f}"
+        )
         
     return aic,ll,bic,mus,sigmas,P,sta_dist,sta_price,annual_P
     
@@ -230,6 +248,7 @@ def iteration_est(initial_prob, num_iterations=5,var='uncon'):
 
 
 
+log("starting HMM price estimation")
 result_uncon = iteration_est([0.5, 0.5], num_iterations=5, var='uncon')
 result_con = iteration_est([0.5, 0.5], num_iterations=5, var='con')
 
@@ -247,3 +266,5 @@ with open("output/tables/hmm_results_table.tex", "w") as f:
 
 with open("output/tables/hmm_information_criteria.tex", "w") as f:
     f.write(information_table)
+
+log("finished HMM price estimation")
