@@ -268,7 +268,24 @@ export REPLICATION_SLURM_ACCOUNT="pi-lhansen"
    If your allocation uses a specific partition, also set
    `REPLICATION_SLURM_PARTITION` or pass `--slurm-partition`.
 
-3. If the server does not have R, run the R data step locally first, then sync
+3. Large parallel steps are grouped on Slurm by default only when a step has at
+   least 100 runnable commands. Each submitted Slurm job then runs 10
+   replication commands sequentially, while each command still gets its own
+   numbered `*_run.out`, `*_run.err`, and `*_command.txt`. This keeps stages
+   such as `mpc-hmc-figure14` below server job-submission limits without
+   changing small steps such as `baseline`, `maps`, or `mpc-tables`. To submit
+   fewer Slurm jobs for a large step, increase the group size:
+
+```bash
+./run.sh --steps stage-mpc --backend slurm --slurm-account pi-lhansen --slurm-commands-per-job 25
+```
+
+   Use a smaller value if grouped jobs are close to the Slurm time limit, or
+   `--slurm-commands-per-job 1` to submit one Slurm job per replication command.
+   To change the threshold for what counts as a large step, use
+   `--slurm-group-min-commands`.
+
+4. If the server does not have R, run the R data step locally first, then sync
    `data/processed/`, `data/clean/`, and `data/calibration/` to the server.
    Submit the non-R computation stages on the server with:
 
@@ -280,7 +297,7 @@ This submits all Slurm jobs at once, but step order is preserved through Slurm
 dependencies. Commands inside parallel-safe steps are submitted together; later
 steps wait for upstream jobs to finish successfully.
 
-4. If prepared data already exist on the server but R is not available, this is
+5. If prepared data already exist on the server but R is not available, this is
    also valid. It skips `Rscript` steps and runs the Python/Gurobi/CmdStan
    parts:
 
@@ -288,28 +305,28 @@ steps wait for upstream jobs to finish successfully.
 ./run.sh --steps all --backend slurm
 ```
 
-5. If the server has R and the R environment has been restored there, submit the
+6. If the server has R and the R environment has been restored there, submit the
    complete workflow including R data and plot steps with:
 
 ```bash
 ./run.sh --steps all --backend slurm --run-r-on-slurm
 ```
 
-6. Before submitting a long server run, inspect the exact Slurm plan:
+7. Before submitting a long server run, inspect the exact Slurm plan:
 
 ```bash
 ./run.sh --steps stage-hmm stage-deterministic stage-hmc stage-mpc --backend slurm --dry-run
 ./run.sh --steps all --backend slurm --run-r-on-slurm --dry-run
 ```
 
-7. Monitor submitted jobs with:
+8. Monitor submitted jobs with:
 
 ```bash
 squeue -u $USER
 sacct -u $USER --format=JobID,JobName,State,ExitCode
 ```
 
-8. After Slurm jobs finish, sync `job-outs/`, `output/`, `plots/`, and
+9. After Slurm jobs finish, sync `job-outs/`, `output/`, `plots/`, and
    `replication/derived/` back to the local machine. If R was skipped on the
    server, run the R plot steps and final audit locally:
 
@@ -318,7 +335,7 @@ sacct -u $USER --format=JobID,JobName,State,ExitCode
 ./run.sh --steps postprocess-only --backend local
 ```
 
-9. Slurm writes driver logs to the same stage folders as local runs, for
+10. Slurm writes driver logs to the same stage folders as local runs, for
    example `job-outs/stage_deterministic/01_shadow_prices_det/0001_run.out`.
    When submitting stages separately on Slurm, wait for one stage to finish
    before starting the next, because dependencies are tracked only within one
@@ -430,6 +447,9 @@ job-outs/
 
 MPC-HMC jobs also keep their original parseable logs under `job-outs/mpc/...`.
 Slurm driver-level `out`/`err` files use the same stage folders shown above.
+For grouped Slurm submissions, the group-level files are named like
+`group_0001_0001_0010.out`, while each command inside the group still writes
+the numbered files shown above.
 Running an individual named step also uses its canonical stage folder; for
 example, `./run.sh --steps maps --backend local` writes to
 `job-outs/stage_deterministic/04_maps/`.
@@ -506,6 +526,8 @@ REPLICATION_SLURM_TIME="1-11:00:00"
 REPLICATION_SLURM_CPUS="8"
 REPLICATION_SLURM_MEM="32G"
 REPLICATION_SLURM_PARTITION="<partition-name>"
+REPLICATION_SLURM_COMMANDS_PER_JOB="10"
+REPLICATION_SLURM_GROUP_MIN_COMMANDS="100"
 ```
 
 The legacy server helper `bash_files/hmc_shadow_price.sh` now delegates to

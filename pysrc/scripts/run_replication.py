@@ -601,14 +601,191 @@ def submit_slurm(
     if result.stdout:
         print(result.stdout.strip())
     if result.stderr:
-        print(result.stderr.strip(), file=sys.stderr)
-        if "Account is not specified" in result.stderr and not slurm_account:
-            print(
-                "Slurm rejected the job because no account was provided. "
-                "Rerun with `--slurm-account <account>` or set "
-                "`REPLICATION_SLURM_ACCOUNT=<account>`.",
-                file=sys.stderr,
-            )
+        print_slurm_stderr_help(result.stderr)
+    job_id = None
+    if result.returncode == 0 and result.stdout.strip():
+        job_id = result.stdout.strip().splitlines()[-1].split(";")[0]
+    return result.returncode, job_id
+
+
+def chunked_commands(
+    commands: list[list[str]],
+    *,
+    size: int,
+) -> list[list[tuple[int, list[str]]]]:
+    return [
+        list(enumerate(commands[start : start + size], start=start + 1))
+        for start in range(0, len(commands), size)
+    ]
+
+
+def slurm_batch_command(
+    *,
+    job_name: str,
+    out: Path,
+    err: Path,
+    depends_on: list[str] | None,
+    dependency_mode: str,
+) -> list[str]:
+    slurm_time = os.environ.get("REPLICATION_SLURM_TIME", "1-11:00:00")
+    slurm_cpus = os.environ.get("REPLICATION_SLURM_CPUS", "8")
+    slurm_mem = os.environ.get("REPLICATION_SLURM_MEM", "32G")
+    slurm_account = os.environ.get("REPLICATION_SLURM_ACCOUNT")
+    slurm_partition = os.environ.get("REPLICATION_SLURM_PARTITION")
+
+    command = [
+        "sbatch",
+        "--parsable",
+        f"--job-name={job_name}",
+        f"--output={out}",
+        f"--error={err}",
+        f"--time={slurm_time}",
+        "--nodes=1",
+        f"--cpus-per-task={slurm_cpus}",
+        f"--mem={slurm_mem}",
+    ]
+    if slurm_account:
+        command.append(f"--account={slurm_account}")
+    if slurm_partition:
+        command.append(f"--partition={slurm_partition}")
+    if depends_on and dependency_mode != "none":
+        command.append(f"--dependency={dependency_mode}:{':'.join(depends_on)}")
+    return command
+
+
+def print_slurm_stderr_help(stderr: str) -> None:
+    if not stderr:
+        return
+    print(stderr.strip(), file=sys.stderr)
+    if "Account is not specified" in stderr and not os.environ.get("REPLICATION_SLURM_ACCOUNT"):
+        print(
+            "Slurm rejected the job because no account was provided. "
+            "Rerun with `--slurm-account <account>` or set "
+            "`REPLICATION_SLURM_ACCOUNT=<account>`.",
+            file=sys.stderr,
+        )
+    if "QOSMaxSubmitJobPerUserLimit" in stderr:
+        print(
+            "Slurm rejected the job because the submitted-job limit was reached. "
+            "Increase `--slurm-commands-per-job` so fewer sbatch jobs are submitted.",
+            file=sys.stderr,
+        )
+
+
+def submit_slurm_group(
+    commands: list[tuple[int, list[str]]],
+    root: Path,
+    job_name: str,
+    log_base_dir: Path,
+    *,
+    stage: str,
+    step: str,
+    step_index: int,
+    group_index: int,
+    depends_on: list[str] | None = None,
+    dependency_mode: str = "afterok",
+) -> tuple[int, str | None]:
+    if shutil.which("sbatch") is None:
+        raise RuntimeError("`sbatch` is not available. Use `--backend local` on non-server machines.")
+
+    first_command_index = commands[0][0]
+    last_command_index = commands[-1][0]
+    step_dir = (
+        log_base_dir
+        / safe_name(stage)
+        / f"{step_index:02d}_{safe_name(step)}"
+    )
+    step_dir.mkdir(parents=True, exist_ok=True)
+    group_stem = f"group_{group_index:04d}_{first_command_index:04d}_{last_command_index:04d}"
+    group_script = step_dir / f"{group_stem}.sh"
+    group_out = step_dir / f"{group_stem}.out"
+    group_err = step_dir / f"{group_stem}.err"
+
+    modules = os.environ.get("REPLICATION_MODULES", "python/anaconda-2022.05 gurobi/11.0 gcc/12.2.0")
+    script_lines = [
+        "#!/usr/bin/env bash",
+        "set -euo pipefail",
+        f"cd {shlex.quote(str(root))}",
+        "if command -v module >/dev/null 2>&1; then "
+        f"module load {modules}; "
+        "fi",
+        "if [ -f .venv/bin/activate ]; then source .venv/bin/activate; fi",
+        "",
+        "run_logged_command() {",
+        "  local command_text=\"$1\"",
+        "  local stdout_path=\"$2\"",
+        "  local stderr_path=\"$3\"",
+        "  shift 3",
+        "  {",
+        "    echo \"Command: ${command_text}\"",
+        f"    echo \"Working directory: {root}\"",
+        "    echo \"Program starts $(date)\"",
+        "    echo",
+        "  } > \"${stdout_path}\"",
+        "  : > \"${stderr_path}\"",
+        "  local start",
+        "  local end",
+        "  local code",
+        "  start=$(date +%s)",
+        "  set +e",
+        "  \"$@\" >> \"${stdout_path}\" 2>> \"${stderr_path}\"",
+        "  code=$?",
+        "  set -e",
+        "  end=$(date +%s)",
+        "  {",
+        "    echo",
+        "    echo \"Program ends $(date)\"",
+        "    echo \"Exit code: ${code}\"",
+        "    echo \"Elapsed time: $((end - start)) seconds\"",
+        "  } >> \"${stdout_path}\"",
+        "  if [ \"${code}\" -ne 0 ]; then",
+        "    echo \"Command failed with exit code ${code}: ${command_text}\" >&2",
+        "    exit \"${code}\"",
+        "  fi",
+        "}",
+        "",
+    ]
+
+    for command_index, command in commands:
+        command_log_files = local_log_files(
+            log_base_dir,
+            stage=stage,
+            step_index=step_index,
+            step=step,
+            command_index=command_index,
+        )
+        command_text = shlex.join(command)
+        command_log_files.command.write_text(command_text + "\n")
+        script_lines.append(
+            "run_logged_command "
+            f"{shlex.quote(command_text)} "
+            f"{shlex.quote(str(command_log_files.out))} "
+            f"{shlex.quote(str(command_log_files.err))} "
+            f"{command_text}"
+        )
+    group_script.write_text("\n".join(script_lines) + "\n")
+    group_script.chmod(0o755)
+
+    sbatch_command = slurm_batch_command(
+        job_name=job_name,
+        out=group_out,
+        err=group_err,
+        depends_on=depends_on,
+        dependency_mode=dependency_mode,
+    )
+    sbatch_command.append(str(group_script))
+
+    print(f"+ {shlex.join(sbatch_command)}")
+    print(
+        "  logs: "
+        f"{display_path(group_out, root)} "
+        f"(commands {first_command_index:04d}-{last_command_index:04d})"
+    )
+    result = subprocess.run(sbatch_command, cwd=root, capture_output=True, text=True)
+    if result.stdout:
+        print(result.stdout.strip())
+    if result.stderr:
+        print_slurm_stderr_help(result.stderr)
     job_id = None
     if result.returncode == 0 and result.stdout.strip():
         job_id = result.stdout.strip().splitlines()[-1].split(";")[0]
@@ -627,19 +804,65 @@ def submit_slurm_step(
     dependency_mode: str,
     can_parallelize: bool,
     run_r_on_slurm: bool,
+    commands_per_job: int,
+    group_min_commands: int,
 ) -> tuple[list[tuple[str, list[str], int]], list[str]]:
     failures: list[tuple[str, list[str], int]] = []
     submitted: list[str] = []
     current_dependency = depends_on
 
-    for index, command in enumerate(commands, start=1):
-        if is_r_command(command) and not run_r_on_slurm:
-            print(
-                "Skipping R command on Slurm; run this step locally instead: "
-                f"[{stage}/{step}] {shlex.join(command)}"
-            )
-            continue
+    runnable_commands = [
+        command
+        for command in commands
+        if not (is_r_command(command) and not run_r_on_slurm)
+    ]
+    if len(runnable_commands) != len(commands):
+        for command in commands:
+            if is_r_command(command) and not run_r_on_slurm:
+                print(
+                    "Skipping R command on Slurm; run this step locally instead: "
+                    f"[{stage}/{step}] {shlex.join(command)}"
+                )
 
+    if (
+        can_parallelize
+        and commands_per_job > 1
+        and len(runnable_commands) >= group_min_commands
+    ):
+        for group_index, command_group in enumerate(
+            chunked_commands(runnable_commands, size=commands_per_job),
+            start=1,
+        ):
+            job_name = (
+                f"{safe_name(stage)}_{step_index:02d}_{safe_name(step)}_"
+                f"group_{group_index:04d}"
+            )
+            try:
+                code, job_id = submit_slurm_group(
+                    command_group,
+                    root,
+                    job_name,
+                    log_base_dir,
+                    stage=stage,
+                    step=step,
+                    step_index=step_index,
+                    group_index=group_index,
+                    depends_on=depends_on,
+                    dependency_mode=dependency_mode,
+                )
+            except Exception as exc:
+                print(f"Step {step} failed before grouped submission: {exc}")
+                code = 1
+                job_id = None
+            if code != 0:
+                failures.append((step, command_group[0][1], code))
+            if job_id:
+                submitted.append(job_id)
+        if not submitted:
+            return failures, depends_on
+        return failures, submitted
+
+    for index, command in enumerate(runnable_commands, start=1):
         log_files = local_log_files(
             log_base_dir,
             stage=stage,
@@ -755,6 +978,29 @@ def main() -> int:
         ),
     )
     parser.add_argument(
+        "--slurm-commands-per-job",
+        type=int,
+        default=int(os.environ.get("REPLICATION_SLURM_COMMANDS_PER_JOB", "10")),
+        help=(
+            "For parallel-safe Slurm steps, group this many replication commands "
+            "inside one sbatch job when the step has at least "
+            "--slurm-group-min-commands commands. This keeps large MPC stages "
+            "under server job submission limits while leaving small steps unchanged. "
+            "Set to 1 to submit one sbatch job per command. "
+            "Default: REPLICATION_SLURM_COMMANDS_PER_JOB or 10."
+        ),
+    )
+    parser.add_argument(
+        "--slurm-group-min-commands",
+        type=int,
+        default=int(os.environ.get("REPLICATION_SLURM_GROUP_MIN_COMMANDS", "100")),
+        help=(
+            "Only group parallel-safe Slurm steps when the step has at least this "
+            "many runnable commands. Default: REPLICATION_SLURM_GROUP_MIN_COMMANDS "
+            "or 100."
+        ),
+    )
+    parser.add_argument(
         "--local-log-dir",
         type=Path,
         default=Path("job-outs"),
@@ -774,6 +1020,10 @@ def main() -> int:
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--root", type=Path, default=get_path())
     args = parser.parse_args()
+    if args.slurm_commands_per_job < 1:
+        parser.error("--slurm-commands-per-job must be at least 1")
+    if args.slurm_group_min_commands < 2:
+        parser.error("--slurm-group-min-commands must be at least 2")
 
     slurm_env_overrides = {
         "REPLICATION_SLURM_ACCOUNT": args.slurm_account,
@@ -797,8 +1047,9 @@ def main() -> int:
         step = item.step
         commands = commands_for_step(step)
         can_parallelize = step in selected_parallel_steps
-        for index, command in enumerate(commands, start=1):
-            if args.dry_run:
+        if args.dry_run:
+            runnable_commands: list[list[str]] = []
+            for command in commands:
                 if (
                     args.backend == "slurm"
                     and is_r_command(command)
@@ -806,9 +1057,31 @@ def main() -> int:
                 ):
                     print(f"[{item.stage}/{step} skipped-r-on-slurm] {shlex.join(command)}")
                     continue
-                marker = "parallel" if can_parallelize else "serial"
-                print(f"[{item.stage}/{step} {marker}] {shlex.join(command)}")
-        if args.dry_run:
+                runnable_commands.append(command)
+            if (
+                args.backend == "slurm"
+                and can_parallelize
+                and args.slurm_commands_per_job > 1
+                and len(runnable_commands) >= args.slurm_group_min_commands
+            ):
+                for group_index, group in enumerate(
+                    chunked_commands(
+                        runnable_commands,
+                        size=args.slurm_commands_per_job,
+                    ),
+                    start=1,
+                ):
+                    first_index = group[0][0]
+                    last_index = group[-1][0]
+                    print(
+                        f"[{item.stage}/{step} parallel grouped "
+                        f"group={group_index:04d} commands={first_index:04d}-{last_index:04d}] "
+                        f"first: {shlex.join(group[0][1])}"
+                    )
+            else:
+                for command in runnable_commands:
+                    marker = "parallel" if can_parallelize else "serial"
+                    print(f"[{item.stage}/{step} {marker}] {shlex.join(command)}")
             continue
 
         if args.backend == "slurm":
@@ -823,6 +1096,8 @@ def main() -> int:
                 dependency_mode=args.slurm_dependency_mode,
                 can_parallelize=can_parallelize,
                 run_r_on_slurm=args.run_r_on_slurm,
+                commands_per_job=args.slurm_commands_per_job,
+                group_min_commands=args.slurm_group_min_commands,
             )
         else:
             step_failures = run_local_step(
