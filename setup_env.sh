@@ -32,6 +32,8 @@ Options:
   --overwrite-cmdstan
                    Reinstall CmdStan even if an existing install is found.
   --skip-renv      Do not run renv restore.
+  --with-renv      Restore the R environment in server mode. Local mode does
+                   this by default.
   --skip-gurobipy  Do not install the gurobipy Python package.
   -h, --help       Show this help message.
 
@@ -180,6 +182,7 @@ setup_env_main() {
     MODE=""
     SKIP_CMDSTAN=0
     SKIP_RENV=0
+    WITH_RENV=0
     SKIP_GUROBIPY=0
     OVERWRITE_CMDSTAN=0
 
@@ -202,6 +205,9 @@ setup_env_main() {
             --skip-renv)
                 SKIP_RENV=1
                 ;;
+            --with-renv)
+                WITH_RENV=1
+                ;;
             --skip-gurobipy)
                 SKIP_GUROBIPY=1
                 ;;
@@ -220,6 +226,9 @@ setup_env_main() {
 
     if [ -z "$MODE" ]; then
         MODE="local"
+    fi
+    if [ "$MODE" = "server" ] && [ "$WITH_RENV" = "0" ]; then
+        SKIP_RENV=1
     fi
 
     REPO_ROOT=$(find_repo_root) || {
@@ -263,6 +272,8 @@ setup_env_main() {
 
     if [ "$SKIP_RENV" = "0" ]; then
         install_r_environment || return 1
+    elif [ "$MODE" = "server" ] && [ "$WITH_RENV" = "0" ]; then
+        say "Skipping R renv restore in server mode. Use --with-renv only on servers with a working R installation."
     fi
 
     check_environment "$VENV_PY" || return 1

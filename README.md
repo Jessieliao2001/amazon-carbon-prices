@@ -34,7 +34,8 @@ same steps through Slurm.
 ## Requirements
 
 - Python >= 3.9 and < 3.12.
-- R with `renv`.
+- R with `renv` for local data processing and plot steps. Slurm server runs can
+  skip R.
 - Gurobi >= 10.0.3 for the optimization steps.
 - CmdStan through `cmdstanpy` for the Stan sampling steps.
 - Slurm is optional and only needed for `--backend slurm`.
@@ -111,8 +112,17 @@ source ./setup_env.sh server
 ```
 
 This loads the server modules, creates `.venv`, installs the Python package and
-R environment, installs CmdStan, and leaves the environment active in the
-current shell. Internally it uses the same server setup as:
+Gurobi Python package, installs CmdStan, and leaves the environment active in
+the current shell. Server setup skips `renv::restore()` by default because the
+server workflow is designed to skip `Rscript` steps unless R is explicitly
+available. If the server has a working R installation and you want to run R
+steps there, use:
+
+```bash
+source ./setup_env.sh server --with-renv
+```
+
+Internally the default server setup uses the same module setup as:
 
 ```bash
 module avail python gurobi gcc
@@ -127,6 +137,10 @@ cd amazon-carbon-prices
 module load python/anaconda-2022.05 gurobi/11.0 gcc/12.2.0
 source .venv/bin/activate
 ```
+
+Keep environment setup separate from the replication run. Slurm jobs source the
+existing `.venv`; they should not reinstall Python packages, CmdStan, or R
+packages inside every submitted job.
 
 ### Step 2. Prepare The Data Inputs
 
