@@ -73,7 +73,15 @@ def get_optimization(
         pe_values = [pee + bi for bi in b]
         for pe in pe_values:
             # Load ambiguity-adjusted params
-            with open(results_dir + f"/pe_{pe}/results.pcl", "rb") as f:
+            sample_file = Path(results_dir) / f"pe_{pe}" / "results.pcl"
+            if not sample_file.exists():
+                raise FileNotFoundError(
+                    f"Missing HMC sampling output: {sample_file}. "
+                    "Run `./run.sh --steps hmc-sampling --backend local` locally, "
+                    "or `./run.sh --steps hmc-sampling --backend slurm --slurm-account <account>` "
+                    "on the server, after `derive-prices` has refreshed carbon_prices.csv."
+                )
+            with sample_file.open("rb") as f:
                 b = pickle.load(f)
 
             # Take sample

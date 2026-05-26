@@ -347,8 +347,10 @@ sacct -u $USER --format=JobID,JobName,State,ExitCode
    prices (`xi=\infty`, represented in code as `xi=10000`) before refreshing
    `replication/derived/carbon_prices.csv`.
 
-2. `stage-hmc` runs the finite-`xi` shadow prices (`xi=0.5,1,2`) and refreshes
-   the same carbon-price file before constructing HMC tables and figures.
+2. `stage-hmc` runs the finite-`xi` shadow prices (`xi=0.5,1,2`), refreshes
+   the same carbon-price file, generates the HMC sampling outputs for the
+   selected `P^{ee}` plus transfer levels, and then constructs HMC tables and
+   figures.
 
 3. The Slurm backend skips `Rscript` commands by default because the server may
    not have R installed. Add `--run-r-on-slurm` only when R is available and the
@@ -511,6 +513,9 @@ shadow-prices-det
 shadow-prices-hmc
 derive-prices
 deterministic
+hmc-sampling
+hmc
+hmc-maps
 mpc-prepare
 mpc-prices
 mpc-hmc-pre
@@ -521,8 +526,6 @@ mpc-hmc-figure14
 mpc-figures
 bayesian-r2
 maps
-hmc
-hmc-maps
 postprocess
 postprocess-only
 stage-data

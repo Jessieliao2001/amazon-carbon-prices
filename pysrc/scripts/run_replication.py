@@ -22,6 +22,7 @@ DEFAULT_PARALLEL_STEPS = {
     "shadow-prices",
     "shadow-prices-det",
     "shadow-prices-hmc",
+    "hmc-sampling",
     "mpc-prepare",
     "mpc-hmc-pre",
     "mpc-hmc-figure14",
@@ -41,7 +42,13 @@ STAGE_ALIASES = {
         "deterministic",
         "maps",
     ],
-    "stage-hmc": ["shadow-prices-hmc", "derive-prices", "hmc", "hmc-maps"],
+    "stage-hmc": [
+        "shadow-prices-hmc",
+        "derive-prices",
+        "hmc-sampling",
+        "hmc",
+        "hmc-maps",
+    ],
     "stage-mpc": [
         "mpc-prepare",
         "mpc-prices",
@@ -90,6 +97,7 @@ def base_steps() -> dict[str, list[list[str]]]:
         ],
         "derive-prices": [[PY, "pysrc/replication/derive_carbon_prices.py"]],
         "deterministic": [[PY, "pysrc/scripts/conduction_det.py"]],
+        "hmc-sampling": hmc_sampling_commands(),
         "hmc": hmc_commands(),
         "mpc-prepare": [
             [PY, "pysrc/mpc/mpc_simulating.py", "--type", "baseline"],
@@ -201,6 +209,14 @@ def hmc_commands() -> list[list[str]]:
             "--figures",
             "density",
         ],
+    ]
+
+
+def hmc_sampling_commands() -> list[list[str]]:
+    return [
+        [PY, "pysrc/scripts/hmc_sampling.py", "--xi", "1"],
+        [PY, "pysrc/scripts/hmc_sampling.py", "--xi", "2"],
+        [PY, "pysrc/scripts/hmc_sampling.py", "--xi", "0.5"],
     ]
 
 
