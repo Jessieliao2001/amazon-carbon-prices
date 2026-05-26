@@ -34,7 +34,7 @@ DEFAULT_PARALLEL_STEPS = {
     "hmc-maps",
 }
 STAGE_ALIASES = {
-    "stage-data": ["data"],
+    "stage-data": ["data", "figure1"],
     "stage-hmm": ["price-estimation", "baseline", "bayesian-r2"],
     "stage-deterministic": [
         "shadow-prices-det",
@@ -91,6 +91,7 @@ class LocalLogFiles:
 def base_steps() -> dict[str, list[list[str]]]:
     return {
         "data": [["Rscript", "-e", 'source("rsrc/_masterfile_all.R")']],
+        "figure1": [[PY, "pysrc/scripts/figure1.py"]],
         "baseline": [
             [PY, "pysrc/sampling/baseline.py", "--sites", "1043"],
             [PY, "pysrc/sampling/baseline.py", "--sites", "78"],

@@ -29,6 +29,7 @@ For example:
 - `pysrc/replication/derive_carbon_prices.py` builds `derived/carbon_prices.csv` from generated shadow-price outputs and logs, including original `run.out` files and local numbered `0001_run.out` files. Downstream tables read `P^{ee}` from this file.
 - `pysrc/replication/derive_mpc_transition_probabilities.py` builds `derived/mpc_transition_probabilities.csv` from MPC logs, including original `run.out` files and compatible local numbered `*_run.out` files. For each log it finds the first `year done: 1`, reads the immediately preceding `Parameters from current iteration` vector, uses the second-to-last value as "Prob from low to low", and uses `1 - last value` as "Prob from high to high".
 - `replication/paper_figure_inputs.csv` is the repo-internal source of truth for figures used in the paper. `pysrc/replication/paper_assets.py` reads this file during normal replication and can optionally refresh it from a TeX source for maintenance.
+- `replication/figure1/` stores the repo-internal World Bank inputs for Figure 1. `pysrc/scripts/figure1.py` turns those inputs into `output/figures/scatter_emission_gdp_log.png` and `replication/derived/figure1_source_data.csv`.
 - `pysrc/replication/build_paper_numbers.py` writes `exhibit_manifest.csv`, `paper_numbers.csv`, and `paper_numbers_missing_summary.csv`.
 - `pysrc/replication/build_aux_input_tables.py` writes `aux_input_table_manifest.csv`, `aux_input_figure_manifest.csv`, and refreshes `aux_input/` so it contains only generated `Table<number>_*.tex` and `Figure<number>_*` files.
 - `replication/aux_input_table_templates/` stores stable table-format references so rerunning after `aux_input/` cleanup does not depend on removed unprefixed table files.
@@ -36,6 +37,7 @@ For example:
 ## Files
 
 - `paper_figure_inputs.csv`: required repo-internal list of paper figure inputs used for replication tracking.
+- `figure1/`: World Bank inputs, metadata, and reference standalone scripts for Figure 1.
 - `exhibit_manifest.csv`: tables plus the repo-internal figure list used for replication tracking.
 - `paper_numbers.csv`: output-derived table cells, carbon prices, and MPC transition probabilities.
 - `paper_numbers_missing_summary.csv`: generated-output coverage by table/figure.

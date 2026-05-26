@@ -25,9 +25,9 @@ EXHIBITS = [
         "exhibit": "Figure 1",
         "kind": "figure",
         "description": "Country emissions relative to GDP, with Brazilian Amazon highlighted",
-        "output_pattern": "plots/emission_kuznets/*.png",
-        "program": "not currently scripted in this repository",
-        "status_note": "missing analysis script; data cleaning exists in rsrc/cleaning/clean_emission_kuznets.R",
+        "output_pattern": "output/figures/scatter_emission_gdp_log.png",
+        "program": "python pysrc/scripts/figure1.py",
+        "status_note": "",
     },
     {
         "exhibit": "Figure 2",

@@ -23,6 +23,8 @@ same steps through Slurm.
   assets.
   The previous top-level `scripts` layout has been folded into `pysrc/` so
   Python code lives under one importable package tree.
+- `replication/figure1/`: repo-internal World Bank inputs and documentation for
+  reproducing Figure 1 through `pysrc/scripts/figure1.py`.
 - `bash_files/`: legacy cluster helper scripts.
 - `job-outs/`: selected original run logs used to derive reported carbon prices.
   Only the `run.out` files needed for the replication audit are intended to be
@@ -175,7 +177,8 @@ If the download also includes prepared `processed`, `clean`, or `calibration`
 folders, place them under `data/` with the same folder names.
 
 4. Generate processed, cleaned, and calibration data when starting from raw
-   inputs:
+   inputs. This stage also builds the Python-only Figure 1 output from the
+   repo-internal World Bank inputs in `replication/figure1/`:
 
 ```bash
 ./run.sh --steps stage-data --backend local
@@ -188,9 +191,10 @@ with:
 ./run.sh --steps stage-data --backend slurm --run-r-on-slurm
 ```
 
-If the server does not have R, run `stage-data` locally and sync the generated
-`data/processed/`, `data/clean/`, and `data/calibration/` folders to the server
-before starting non-R Slurm stages.
+If the server does not have R, run the R data-processing part locally and sync
+the generated `data/processed/`, `data/clean/`, and `data/calibration/` folders
+to the server before starting non-R Slurm stages. The `figure1` step itself can
+run locally or on Slurm because it uses Python only.
 
 The full workflow assumes these data outputs exist before estimation,
 optimization, and post-processing steps are run.
@@ -343,20 +347,24 @@ sacct -u $USER --format=JobID,JobName,State,ExitCode
 
 #### 3.3 Stage Notes
 
-1. `stage-deterministic` runs only the deterministic parameter-ambiguity shadow
+1. `stage-data` runs the R data-processing driver and the Python-only Figure 1
+   reproduction. On Slurm without R, the R command is skipped unless
+   `--run-r-on-slurm` is supplied, but `figure1` can still run.
+
+2. `stage-deterministic` runs only the deterministic parameter-ambiguity shadow
    prices (`xi=\infty`, represented in code as `xi=10000`) before refreshing
    `replication/derived/carbon_prices.csv`.
 
-2. `stage-hmc` runs the finite-`xi` shadow prices (`xi=0.5,1,2`), refreshes
+3. `stage-hmc` runs the finite-`xi` shadow prices (`xi=0.5,1,2`), refreshes
    the same carbon-price file, generates the HMC sampling outputs for the
    selected `P^{ee}` plus transfer levels, and then constructs HMC tables and
    figures.
 
-3. The Slurm backend skips `Rscript` commands by default because the server may
+4. The Slurm backend skips `Rscript` commands by default because the server may
    not have R installed. Add `--run-r-on-slurm` only when R is available and the
    R environment has been restored on the server.
 
-4. The first HMC/shadow-price job on a machine may compile
+5. The first HMC/shadow-price job on a machine may compile
    `stan_model/adjusted` from `stan_model/adjusted.stan`. Parallel server jobs
    use a compile lock so only one job compiles at a time; other jobs wait and
    then reuse the executable. If a previous failed run left partial compilation
@@ -506,6 +514,7 @@ Available step names:
 
 ```text
 data
+figure1
 price-estimation
 baseline
 shadow-prices

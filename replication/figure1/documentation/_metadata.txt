@@ -1,0 +1,33 @@
+# C02 EMISSIONS PER CAPITA
+# files: "API_EN.ATM.CO2E.PC_DS2_en_csv_v2_3731558.csv"
+# content: CO2 emissions (metric tons per capita); Global (extent); 1990-2019 (year/period of reference); annual (frequency)
+# source: World Bank (distributor) Climate Watch (producer)
+# available at: https://data.worldbank.org/indicator/EN.ATM.CO2E.PC?end=2018&start=2018
+# raw data downloaded on: MAR/21/2022
+# web archive link: url from Web Archive Save a Page feature (https://web.archive.org/save/)
+# raw data archived on: MON/DD/YYYY
+# CRS (only for spatial data): x (coordinate system); x; x (EPSG: x)
+#
+# citation: **x**. YYYY. "dataset name: detail 1, detail 2". source. url (accessed via Archive.org Month DD, YYYY).
+#
+# additional information about the download: 
+# 1) Used "https://data.worldbank.org/indicator/EN.ATM.CO2E.PC?end=2018&start=2018" link
+# 2) Clicked on "CSV" on "Download" box on the rigth panel
+# 3) Manually unziped, moved "Metadata_..." files to documentation folder and kept only "API_EN.ATM.CO2E.PC_DS2_en_csv_v2_3731558.csv" on input folder
+
+# GDP PER CAPITA, PPP (CURRENT INTERNATIONAL $)
+# files: "API_NY.GDP.PCAP.CD_DS2_en_csv_v2_3731360.csv"
+# content: GDP per capita PPP (current international $); Global (extent); 1960-2020 (year/period of reference); annual (frequency)
+# source: World Bank 
+# available at: https://data.worldbank.org/indicator/NY.GDP.PCAP.PP.CD
+# raw data downloaded on: MAR/24/2022
+# web archive link: url from Web Archive Save a Page feature (https://web.archive.org/save/)
+# raw data archived on: MON/DD/YYYY
+# CRS (only for spatial data): x (coordinate system); x; x (EPSG: x)
+#
+# citation: **x**. YYYY. "dataset name: detail 1, detail 2". source. url (accessed via Archive.org Month DD, YYYY).
+#
+# additional information about the download: 
+# 1) Used "https://data.worldbank.org/indicator/NY.GDP.PCAP.PP.CD" link
+# 2) Clicked on "CSV" on "Download" box on the rigth panel
+# 3) Manually unziped, moved "Metadata_..." files to documentation folder and kept only "API_NY.GDP.PCAP.CD_DS2_en_csv_v2_3731360.csv" on input folder
