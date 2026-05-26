@@ -30,6 +30,7 @@ gams_file/mpc/simulation
 # Stan executables
 adjusted
 baseline
+stan_model/compiled_model.pkl
 *.hpp
 *.o
 

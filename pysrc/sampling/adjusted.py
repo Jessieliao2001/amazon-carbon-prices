@@ -14,8 +14,28 @@ from ..services.data_service import (
     load_theta_calib,
 )
 from ..services.file_service import get_path
-import pickle
-import os
+
+
+def _adjusted_sampler():
+    stan_file = get_path("stan_model") / "adjusted.stan"
+    cpp_options = {"STAN_THREADS": "true"}
+    sampler = CmdStanModel(stan_file=stan_file, cpp_options=cpp_options)
+
+    if not sampler.exe_info():
+        print(
+            "Existing adjusted Stan executable is missing or not runnable; "
+            "recompiling for this machine.",
+            flush=True,
+        )
+        sampler = CmdStanModel(
+            stan_file=stan_file,
+            cpp_options=cpp_options,
+            force_compile=True,
+        )
+
+    print(f"Using Stan model executable: {sampler.exe_file}", flush=True)
+    return sampler
+
 
 def sample(
     xi,
@@ -63,23 +83,7 @@ def sample(
     stan_kwargs['inits']=inits
     
 
-    pickle_file = 'stan_model/compiled_model.pkl'
-
-    if os.path.exists(pickle_file):
-        # Load the model from the pickle file
-        sampler = pickle.load(open(pickle_file, 'rb'))
-        print("Loaded model from pickle.")
-    else:
-        # Compile the Stan model and save it to the pickle file
-        sampler = CmdStanModel(
-            stan_file=get_path("stan_model") / "adjusted.stan",
-            cpp_options={"STAN_THREADS": "true"},
-            force_compile=True,
-        )
-        with open(pickle_file, 'wb') as f:
-            pickle.dump(sampler, f)
-        print("Compiled model and saved to pickle.")
-
+    sampler = _adjusted_sampler()
 
     # Load site data
     (zbar_2017, z_2017, forest_area_2017) = load_site_data(num_sites,norm_fac=norm_fac)
