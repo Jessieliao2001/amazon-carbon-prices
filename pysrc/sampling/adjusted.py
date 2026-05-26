@@ -1,8 +1,13 @@
 import time
+import subprocess
 import pandas as pd
 
 import numpy as np
 from cmdstanpy import CmdStanModel
+try:
+    import fcntl
+except ImportError:  # pragma: no cover - POSIX clusters/macOS provide fcntl.
+    fcntl = None
 
 from ..optimization import solve_planner_problem, vectorize_trajectories
 # from ..sampling import baseline_hyperparams, gamma_adj_reg_data, theta_adj_reg_data
@@ -16,22 +21,55 @@ from ..services.data_service import (
 from ..services.file_service import get_path
 
 
+def _stan_executable_works(exe_file):
+    if not exe_file.exists():
+        return False
+    try:
+        subprocess.run(
+            [str(exe_file), "info"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=True,
+            timeout=30,
+        )
+        return True
+    except (OSError, subprocess.SubprocessError):
+        return False
+
+
 def _adjusted_sampler():
     stan_file = get_path("stan_model") / "adjusted.stan"
+    exe_file = stan_file.with_suffix("")
+    object_file = stan_file.with_suffix(".o")
+    lock_file = stan_file.with_suffix(".compile.lock")
     cpp_options = {"STAN_THREADS": "true"}
-    sampler = CmdStanModel(stan_file=stan_file, cpp_options=cpp_options)
 
-    if not sampler.exe_info():
-        print(
-            "Existing adjusted Stan executable is missing or not runnable; "
-            "recompiling for this machine.",
-            flush=True,
-        )
-        sampler = CmdStanModel(
-            stan_file=stan_file,
-            cpp_options=cpp_options,
-            force_compile=True,
-        )
+    with open(lock_file, "w") as lock:
+        if fcntl is not None:
+            print(f"Waiting for Stan compile lock: {lock_file}", flush=True)
+            fcntl.flock(lock, fcntl.LOCK_EX)
+
+        if _stan_executable_works(exe_file):
+            sampler = CmdStanModel(exe_file=exe_file)
+        else:
+            print(
+                "Existing adjusted Stan executable is missing or not runnable; "
+                "recompiling for this machine.",
+                flush=True,
+            )
+            for path in (exe_file, object_file):
+                try:
+                    path.unlink()
+                except FileNotFoundError:
+                    pass
+            sampler = CmdStanModel(
+                stan_file=stan_file,
+                cpp_options=cpp_options,
+                force_compile=True,
+            )
+
+        if fcntl is not None:
+            fcntl.flock(lock, fcntl.LOCK_UN)
 
     print(f"Using Stan model executable: {sampler.exe_file}", flush=True)
     return sampler

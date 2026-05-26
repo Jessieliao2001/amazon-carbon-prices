@@ -354,6 +354,16 @@ sacct -u $USER --format=JobID,JobName,State,ExitCode
    not have R installed. Add `--run-r-on-slurm` only when R is available and the
    R environment has been restored on the server.
 
+4. The first HMC/shadow-price job on a machine may compile
+   `stan_model/adjusted` from `stan_model/adjusted.stan`. Parallel server jobs
+   use a compile lock so only one job compiles at a time; other jobs wait and
+   then reuse the executable. If a previous failed run left partial compilation
+   files, remove them before resubmitting:
+
+```bash
+rm -f stan_model/adjusted stan_model/adjusted.o stan_model/adjusted.hpp stan_model/adjusted.compile.lock
+```
+
 ### Step 4. Process Generated Raw Results And Check Paper Outputs
 
 After model jobs have produced raw outputs in `job-outs/`, `output/`, and
