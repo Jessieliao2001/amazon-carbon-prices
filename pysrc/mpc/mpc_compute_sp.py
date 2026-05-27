@@ -19,7 +19,20 @@ def read_theta(num_sites):
 
 
 def read_file(result_directory):
-    
+    required_files = ["Z.txt", "X.txt", "U.txt", "V.txt"]
+    missing = [
+        filename
+        for filename in required_files
+        if not os.path.exists(os.path.join(result_directory, filename))
+    ]
+    if missing:
+        raise FileNotFoundError(
+            f"Missing MPC shadow-price optimization output(s) {missing} in "
+            f"{result_directory}. Run `./run.sh --steps mpc-sp-grid --backend local` "
+            "locally, or `./run.sh --steps mpc-sp-grid --backend slurm "
+            "--slurm-account <account>` on the server, before `mpc-prices`."
+        )
+
     Z = np.loadtxt(os.path.join(result_directory, "Z.txt"), delimiter=",")
     X = np.sum(np.loadtxt(os.path.join(result_directory, "X.txt"), delimiter=","),axis=1)
     Xdot = np.diff(X, axis=0)

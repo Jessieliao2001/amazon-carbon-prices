@@ -44,6 +44,31 @@ num_sites=78
 pa=41.11
 model="mpc_shadow_price"
 
+output_folder = (
+    get_path("output")
+    / "optimization"
+    / model
+    / solver
+    / f"{num_sites}sites"
+    / f"xi_{xi}"
+    / f"pa_{pa}"
+    / f"pe_{pe}"
+    / f"mc_{id}"
+    / type
+)
+
+
+def planner_outputs_exist(output_dir: Path) -> bool:
+    return all(
+        (output_dir / filename).exists()
+        for filename in ["Z.txt", "X.txt", "U.txt", "V.txt"]
+    )
+
+
+if planner_outputs_exist(output_folder):
+    print(f"Skipping existing MPC shadow-price output: {output_folder}")
+    raise SystemExit(0)
+
 (
     zbar_1995,
     z_1995,
@@ -78,19 +103,6 @@ results = mpc_solve_planner_problem(
     type=type,
 )
 print("Results for pe = ", pe)
-
-output_folder = (
-    get_path("output")
-    / "optimization"
-    / model
-    / solver
-    / f"{num_sites}sites"
-    / f"xi_{xi}"
-    / f"pa_{pa}"
-    / f"pe_{pe}"
-    / f"mc_{id}"
-    / type
-)
 
 
 def save_planner_solution(results: PlannerSolution, output_dir: Path):

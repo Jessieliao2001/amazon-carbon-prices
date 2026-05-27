@@ -368,7 +368,13 @@ sacct -u $USER --format=JobID,JobName,State,ExitCode
    not have R installed. Add `--run-r-on-slurm` only when R is available and the
    R environment has been restored on the server.
 
-5. The first HMC/shadow-price job on a machine may compile
+5. `stage-mpc` first creates MPC simulation paths, then runs the MPC
+   shadow-price optimization grid (`xi=0.5,1,10000`, `P^{ee}=5.0,...,7.0`,
+   constrained and unconstrained) before `mpc-prices` parses those grid outputs.
+   The grid jobs are parallel-safe and are required before
+   `pysrc/mpc/mpc_compute_sp.py` can read `output/optimization/mpc_shadow_price/`.
+
+6. The first HMC/shadow-price job on a machine may compile
    `stan_model/adjusted` from `stan_model/adjusted.stan`. Parallel server jobs
    use a compile lock so only one job compiles at a time; other jobs wait and
    then reuse the executable. If a previous failed run left partial compilation

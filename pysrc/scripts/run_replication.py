@@ -9,6 +9,7 @@ import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
+from decimal import Decimal
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
@@ -24,6 +25,7 @@ DEFAULT_PARALLEL_STEPS = {
     "shadow-prices-hmc",
     "hmc-sampling",
     "mpc-prepare",
+    "mpc-sp-grid",
     "mpc-hmc-pre",
     "mpc-hmc-figure14",
     "mpc-day0",
@@ -51,6 +53,7 @@ STAGE_ALIASES = {
     ],
     "stage-mpc": [
         "mpc-prepare",
+        "mpc-sp-grid",
         "mpc-prices",
         "derive-prices",
         "mpc-hmc-pre",
@@ -109,6 +112,7 @@ def base_steps() -> dict[str, list[list[str]]]:
             [PY, "pysrc/mpc/mpc_simulating.py", "--type", "converge_uncon"],
             [PY, "pysrc/mpc/mpc_simulating.py", "--type", "converge_con"],
         ],
+        "mpc-sp-grid": mpc_sp_grid_commands(),
         "mpc-prices": [[PY, "pysrc/mpc/mpc_compute_sp.py"]],
         "mpc-hmc-pre": mpc_hmc_pre_commands(),
         "mpc-hmc-figure14": mpc_hmc_figure14_commands(),
@@ -258,6 +262,30 @@ def mpc_table_commands() -> list[list[str]]:
                         b_value,
                         "--xi",
                         xi,
+                    ]
+                )
+    return commands
+
+
+def mpc_sp_grid_commands() -> list[list[str]]:
+    commands: list[list[str]] = []
+    pe_values = [
+        str((Decimal("5.0") + Decimal("0.1") * index).quantize(Decimal("0.1")))
+        for index in range(21)
+    ]
+    for model in ["unconstrained", "constrained"]:
+        for xi in ["0.5", "1", "10000"]:
+            for pe_value in pe_values:
+                commands.append(
+                    [
+                        PY,
+                        "pysrc/mpc/mpc_hmc_sp.py",
+                        "--pe",
+                        pe_value,
+                        "--xi",
+                        xi,
+                        "--type",
+                        model,
                     ]
                 )
     return commands

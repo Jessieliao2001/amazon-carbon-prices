@@ -20,7 +20,8 @@ the carbon-price file again before HMC outputs are built. The HMC sampling step
 uses those derived prices, including the extra `xi=1` deterministic-price case
 needed by the common-price HMC figures. HMC sampling is submitted as one
 `(xi, price source, transfer)` command per job so transfer levels can run in
-parallel.
+parallel. The MPC stage includes the MPC shadow-price optimization grid before
+`mpc-prices`, because `pysrc/mpc/mpc_compute_sp.py` parses those grid outputs.
 For example:
 
 ```bash
