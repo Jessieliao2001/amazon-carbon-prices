@@ -275,7 +275,8 @@ export REPLICATION_SLURM_ACCOUNT="pi-lhansen"
 3. Large parallel steps are grouped on Slurm by default only when a step has at
    least 100 runnable commands. Each submitted Slurm job then runs 10
    replication commands sequentially, while each command still gets its own
-   numbered `*_run.out`, `*_run.err`, and `*_command.txt`. The large MPC steps
+   numbered `*_run.out` and `*_run.err`. The command line is written at the top
+   of each `*_run.out` for auditing. The large MPC steps
    `mpc-sp-grid`, `mpc-hmc-pre`, `mpc-hmc-pre-unconstrained`,
    `mpc-hmc-pre-constrained`, `mpc-hmc-figure14-unconstrained`, `mpc-day0`,
    `mpc-day0-unconstrained`, and `mpc-day0-constrained` are a special case:
@@ -476,25 +477,22 @@ job-outs/
     01_shadow_prices_det/
       0001_run.out
       0001_run.err
-      0001_command.txt
       0002_run.out
       0002_run.err
-      0002_command.txt
   stage_hmc/
     01_shadow_prices_hmc/
       0001_run.out
       0001_run.err
-      0001_command.txt
   stage_mpc/
     01_mpc_prepare/
       0001_run.out
       0001_run.err
-      0001_command.txt
 ```
 
 MPC-HMC child output is written directly into the same stage-specific numbered
 logs shown above; the driver does not create nested `job-outs/mpc/.../run.out`
-files. Slurm driver-level `out`/`err` files use the same stage folders shown above.
+files. Slurm batch scripts are submitted inline rather than saved as per-run
+`.sh` files. Slurm driver-level `out`/`err` files use the same stage folders shown above.
 Slurm creates and writes those files only after the scheduled job actually
 starts, so a pending job may have no `Program starts` line yet. New Slurm
 submissions set `PYTHONUNBUFFERED=1`, so Python progress is written to logs

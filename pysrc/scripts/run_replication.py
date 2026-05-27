@@ -115,7 +115,6 @@ class LocalLogFiles:
     step_dir: Path
     out: Path
     err: Path
-    command: Path
 
 
 def base_steps() -> dict[str, list[list[str]]]:
@@ -595,7 +594,6 @@ def local_log_files(
         step_dir=step_dir,
         out=step_dir / f"{stem}_run.out",
         err=step_dir / f"{stem}_run.err",
-        command=step_dir / f"{stem}_command.txt",
     )
 
 
@@ -628,7 +626,6 @@ def run_local(command: list[str], root: Path, log_files: LocalLogFiles | None = 
         return subprocess.run(command, cwd=root).returncode
 
     log_files.step_dir.mkdir(parents=True, exist_ok=True)
-    log_files.command.write_text(command_text + "\n")
 
     print(f"+ {command_text}")
     print(f"  logs: {display_path(log_files.out, root)}")
@@ -728,8 +725,6 @@ def submit_slurm(
 
     log_files.step_dir.mkdir(parents=True, exist_ok=True)
     command_text = shlex.join(command)
-    log_files.command.write_text(command_text + "\n")
-    script_path = log_files.out.with_suffix(".sh")
 
     modules = os.environ.get("REPLICATION_MODULES", "python/anaconda-2022.05 gurobi/11.0 gcc/12.2.0")
     script_lines = [
@@ -758,9 +753,6 @@ def submit_slurm(
         'echo "Elapsed time: $((end - start)) seconds"',
         'exit "${code}"',
     ]
-    script_path.write_text("\n".join(script_lines) + "\n")
-    script_path.chmod(0o755)
-
     sbatch_command = slurm_batch_command(
         job_name=job_name,
         out=log_files.out,
@@ -768,10 +760,16 @@ def submit_slurm(
         depends_on=depends_on,
         dependency_mode=dependency_mode,
     )
-    sbatch_command.append(str(script_path))
-    print(f"+ {shlex.join(sbatch_command)}")
+    script_text = "\n".join(script_lines) + "\n"
+    print(f"+ {shlex.join(sbatch_command)} < inline-script")
     print(f"  logs: {display_path(log_files.out, root)}")
-    result = subprocess.run(sbatch_command, cwd=root, capture_output=True, text=True)
+    result = subprocess.run(
+        sbatch_command,
+        cwd=root,
+        input=script_text,
+        capture_output=True,
+        text=True,
+    )
     if result.stdout:
         print(result.stdout.strip())
     if result.stderr:
@@ -882,7 +880,6 @@ def submit_slurm_group(
     )
     step_dir.mkdir(parents=True, exist_ok=True)
     group_stem = f"group_{group_index:04d}_{first_command_index:04d}_{last_command_index:04d}"
-    group_script = step_dir / f"{group_stem}.sh"
     group_out = step_dir / f"{group_stem}.out"
     group_err = step_dir / f"{group_stem}.err"
 
@@ -949,7 +946,6 @@ def submit_slurm_group(
             command_index=command_index,
         )
         command_text = shlex.join(command)
-        command_log_files.command.write_text(command_text + "\n")
         script_lines.append(
             "run_logged_command "
             f"{shlex.quote(command_text)} "
@@ -964,9 +960,6 @@ def submit_slurm_group(
             'echo "Group ends $(date)"',
         ]
     )
-    group_script.write_text("\n".join(script_lines) + "\n")
-    group_script.chmod(0o755)
-
     sbatch_command = slurm_batch_command(
         job_name=job_name,
         out=group_out,
@@ -974,15 +967,21 @@ def submit_slurm_group(
         depends_on=depends_on,
         dependency_mode=dependency_mode,
     )
-    sbatch_command.append(str(group_script))
+    script_text = "\n".join(script_lines) + "\n"
 
-    print(f"+ {shlex.join(sbatch_command)}")
+    print(f"+ {shlex.join(sbatch_command)} < inline-script")
     print(
         "  logs: "
         f"{display_path(group_out, root)} "
         f"(commands {first_command_index:04d}-{last_command_index:04d})"
     )
-    result = subprocess.run(sbatch_command, cwd=root, capture_output=True, text=True)
+    result = subprocess.run(
+        sbatch_command,
+        cwd=root,
+        input=script_text,
+        capture_output=True,
+        text=True,
+    )
     if result.stdout:
         print(result.stdout.strip())
     if result.stderr:
