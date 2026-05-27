@@ -35,6 +35,8 @@ DEFAULT_PARALLEL_STEPS = {
     "hmc",
     "hmc-maps",
 }
+MPC_GROUP_STEPS = {"mpc-sp-grid", "mpc-hmc-pre", "mpc-hmc-figure14", "mpc-day0"}
+MPC_COMMANDS_PER_GROUP = 5
 STAGE_ALIASES = {
     "stage-data": ["data", "figure1"],
     "stage-hmm": ["price-estimation", "baseline", "bayesian-r2"],
@@ -682,6 +684,17 @@ def chunked_commands(
     ]
 
 
+def slurm_group_settings(
+    step: str,
+    *,
+    commands_per_job: int,
+    group_min_commands: int,
+) -> tuple[int, int]:
+    if step in MPC_GROUP_STEPS:
+        return MPC_COMMANDS_PER_GROUP, MPC_COMMANDS_PER_GROUP
+    return commands_per_job, group_min_commands
+
+
 def slurm_batch_command(
     *,
     job_name: str,
@@ -903,13 +916,19 @@ def submit_slurm_step(
                     f"[{stage}/{step}] {shlex.join(command)}"
                 )
 
+    effective_commands_per_job, effective_group_min_commands = slurm_group_settings(
+        step,
+        commands_per_job=commands_per_job,
+        group_min_commands=group_min_commands,
+    )
+
     if (
         can_parallelize
-        and commands_per_job > 1
-        and len(runnable_commands) >= group_min_commands
+        and effective_commands_per_job > 1
+        and len(runnable_commands) >= effective_group_min_commands
     ):
         for group_index, command_group in enumerate(
-            chunked_commands(runnable_commands, size=commands_per_job),
+            chunked_commands(runnable_commands, size=effective_commands_per_job),
             start=1,
         ):
             job_name = (
@@ -1065,6 +1084,7 @@ def main() -> int:
             "inside one sbatch job when the step has at least "
             "--slurm-group-min-commands commands. This keeps large MPC stages "
             "under server job submission limits while leaving small steps unchanged. "
+            "The MPC-HMC steps are grouped in fixed batches of 5 transfer commands. "
             "Set to 1 to submit one sbatch job per command. "
             "Default: REPLICATION_SLURM_COMMANDS_PER_JOB or 10."
         ),
@@ -1140,13 +1160,27 @@ def main() -> int:
             if (
                 args.backend == "slurm"
                 and can_parallelize
-                and args.slurm_commands_per_job > 1
-                and len(runnable_commands) >= args.slurm_group_min_commands
+            ):
+                effective_commands_per_job, effective_group_min_commands = slurm_group_settings(
+                    step,
+                    commands_per_job=args.slurm_commands_per_job,
+                    group_min_commands=args.slurm_group_min_commands,
+                )
+            else:
+                effective_commands_per_job, effective_group_min_commands = (
+                    args.slurm_commands_per_job,
+                    args.slurm_group_min_commands,
+                )
+            if (
+                args.backend == "slurm"
+                and can_parallelize
+                and effective_commands_per_job > 1
+                and len(runnable_commands) >= effective_group_min_commands
             ):
                 for group_index, group in enumerate(
                     chunked_commands(
                         runnable_commands,
-                        size=args.slurm_commands_per_job,
+                        size=effective_commands_per_job,
                     ),
                     start=1,
                 ):

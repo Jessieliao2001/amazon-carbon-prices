@@ -275,10 +275,14 @@ export REPLICATION_SLURM_ACCOUNT="pi-lhansen"
 3. Large parallel steps are grouped on Slurm by default only when a step has at
    least 100 runnable commands. Each submitted Slurm job then runs 10
    replication commands sequentially, while each command still gets its own
-   numbered `*_run.out`, `*_run.err`, and `*_command.txt`. This keeps stages
+   numbered `*_run.out`, `*_run.err`, and `*_command.txt`. The large MPC steps
+   `mpc-sp-grid`, `mpc-hmc-pre`, `mpc-hmc-figure14`, and `mpc-day0` are a
+   special case: they are always grouped as five commands per Slurm job. For
+   the MPC-HMC steps, those five commands are the transfer levels
+   `b=0,10,15,20,25` for one `(type, xi, id, trig)` block. This keeps stages
    such as `mpc-hmc-figure14` below server job-submission limits without
    changing small steps such as `baseline`, `maps`, or `mpc-tables`. To submit
-   fewer Slurm jobs for a large step, increase the group size:
+   fewer Slurm jobs for other large steps, increase the group size:
 
 ```bash
 ./run.sh --steps stage-mpc --backend slurm --slurm-account pi-lhansen --slurm-commands-per-job 25
@@ -373,6 +377,10 @@ sacct -u $USER --format=JobID,JobName,State,ExitCode
    constrained and unconstrained) before `mpc-prices` parses those grid outputs.
    The grid jobs are parallel-safe and are required before
    `pysrc/mpc/mpc_compute_sp.py` can read `output/optimization/mpc_shadow_price/`.
+   Large MPC Slurm steps are submitted in groups of five commands. For the
+   MPC-HMC steps, each group is one `(model, xi, id, trig)` case with
+   `b=0,10,15,20,25`, matching the old `mpc_hmc.sh` loop while reducing the
+   number of submitted Slurm jobs.
 
 6. The first HMC/shadow-price job on a machine may compile
    `stan_model/adjusted` from `stan_model/adjusted.stan`. Parallel server jobs
@@ -574,9 +582,9 @@ The legacy server helper `bash_files/hmc_shadow_price.sh` now delegates to
 `bash_files/hmc_shadow_price.sh hmc` for only finite-`xi` HMC shadow prices.
 The other replication helper scripts in `bash_files/` that correspond directly
 to named driver steps, such as `price_estimation.sh`, `det_conduction.sh`,
-`hmc_conduction.sh`, `mpc_prepare.sh`, and `mpc_compute.sh`, also delegate to
-`run.sh --backend slurm`. Low-level diagnostic or sampler helpers that are not
-part of the staged driver keep their raw output layouts.
+`hmc_conduction.sh`, `mpc_prepare.sh`, `mpc_compute.sh`, and `mpc_hmc.sh`, also
+delegate to `run.sh --backend slurm`. Low-level diagnostic or sampler helpers
+that are not part of the staged driver keep their raw output layouts.
 
 ### Step 6. Reproducibility Notes
 
