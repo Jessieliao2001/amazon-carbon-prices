@@ -26,6 +26,9 @@ Grid jobs recompute and overwrite existing output folders by default, matching
 the original scripts and avoiding mixed old/new shadow-price outputs.
 Large MPC Slurm steps are grouped five commands at a time; each MPC-HMC group
 corresponds to one `(model, xi, id, trig)` case and its five transfer levels.
+Within `stage-mpc`, the unconstrained MPC-HMC/pre/day-0/table/figure outputs are
+run before the constrained MPC-HMC/pre/day-0/table outputs. Figure 14 is
+unconstrained-only.
 For example:
 
 ```bash

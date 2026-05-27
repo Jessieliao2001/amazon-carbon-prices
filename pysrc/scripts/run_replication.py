@@ -27,16 +27,35 @@ DEFAULT_PARALLEL_STEPS = {
     "mpc-prepare",
     "mpc-sp-grid",
     "mpc-hmc-pre",
+    "mpc-hmc-pre-unconstrained",
+    "mpc-hmc-pre-constrained",
     "mpc-hmc-figure14",
+    "mpc-hmc-figure14-unconstrained",
     "mpc-day0",
+    "mpc-day0-unconstrained",
+    "mpc-day0-constrained",
     "mpc-converge-paths",
     "mpc-tables",
+    "mpc-tables-unconstrained",
+    "mpc-tables-constrained",
+    "mpc-figures-unconstrained",
     "maps",
     "hmc",
     "hmc-maps",
 }
-MPC_GROUP_STEPS = {"mpc-sp-grid", "mpc-hmc-pre", "mpc-hmc-figure14", "mpc-day0"}
+MPC_GROUP_STEPS = {
+    "mpc-sp-grid",
+    "mpc-hmc-pre",
+    "mpc-hmc-pre-unconstrained",
+    "mpc-hmc-pre-constrained",
+    "mpc-hmc-figure14",
+    "mpc-hmc-figure14-unconstrained",
+    "mpc-day0",
+    "mpc-day0-unconstrained",
+    "mpc-day0-constrained",
+}
 MPC_COMMANDS_PER_GROUP = 5
+MPC_MODELS = ("unconstrained", "constrained")
 STAGE_ALIASES = {
     "stage-data": ["data", "figure1"],
     "stage-hmm": ["price-estimation", "baseline", "bayesian-r2"],
@@ -58,13 +77,19 @@ STAGE_ALIASES = {
         "mpc-sp-grid",
         "mpc-prices",
         "derive-prices",
-        "mpc-hmc-pre",
-        "mpc-probabilities",
-        "mpc-day0",
-        "mpc-tables",
-        "mpc-hmc-figure14",
-        "mpc-figures",
-        "postprocess",
+        "mpc-hmc-pre-unconstrained",
+        "mpc-probabilities-unconstrained",
+        "mpc-day0-unconstrained",
+        "mpc-tables-unconstrained",
+        "mpc-hmc-figure14-unconstrained",
+        "mpc-figures-unconstrained",
+        "postprocess-unconstrained",
+        "mpc-hmc-pre-constrained",
+        "mpc-probabilities-constrained",
+        "mpc-day0-constrained",
+        "mpc-tables-constrained",
+        "postprocess-constrained",
+        "postprocess-final",
     ],
 }
 FULL_STAGE_SEQUENCE = [
@@ -117,10 +142,18 @@ def base_steps() -> dict[str, list[list[str]]]:
         "mpc-sp-grid": mpc_sp_grid_commands(),
         "mpc-prices": [[PY, "pysrc/mpc/mpc_compute_sp.py"]],
         "mpc-hmc-pre": mpc_hmc_pre_commands(),
-        "mpc-hmc-figure14": mpc_hmc_figure14_commands(),
+        "mpc-hmc-pre-unconstrained": mpc_hmc_pre_commands("unconstrained"),
+        "mpc-hmc-pre-constrained": mpc_hmc_pre_commands("constrained"),
+        "mpc-hmc-figure14": mpc_hmc_figure14_commands("unconstrained"),
+        "mpc-hmc-figure14-unconstrained": mpc_hmc_figure14_commands("unconstrained"),
         "mpc-tables": mpc_table_commands(),
-        "mpc-figures": [[PY, "pysrc/scripts/mpc_trajectory.py"]],
-        "mpc-probabilities": [[PY, "pysrc/replication/derive_mpc_transition_probabilities.py"]],
+        "mpc-tables-unconstrained": mpc_table_commands("unconstrained"),
+        "mpc-tables-constrained": mpc_table_commands("constrained"),
+        "mpc-figures": mpc_figure_commands("unconstrained"),
+        "mpc-figures-unconstrained": mpc_figure_commands("unconstrained"),
+        "mpc-probabilities": mpc_probability_commands(),
+        "mpc-probabilities-unconstrained": mpc_probability_commands("unconstrained"),
+        "mpc-probabilities-constrained": mpc_probability_commands("constrained"),
         "price-estimation": [[PY, "pysrc/scripts/price_estimation.py"]],
         "bayesian-r2": [[PY, "pysrc/scripts/bayesian_R2.py"]],
         "maps": [
@@ -134,12 +167,10 @@ def base_steps() -> dict[str, list[list[str]]]:
             ["Rscript", "rsrc/analysis/map_1043_hmc_xi05.R"],
             ["Rscript", "rsrc/analysis/map_kl.R"],
         ],
-        "postprocess": [
-            [PY, "pysrc/mpc/mpc_compute_day0.py", "--model", "unconstrained", "--b", "0", "10", "15", "25", "--xi", "all", "--quiet"],
-            [PY, "pysrc/mpc/mpc_compute_day0.py", "--model", "constrained", "--b", "all", "--xi", "all", "--quiet"],
-            [PY, "pysrc/replication/build_paper_numbers.py"],
-            [PY, "pysrc/replication/build_aux_input_tables.py"],
-        ],
+        "postprocess": postprocess_commands(),
+        "postprocess-unconstrained": postprocess_commands("unconstrained"),
+        "postprocess-constrained": postprocess_commands("constrained"),
+        "postprocess-final": postprocess_commands("final"),
     }
 
 
@@ -245,13 +276,86 @@ def hmc_sampling_commands() -> list[list[str]]:
     return commands
 
 
-def mpc_table_commands() -> list[list[str]]:
+def mpc_models(model: str | None = None) -> tuple[str, ...]:
+    if model is None:
+        return MPC_MODELS
+    if model not in MPC_MODELS:
+        raise ValueError(f"Unknown MPC model `{model}`. Expected one of {MPC_MODELS}.")
+    return (model,)
+
+
+def mpc_probability_commands(model: str | None = None) -> list[list[str]]:
     commands: list[list[str]] = []
+    for model_name in mpc_models(model):
+        command = [PY, "pysrc/replication/derive_mpc_transition_probabilities.py"]
+        if model is not None:
+            command.extend(["--model", model_name])
+        commands.append(command)
+    return commands
+
+
+def postprocess_commands(model: str | None = None) -> list[list[str]]:
+    if model == "final":
+        return [
+            [PY, "pysrc/replication/build_paper_numbers.py"],
+            [PY, "pysrc/replication/build_aux_input_tables.py"],
+        ]
+
+    commands: list[list[str]] = []
+    for model_name in mpc_models(model):
+        if model_name == "unconstrained":
+            commands.append(
+                [
+                    PY,
+                    "pysrc/mpc/mpc_compute_day0.py",
+                    "--model",
+                    "unconstrained",
+                    "--b",
+                    "0",
+                    "10",
+                    "15",
+                    "25",
+                    "--xi",
+                    "all",
+                    "--quiet",
+                ]
+            )
+        else:
+            commands.append(
+                [
+                    PY,
+                    "pysrc/mpc/mpc_compute_day0.py",
+                    "--model",
+                    "constrained",
+                    "--b",
+                    "all",
+                    "--xi",
+                    "all",
+                    "--quiet",
+                ]
+            )
+    if model is None:
+        commands.extend(postprocess_commands("final"))
+    return commands
+
+
+def mpc_figure_commands(model: str | None = None) -> list[list[str]]:
+    # The current MPC trajectory script only reads unconstrained output paths.
+    if model not in {None, "unconstrained"}:
+        raise ValueError("MPC figure generation is currently available only for unconstrained outputs.")
+    return [[PY, "pysrc/scripts/mpc_trajectory.py"]]
+
+
+def mpc_table_commands(model: str | None = None) -> list[list[str]]:
+    commands: list[list[str]] = []
+    allowed_models = set(mpc_models(model))
     specs = [
         ("unconstrained", ["0", "10", "15", "25"]),
         ("constrained", ["0", "10", "15", "20", "25"]),
     ]
-    for model, b_values in specs:
+    for model_name, b_values in specs:
+        if model_name not in allowed_models:
+            continue
         for b_value in b_values:
             for xi in ["inf", "1", "0.5"]:
                 commands.append(
@@ -259,7 +363,7 @@ def mpc_table_commands() -> list[list[str]]:
                         PY,
                         "pysrc/mpc/mpc_compute.py",
                         "--model",
-                        model,
+                        model_name,
                         "--b",
                         b_value,
                         "--xi",
@@ -293,29 +397,30 @@ def mpc_sp_grid_commands() -> list[list[str]]:
     return commands
 
 
-def mpc_day0_commands() -> list[list[str]]:
+def mpc_day0_commands(model: str | None = None) -> list[list[str]]:
     return mpc_hmc_commands(
         specs=[
-            ("unconstrained", ["10000", "1", "0.5"], range(1, 2), 2),
-            ("constrained", ["10000", "1", "0.5"], range(1, 2), 2),
+            (model_name, ["10000", "1", "0.5"], range(1, 2), 2)
+            for model_name in mpc_models(model)
         ]
     )
 
 
-def mpc_hmc_pre_commands() -> list[list[str]]:
+def mpc_hmc_pre_commands(model: str | None = None) -> list[list[str]]:
     return mpc_hmc_commands(
         specs=[
-            ("unconstrained", ["10000", "1", "0.5"], range(997, 999), 0),
-            ("constrained", ["10000", "1", "0.5"], range(997, 999), 0),
+            (model_name, ["10000", "1", "0.5"], range(997, 999), 0)
+            for model_name in mpc_models(model)
         ]
     )
 
 
-def mpc_hmc_figure14_commands() -> list[list[str]]:
+def mpc_hmc_figure14_commands(model: str | None = None) -> list[list[str]]:
+    if model == "constrained":
+        raise ValueError("Figure 14 MPC-HMC jobs are defined only for unconstrained outputs.")
     return mpc_hmc_commands(
         specs=[
-            ("unconstrained", ["10000", "1", "0.5"], range(1, 51), 0),
-            ("constrained", ["10000", "1", "0.5"], range(1, 51), 0),
+            ("unconstrained", ["10000", "1", "0.5"], range(1, 51), 0)
         ]
     )
 
@@ -445,6 +550,10 @@ def commands_for_step(step: str) -> list[list[str]]:
         return shadow_price_commands("hmc")
     if step == "mpc-day0":
         return mpc_day0_commands()
+    if step == "mpc-day0-unconstrained":
+        return mpc_day0_commands("unconstrained")
+    if step == "mpc-day0-constrained":
+        return mpc_day0_commands("constrained")
     steps = base_steps()
     if step not in steps:
         available = (

@@ -276,11 +276,13 @@ export REPLICATION_SLURM_ACCOUNT="pi-lhansen"
    least 100 runnable commands. Each submitted Slurm job then runs 10
    replication commands sequentially, while each command still gets its own
    numbered `*_run.out`, `*_run.err`, and `*_command.txt`. The large MPC steps
-   `mpc-sp-grid`, `mpc-hmc-pre`, `mpc-hmc-figure14`, and `mpc-day0` are a
-   special case: they are always grouped as five commands per Slurm job. For
+   `mpc-sp-grid`, `mpc-hmc-pre`, `mpc-hmc-pre-unconstrained`,
+   `mpc-hmc-pre-constrained`, `mpc-hmc-figure14-unconstrained`, `mpc-day0`,
+   `mpc-day0-unconstrained`, and `mpc-day0-constrained` are a special case:
+   they are always grouped as five commands per Slurm job. For
    the MPC-HMC steps, those five commands are the transfer levels
    `b=0,10,15,20,25` for one `(type, xi, id, trig)` block. This keeps stages
-   such as `mpc-hmc-figure14` below server job-submission limits without
+   such as `mpc-hmc-figure14-unconstrained` below server job-submission limits without
    changing small steps such as `baseline`, `maps`, or `mpc-tables`. To submit
    fewer Slurm jobs for other large steps, increase the group size:
 
@@ -379,6 +381,10 @@ sacct -u $USER --format=JobID,JobName,State,ExitCode
    `pysrc/mpc/mpc_compute_sp.py` can read `output/optimization/mpc_shadow_price/`.
    By default, each grid job recomputes and overwrites its output folder, matching
    the original scripts and avoiding mixed old/new shadow-price outputs.
+   After the MPC carbon prices are derived, the driver runs the unconstrained
+   MPC-HMC/pre/day-0/table/figure/postprocess block first, then runs the
+   constrained MPC-HMC/pre/day-0/table/postprocess block. Figure 14 is generated
+   only from the unconstrained MPC-HMC jobs.
    Large MPC Slurm steps are submitted in groups of five commands. For the
    MPC-HMC steps, each group is one `(model, xi, id, trig)` case with
    `b=0,10,15,20,25`, matching the old `mpc_hmc.sh` loop while reducing the
@@ -548,14 +554,27 @@ hmc-maps
 mpc-prepare
 mpc-prices
 mpc-hmc-pre
+mpc-hmc-pre-unconstrained
+mpc-hmc-pre-constrained
 mpc-probabilities
+mpc-probabilities-unconstrained
+mpc-probabilities-constrained
 mpc-day0
+mpc-day0-unconstrained
+mpc-day0-constrained
 mpc-tables
+mpc-tables-unconstrained
+mpc-tables-constrained
 mpc-hmc-figure14
+mpc-hmc-figure14-unconstrained
 mpc-figures
+mpc-figures-unconstrained
 bayesian-r2
 maps
 postprocess
+postprocess-unconstrained
+postprocess-constrained
+postprocess-final
 postprocess-only
 stage-data
 stage-hmm

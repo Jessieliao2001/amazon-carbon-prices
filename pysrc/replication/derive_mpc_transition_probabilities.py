@@ -206,6 +206,7 @@ def collect_probabilities(
     prices: pd.DataFrame,
     run_id: str = "998",
     trig: str = "0",
+    model: str | None = None,
 ) -> pd.DataFrame:
     rows: list[dict[str, object]] = []
     for path in _candidate_logs(root):
@@ -223,18 +224,20 @@ def collect_probabilities(
         xi = normalize_xi(metadata["xi"])
         pe = float(metadata["pe"])
         mc = metadata.get("id")
-        model = metadata["model"]
+        log_model = metadata["model"]
+        if model is not None and log_model != model:
+            continue
         probabilities = _year1_probabilities(path)
         if probabilities is None:
             continue
         prob_from_low_to_low, prob_from_high_to_high = probabilities
-        b_value = _canonical_b(_infer_b(model, xi, pe, prices))
+        b_value = _canonical_b(_infer_b(log_model, xi, pe, prices))
         if b_value is None:
             continue
         rows.append(
             {
                 "context": "price_stochasticity",
-                "model": model,
+                "model": log_model,
                 "sites": 78,
                 "xi": xi,
                 "pe": pe,
@@ -248,6 +251,23 @@ def collect_probabilities(
     return pd.DataFrame(rows, columns=OUTPUT_COLUMNS)
 
 
+def merge_model_rows(
+    existing_path: Path,
+    new_rows: pd.DataFrame,
+    model: str | None,
+) -> pd.DataFrame:
+    if model is None or not existing_path.exists():
+        return new_rows
+
+    existing = pd.read_csv(existing_path)
+    if existing.empty:
+        return new_rows
+    existing = existing.reindex(columns=OUTPUT_COLUMNS)
+    existing = existing[existing["model"] != model]
+    merged = pd.concat([existing, new_rows], ignore_index=True)
+    return merged.reindex(columns=OUTPUT_COLUMNS)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
@@ -259,6 +279,7 @@ def main() -> int:
     parser.add_argument("--carbon-prices", type=Path, default=CARBON_PRICE_FILE)
     parser.add_argument("--run-id", default="998")
     parser.add_argument("--trig", default="0")
+    parser.add_argument("--model", choices=["unconstrained", "constrained"])
     parser.add_argument(
         "--out",
         type=Path,
@@ -271,7 +292,16 @@ def main() -> int:
         prices = pd.read_csv(args.carbon_prices)
         prices["xi"] = prices["xi"].map(normalize_xi)
 
-    result = collect_probabilities(args.root, prices, run_id=args.run_id, trig=args.trig)
+    result = collect_probabilities(
+        args.root,
+        prices,
+        run_id=args.run_id,
+        trig=args.trig,
+        model=args.model,
+    )
+    result = merge_model_rows(args.out, result, args.model)
+    if not result.empty:
+        result = result.sort_values(["model", "xi", "b", "pe", "mc"]).reset_index(drop=True)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     result.to_csv(args.out, index=False)
     print(f"Wrote {len(result)} transition-probability rows to {args.out}")
