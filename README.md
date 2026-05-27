@@ -377,6 +377,8 @@ sacct -u $USER --format=JobID,JobName,State,ExitCode
    constrained and unconstrained) before `mpc-prices` parses those grid outputs.
    The grid jobs are parallel-safe and are required before
    `pysrc/mpc/mpc_compute_sp.py` can read `output/optimization/mpc_shadow_price/`.
+   By default, each grid job recomputes and overwrites its output folder, matching
+   the original scripts and avoiding mixed old/new shadow-price outputs.
    Large MPC Slurm steps are submitted in groups of five commands. For the
    MPC-HMC steps, each group is one `(model, xi, id, trig)` case with
    `b=0,10,15,20,25`, matching the old `mpc_hmc.sh` loop while reducing the

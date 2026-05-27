@@ -22,6 +22,8 @@ needed by the common-price HMC figures. HMC sampling is submitted as one
 `(xi, price source, transfer)` command per job so transfer levels can run in
 parallel. The MPC stage includes the MPC shadow-price optimization grid before
 `mpc-prices`, because `pysrc/mpc/mpc_compute_sp.py` parses those grid outputs.
+Grid jobs recompute and overwrite existing output folders by default, matching
+the original scripts and avoiding mixed old/new shadow-price outputs.
 Large MPC Slurm steps are grouped five commands at a time; each MPC-HMC group
 corresponds to one `(model, xi, id, trig)` case and its five transfer levels.
 For example:
