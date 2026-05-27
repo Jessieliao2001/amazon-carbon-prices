@@ -424,7 +424,8 @@ Those steps do the following:
   writes `replication/derived/carbon_price_candidates.csv` and
   `replication/derived/carbon_prices.csv`.
 - `pysrc/replication/derive_mpc_transition_probabilities.py` parses
-  `job-outs/mpc/.../run.out` plus compatible local numbered `*_run.out` logs
+  stage-specific numbered MPC-HMC logs such as
+  `job-outs/stage_mpc/*_mpc_hmc_*/*_run.out`
   and writes
   `replication/derived/mpc_transition_probabilities.csv`.
 - `pysrc/mpc/mpc_compute_day0.py` reconstructs day-0 MPC present-value tables
@@ -491,8 +492,9 @@ job-outs/
       0001_command.txt
 ```
 
-MPC-HMC jobs also keep their original parseable logs under `job-outs/mpc/...`.
-Slurm driver-level `out`/`err` files use the same stage folders shown above.
+MPC-HMC child output is written directly into the same stage-specific numbered
+logs shown above; the driver does not create nested `job-outs/mpc/.../run.out`
+files. Slurm driver-level `out`/`err` files use the same stage folders shown above.
 Slurm creates and writes those files only after the scheduled job actually
 starts, so a pending job may have no `Program starts` line yet. New Slurm
 submissions set `PYTHONUNBUFFERED=1`, so Python progress is written to logs

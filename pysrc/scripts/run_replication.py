@@ -54,7 +54,7 @@ MPC_GROUP_STEPS = {
     "mpc-day0-unconstrained",
     "mpc-day0-constrained",
 }
-MPC_COMMANDS_PER_GROUP = 5
+MPC_COMMANDS_PER_GROUP = 1
 MPC_MODELS = ("unconstrained", "constrained")
 STAGE_ALIASES = {
     "stage-data": ["data", "figure1"],

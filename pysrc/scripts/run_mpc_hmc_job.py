@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import shlex
 import subprocess
 import sys
 import time
@@ -43,8 +44,9 @@ def mpc_price(model: str, xi: str, b: float, explicit_pe: float | None) -> float
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Run one MPC-HMC job and save stdout/stderr under job-outs/mpc so "
-            "the replication post-processing can parse the original log format."
+            "Run one MPC-HMC job. Stdout/stderr are left attached to the caller "
+            "so the replication driver stores the full MPC-HMC log under the "
+            "current stage-specific job-outs folder."
         )
     )
     parser.add_argument("--id", type=int, required=True)
@@ -60,18 +62,6 @@ def main() -> int:
     xi_arg = xi_for_command(args.xi)
     pe = mpc_price(args.type, args.xi, args.b, args.pe)
     pe_label = format_float(pe)
-
-    out_dir = (
-        root
-        / "job-outs"
-        / "mpc"
-        / f"xi_{xi_arg}"
-        / f"pe_{pe_label}"
-        / f"id_{args.id}"
-        / f"trig_{args.trig}"
-        / f"type_{args.type}"
-    )
-    out_dir.mkdir(parents=True, exist_ok=True)
 
     command = [
         args.python,
@@ -93,20 +83,18 @@ def main() -> int:
         "Running MPC-HMC job: "
         f"xi={xi_arg} pe={pe_label} id={args.id} trig={args.trig} type={args.type}"
     )
+    print(f"MPC-HMC command: {shlex.join(command)}")
     start = time.time()
-    with (out_dir / "run.out").open("w") as stdout, (out_dir / "run.err").open("w") as stderr:
-        stdout.write(f"Program starts {time.ctime(start)}\n")
-        stdout.flush()
-        result = subprocess.run(command, cwd=root, stdout=stdout, stderr=stderr)
-        end = time.time()
-        stdout.write(f"Program ends {time.ctime(end)}\n")
-        elapsed = int(end - start)
-        days, rem = divmod(elapsed, 86400)
-        hours, rem = divmod(rem, 3600)
-        minutes, seconds = divmod(rem, 60)
-        stdout.write(
-            f"Elapsed time: {days} days {hours:02d} hr {minutes:02d} min {seconds:02d} sec\n"
-        )
+    print(f"MPC-HMC child starts {time.ctime(start)}")
+    sys.stdout.flush()
+    result = subprocess.run(command, cwd=root)
+    end = time.time()
+    print(f"MPC-HMC child ends {time.ctime(end)}")
+    elapsed = int(end - start)
+    days, rem = divmod(elapsed, 86400)
+    hours, rem = divmod(rem, 3600)
+    minutes, seconds = divmod(rem, 60)
+    print(f"MPC-HMC child elapsed time: {days} days {hours:02d} hr {minutes:02d} min {seconds:02d} sec")
     return result.returncode
 
 
