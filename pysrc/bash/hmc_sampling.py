@@ -1,60 +1,46 @@
-import numpy as np
-from pysrc.services.get_sample import get_sampling
+from __future__ import annotations
+
 import argparse
-import os
-import pickle
+import sys
+from pathlib import Path
 
-from pysrc.sampling import adjusted
-from pysrc.services.file_service import get_path
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-parser = argparse.ArgumentParser(description="shadow price calculation")
-parser.add_argument("--pee",type=float,default=5)
-parser.add_argument("--xi",type=float,default=5)
-parser.add_argument("--id",type=int,default=0)
-parser.add_argument("--sites",type=int,default=78)
+from pysrc.scripts.hmc_sampling import run_one_sample
 
-args = parser.parse_args()
-pee=args.pee
-xi=args.xi
-b=args.id
-num_sites=args.sites
 
-pe = pee + b
-solver="gurobi"
-pa=41.11
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="Compatibility entry point for one HMC sampling job."
+    )
+    parser.add_argument("--pee", type=float, required=True)
+    parser.add_argument("--xi", type=float, required=True)
+    parser.add_argument("--id", type=float, required=True, help="Transfer level b.")
+    parser.add_argument("--sites", type=int, default=1043)
+    parser.add_argument("--solver", default="gurobi")
+    parser.add_argument("--pa", type=float, default=41.11)
+    parser.add_argument("--horizon", type=int, default=200)
+    parser.add_argument("--weight", type=float, default=0.25)
+    parser.add_argument("--max-iter", type=int, default=100)
+    parser.add_argument("--final-sample-size", type=int, default=4000)
+    parser.add_argument("--iter-sampling", type=int, default=4000)
+    parser.add_argument("--iter-warmup", type=int, default=500)
+    parser.add_argument("--chains", type=int, default=4)
+    parser.add_argument("--seed", type=int, default=1)
+    parser.add_argument("--tol", type=float, default=0.005)
+    parser.add_argument("--show-console", action="store_true", default=True)
+    parser.add_argument("--no-progress", action="store_true")
+    parser.add_argument("--force", action="store_true")
+    args = parser.parse_args()
 
-results = adjusted.sample(
-    xi=xi,
-    pe=pe,
-    pa=pa,
-    weight=0.25,
-    num_sites=num_sites,
-    T=200,
-    solver=solver,
-    max_iter=100,
-    final_sample_size=4_000,
-    iter_sampling=4000,
-    iter_warmup=500,
-    show_progress=True,
-    show_console=True,
-    output_dir=str(get_path("cmdstan_debug")),
-    seed=1,
-    # inits=0.1,
-    chains=4,  
-    tol=0.005,
-)
-output_base_path = os.path.join(
-    str(get_path("output")),
-    "sampling",
-    solver,
-    f"{num_sites}sites",
-    f"pa_{pa}",
-    f"xi_{xi}",
-    f"pe_{pe}",
-)
-if not os.path.exists(output_base_path):
-    os.makedirs(output_base_path)
-outfile_path = output_base_path + "/results.pcl"
-with open(outfile_path, "wb") as outfile:
-    pickle.dump(results, outfile)
-    print(f"Results saved to {outfile_path}")
+    run_one_sample(
+        args,
+        xi=args.xi,
+        pee=args.pee,
+        price_source="explicit",
+        transfer=args.id,
+    )
+
+
+if __name__ == "__main__":
+    main()

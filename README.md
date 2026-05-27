@@ -358,7 +358,11 @@ sacct -u $USER --format=JobID,JobName,State,ExitCode
 3. `stage-hmc` runs the finite-`xi` shadow prices (`xi=0.5,1,2`), refreshes
    the same carbon-price file, generates the HMC sampling outputs for the
    selected `P^{ee}` plus transfer levels, and then constructs HMC tables and
-   figures.
+   figures. For `xi=1`, the sampling step also generates the deterministic
+   `P^{ee}` case used by the common-price HMC figures; both prices are read
+   from `replication/derived/carbon_prices.csv`. Each HMC sampling command is
+   one `(xi, price source, transfer)` job, so `b=0,10,15,20,25` can run in
+   parallel instead of being bundled into one long job.
 
 4. The Slurm backend skips `Rscript` commands by default because the server may
    not have R installed. Add `--run-r-on-slurm` only when R is available and the

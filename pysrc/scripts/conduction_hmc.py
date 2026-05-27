@@ -29,6 +29,24 @@ def _det_price() -> float:
     )
 
 
+def _unique_prices(prices: list[float]) -> list[float]:
+    unique: list[float] = []
+    seen: set[float] = set()
+    for price in prices:
+        key = round(float(price), 10)
+        if key in seen:
+            continue
+        seen.add(key)
+        unique.append(float(price))
+    return unique
+
+
+def _needs_common_price_figures(xi: float, figures: list[str]) -> bool:
+    return normalize_xi(xi) == "1" and bool(
+        {"histograms", "trajectories"}.intersection(figures)
+    )
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run parameter-ambiguity outputs.")
     parser.add_argument("--xi", nargs="+", default=["1"], help="xi values or `all`")
@@ -61,14 +79,19 @@ def main() -> None:
         print(f"Running HMC outputs for xi={xi_label}, Pee={hmc_pee}")
 
         if not args.skip_optimization:
-            get_optimization(
-                num_sites=1043,
-                pee=hmc_pee,
-                model="hmc",
-                xi=xi,
-                solver=args.solver,
-                pa=args.pa,
-            )
+            optimization_prices = [hmc_pee]
+            if _needs_common_price_figures(xi, args.figures):
+                optimization_prices.append(det_pee)
+
+            for pee in _unique_prices(optimization_prices):
+                get_optimization(
+                    num_sites=1043,
+                    pee=pee,
+                    model="hmc",
+                    xi=xi,
+                    solver=args.solver,
+                    pa=args.pa,
+                )
 
         if "ambiguity" in args.tables:
             ambiguity_decom(
@@ -102,6 +125,16 @@ def main() -> None:
         if "density" in args.figures:
             density(num_sites=1043, pee=hmc_pee, xi=xi, solver=args.solver, pa=args.pa)
         if "trajectories" in args.figures:
+            if _needs_common_price_figures(xi, args.figures):
+                trajectory_diff(
+                    num_sites=1043,
+                    pe_hmc=det_pee,
+                    pe_det=det_pee,
+                    b=0,
+                    solver=args.solver,
+                    pa=args.pa,
+                    xi=xi,
+                )
             trajectory_diff(
                 num_sites=1043,
                 pe_hmc=hmc_pee,
@@ -121,6 +154,16 @@ def main() -> None:
                 xi=xi,
             )
         if "histograms" in args.figures:
+            if _needs_common_price_figures(xi, args.figures):
+                spatial_allocation(
+                    num_sites=1043,
+                    pe_hmc=det_pee,
+                    pe_det=det_pee,
+                    b=0,
+                    solver=args.solver,
+                    pa=args.pa,
+                    xi=xi,
+                )
             spatial_allocation(
                 num_sites=1043,
                 pe_hmc=hmc_pee,

@@ -18,6 +18,51 @@ def xi_values(values: list[str]) -> list[float]:
     return [float(value) for value in values]
 
 
+def hmc_price(*, sites: int, xi: float) -> float:
+    return carbon_price(
+        CarbonPriceKey(
+            context="parameter_ambiguity",
+            model="hmc",
+            sites=sites,
+            xi=xi,
+        )
+    )
+
+
+def deterministic_price(*, sites: int) -> float:
+    return carbon_price(
+        CarbonPriceKey(
+            context="parameter_ambiguity",
+            model="det",
+            sites=sites,
+            xi="inf",
+        )
+    )
+
+
+def base_prices(args: argparse.Namespace, *, xi: float) -> list[tuple[str, float]]:
+    include_hmc = args.price_source in {"hmc", "all"} or args.include_det_price
+    include_det = args.price_source in {"det", "all"} or args.include_det_price
+
+    prices: list[tuple[str, float]] = []
+    if include_hmc:
+        prices.append(("hmc", hmc_price(sites=args.sites, xi=xi)))
+    if include_det:
+        if normalize_xi(xi) != "1":
+            raise ValueError("The deterministic-price HMC sampling case is only used for xi=1.")
+        prices.append(("det", deterministic_price(sites=args.sites)))
+
+    unique_prices: list[tuple[str, float]] = []
+    seen: set[float] = set()
+    for label, pee in prices:
+        key = round(float(pee), 10)
+        if key in seen:
+            continue
+        seen.add(key)
+        unique_prices.append((label, pee))
+    return unique_prices
+
+
 def price_value(pee: float, transfer: float) -> float:
     return round(float(pee) + float(transfer), 10)
 
@@ -42,7 +87,14 @@ def sample_path(
     )
 
 
-def run_one_sample(args: argparse.Namespace, *, xi: float, pee: float, transfer: float) -> None:
+def run_one_sample(
+    args: argparse.Namespace,
+    *,
+    xi: float,
+    pee: float,
+    price_source: str,
+    transfer: float,
+) -> None:
     pe = price_value(pee, transfer)
     outfile_path = sample_path(
         solver=args.solver,
@@ -56,7 +108,8 @@ def run_one_sample(args: argparse.Namespace, *, xi: float, pee: float, transfer:
         return
 
     print(
-        f"Running HMC sampling for xi={normalize_xi(xi)}, pee={pee}, "
+        f"Running HMC sampling for xi={normalize_xi(xi)}, "
+        f"price_source={price_source}, pee={pee}, "
         f"transfer={transfer}, pe={pe}",
         flush=True,
     )
@@ -103,22 +156,35 @@ def main() -> None:
     parser.add_argument("--chains", type=int, default=4)
     parser.add_argument("--seed", type=int, default=1)
     parser.add_argument("--tol", type=float, default=0.005)
+    parser.add_argument(
+        "--price-source",
+        choices=["hmc", "det", "all"],
+        default="hmc",
+        help="Which base carbon price to sample at before adding transfer levels.",
+    )
+    parser.add_argument(
+        "--include-det-price",
+        action="store_true",
+        help=(
+            "For xi=1, also generate samples at the deterministic carbon price. "
+            "This supports the common-price HMC figures without hardcoding Pee."
+        ),
+    )
     parser.add_argument("--show-console", action="store_true")
     parser.add_argument("--no-progress", action="store_true")
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args()
 
     for xi in xi_values(args.xi):
-        pee = carbon_price(
-            CarbonPriceKey(
-                context="parameter_ambiguity",
-                model="hmc",
-                sites=args.sites,
-                xi=xi,
-            )
-        )
-        for transfer in args.transfers:
-            run_one_sample(args, xi=xi, pee=pee, transfer=transfer)
+        for price_source, pee in base_prices(args, xi=xi):
+            for transfer in args.transfers:
+                run_one_sample(
+                    args,
+                    xi=xi,
+                    pee=pee,
+                    price_source=price_source,
+                    transfer=transfer,
+                )
 
     print("HMC sampling outputs done.", flush=True)
 

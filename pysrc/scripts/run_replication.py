@@ -214,11 +214,29 @@ def hmc_commands() -> list[list[str]]:
 
 
 def hmc_sampling_commands() -> list[list[str]]:
-    return [
-        [PY, "pysrc/scripts/hmc_sampling.py", "--xi", "1"],
-        [PY, "pysrc/scripts/hmc_sampling.py", "--xi", "2"],
-        [PY, "pysrc/scripts/hmc_sampling.py", "--xi", "0.5"],
+    commands: list[list[str]] = []
+    transfers = ["0", "10", "15", "20", "25"]
+    specs = [
+        ("1", ["hmc", "det"]),
+        ("2", ["hmc"]),
+        ("0.5", ["hmc"]),
     ]
+    for xi, price_sources in specs:
+        for transfer in transfers:
+            for price_source in price_sources:
+                commands.append(
+                    [
+                        PY,
+                        "pysrc/scripts/hmc_sampling.py",
+                        "--xi",
+                        xi,
+                        "--price-source",
+                        price_source,
+                        "--transfers",
+                        transfer,
+                    ]
+                )
+    return commands
 
 
 def mpc_table_commands() -> list[list[str]]:
