@@ -432,8 +432,6 @@ Those steps do the following:
   `job-outs/stage_mpc/*_mpc_hmc_*/*_run.out`
   and writes
   `replication/derived/mpc_transition_probabilities.csv`.
-- `pysrc/mpc/mpc_compute_day0.py` reconstructs day-0 MPC present-value tables
-  from generated optimization arrays.
 - `pysrc/replication/build_paper_numbers.py` writes
   `replication/exhibit_manifest.csv`, `replication/paper_numbers.csv`, and
   `replication/paper_numbers_missing_summary.csv`.
@@ -444,6 +442,9 @@ Those steps do the following:
 
 The post-processing scripts do not read values from the manuscript PDF. Reported
 numbers are extracted from generated outputs and logs.
+If you need to regenerate the MPC day-0 table files first, run
+`mpc-tables-unconstrained` and/or `mpc-tables-constrained` before
+`postprocess-final`.
 
 After the command finishes, check these generated files:
 
@@ -576,8 +577,6 @@ mpc-figures-unconstrained
 bayesian-r2
 maps
 postprocess
-postprocess-unconstrained
-postprocess-constrained
 postprocess-final
 postprocess-only
 stage-data

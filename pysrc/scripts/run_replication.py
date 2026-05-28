@@ -85,12 +85,10 @@ STAGE_ALIASES = {
         "mpc-hmc-figure14-unconstrained",
         "mpc-simulation-tables-unconstrained",
         "mpc-figures-unconstrained",
-        "postprocess-unconstrained",
         "mpc-hmc-pre-constrained",
         "mpc-probabilities-constrained",
         "mpc-day0-constrained",
         "mpc-tables-constrained",
-        "postprocess-constrained",
         "postprocess-final",
     ],
 }
@@ -287,56 +285,41 @@ def mpc_models(model: str | None = None) -> tuple[str, ...]:
 
 
 def mpc_probability_commands(model: str | None = None) -> list[list[str]]:
-    commands: list[list[str]] = []
-    for model_name in mpc_models(model):
-        command = [PY, "pysrc/replication/derive_mpc_transition_probabilities.py"]
-        if model is not None:
-            command.extend(["--model", model_name])
-        commands.append(command)
-    return commands
+    if model is None:
+        return [[PY, "pysrc/replication/derive_mpc_transition_probabilities.py"]]
+    mpc_models(model)
+    return [
+        [
+            PY,
+            "pysrc/replication/derive_mpc_transition_probabilities.py",
+            "--model",
+            model,
+        ]
+    ]
 
 
 def postprocess_commands(model: str | None = None) -> list[list[str]]:
-    if model == "final":
+    if model is None or model == "final":
         return [
             [PY, "pysrc/replication/build_paper_numbers.py"],
             [PY, "pysrc/replication/build_aux_input_tables.py"],
         ]
 
-    commands: list[list[str]] = []
-    for model_name in mpc_models(model):
-        if model_name == "unconstrained":
-            commands.append(
-                [
-                    PY,
-                    "pysrc/mpc/mpc_compute_day0.py",
-                    "--model",
-                    "unconstrained",
-                    "--b",
-                    "0",
-                    "10",
-                    "15",
-                    "25",
-                    "--xi",
-                    "all",
-                ]
-            )
-        else:
-            commands.append(
-                [
-                    PY,
-                    "pysrc/mpc/mpc_compute_day0.py",
-                    "--model",
-                    "constrained",
-                    "--b",
-                    "all",
-                    "--xi",
-                    "all",
-                ]
-            )
-    if model is None:
-        commands.extend(postprocess_commands("final"))
-    return commands
+    mpc_models(model)
+    return [
+        [
+            PY,
+            "-c",
+            (
+                "print('postprocess-"
+                + model
+                + " no longer regenerates MPC tables; use "
+                + "mpc-tables-"
+                + model
+                + " for table generation and postprocess-final for manifests.')"
+            ),
+        ]
+    ]
 
 
 def mpc_figure_commands(model: str | None = None) -> list[list[str]]:
