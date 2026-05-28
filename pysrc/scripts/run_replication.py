@@ -319,7 +319,6 @@ def postprocess_commands(model: str | None = None) -> list[list[str]]:
                     "25",
                     "--xi",
                     "all",
-                    "--quiet",
                 ]
             )
         else:
@@ -333,7 +332,6 @@ def postprocess_commands(model: str | None = None) -> list[list[str]]:
                     "all",
                     "--xi",
                     "all",
-                    "--quiet",
                 ]
             )
     if model is None:
@@ -365,7 +363,6 @@ def mpc_table_commands(model: str | None = None) -> list[list[str]]:
                     "25",
                     "--xi",
                     "all",
-                    "--quiet",
                 ]
             )
         else:
@@ -379,7 +376,6 @@ def mpc_table_commands(model: str | None = None) -> list[list[str]]:
                     "all",
                     "--xi",
                     "all",
-                    "--quiet",
                 ]
             )
     return commands
