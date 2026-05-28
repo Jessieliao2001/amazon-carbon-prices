@@ -111,4 +111,10 @@ for b in [0,15]:
     plt.xlim(0,50)
     plt.legend()
     plt.savefig(os.path.join(output_folder, f"figures/mpc_landallocation_b_{b}_adjust.png"))
+    plt.savefig(
+        os.path.join(
+            output_folder,
+            f"figures/mpc_landallocation_b_{b}_baseline_same_ylim.png",
+        )
+    )
     plt.show()

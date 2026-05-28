@@ -416,10 +416,12 @@ def trajectory_diff(
     #         plt.ylim(10, 26)
     plt.ylim(0,24)
     plt.legend(loc="upper left", ncol=5, frameon=False, fontsize=16)
-    plt.savefig(
+    output_path = (
         output_folder
         + f"/aggregate_percentage_Z_b{b}_pehmc_{pe_hmc}_pedet_{pe_det}_xi_{xi}.png"
     )
+    plt.savefig(output_path)
+    plt.savefig(output_path.replace(".png", "_same_ylim.png"))
     plt.show()
 
     return

@@ -90,15 +90,30 @@ def read_or_build_paper_figure_inputs(
     return inputs
 
 
+def generated_figure_name_candidates(basename: str) -> list[str]:
+    candidates = [basename]
+    mpc_match = re.fullmatch(
+        r"mpc_landallocation_b_(?P<b>\d+)_baseline_same_ylim\.png",
+        basename,
+    )
+    if mpc_match:
+        candidates.append(f"mpc_landallocation_b_{mpc_match.group('b')}_adjust.png")
+    elif basename.endswith("_same_ylim.png"):
+        candidates.append(basename.replace("_same_ylim.png", ".png"))
+
+    return list(dict.fromkeys(candidates))
+
+
 def resolve_generated_figure(root: Path, basename: str) -> Path | None:
     matches: list[Path] = []
-    for folder in [root / "output", root / "plots"]:
-        if folder.exists():
-            matches.extend(
-                path
-                for path in folder.rglob(basename)
-                if path.is_file() and not path.name.startswith("._")
-            )
-    if not matches:
-        return None
-    return sorted(matches, key=lambda path: str(path.relative_to(root)))[0]
+    for candidate in generated_figure_name_candidates(basename):
+        for folder in [root / "output", root / "plots"]:
+            if folder.exists():
+                matches.extend(
+                    path
+                    for path in folder.rglob(candidate)
+                    if path.is_file() and not path.name.startswith("._")
+                )
+        if matches:
+            return sorted(matches, key=lambda path: str(path.relative_to(root)))[0]
+    return None
