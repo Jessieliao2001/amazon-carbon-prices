@@ -42,6 +42,7 @@ DEFAULT_PARALLEL_STEPS = {
     "mpc-figures-unconstrained",
     "maps",
     "hmc",
+    "relative-entropy",
     "hmc-maps",
 }
 MPC_GROUP_STEPS = {
@@ -71,6 +72,7 @@ STAGE_ALIASES = {
         "derive-prices",
         "hmc-sampling",
         "hmc",
+        "relative-entropy",
         "hmc-maps",
     ],
     "stage-mpc": [
@@ -128,6 +130,17 @@ def base_steps() -> dict[str, list[list[str]]]:
         ],
         "derive-prices": [[PY, "pysrc/replication/derive_carbon_prices.py"]],
         "deterministic": [[PY, "pysrc/scripts/conduction_det.py"]],
+        "relative-entropy": [
+            [
+                PY,
+                "pysrc/bash/relative_entropy.py",
+                "--xi",
+                "1",
+                "--sites",
+                "1043",
+                "--skip-density",
+            ]
+        ],
         "hmc-sampling": hmc_sampling_commands(),
         "hmc": hmc_commands(),
         "mpc-prepare": [
