@@ -90,6 +90,7 @@ STAGE_ALIASES = {
         "mpc-day0-constrained",
         "mpc-tables-constrained",
         "postprocess-final",
+        "aux-figures",
     ],
 }
 FULL_STAGE_SEQUENCE = [

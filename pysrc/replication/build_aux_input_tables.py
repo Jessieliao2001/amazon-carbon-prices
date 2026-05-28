@@ -771,15 +771,15 @@ def build_tables(root: Path, aux_dir: Path, reference_dir: Path) -> pd.DataFrame
             [MPC_PROBABILITY_FILE],
         )
 
+    comparison_text, comparison_sources = render_value_decomp_comparison(root)
+    write("value_decomp_comparison.tex", comparison_text, comparison_sources)
+
     constrained_text, constrained_sources = render_mpc_constrained(root)
     write(
         "present_value_mpc_constrained_sites78.tex",
         constrained_text,
         constrained_sources,
     )
-
-    comparison_text, comparison_sources = render_value_decomp_comparison(root)
-    write("value_decomp_comparison.tex", comparison_text, comparison_sources)
 
     for source, target in [
         (root / "output" / "tables" / "hmm_results_table.tex", "hmm_results_table.tex"),
