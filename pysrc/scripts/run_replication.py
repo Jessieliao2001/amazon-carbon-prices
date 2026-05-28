@@ -71,8 +71,8 @@ STAGE_ALIASES = {
         "shadow-prices-hmc",
         "derive-prices",
         "hmc-sampling",
-        "hmc",
         "relative-entropy",
+        "hmc",
         "hmc-maps",
     ],
     "stage-mpc": [

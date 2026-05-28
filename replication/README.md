@@ -20,8 +20,10 @@ the carbon-price file again before HMC outputs are built. The HMC sampling step
 uses those derived prices, including the extra `xi=1` deterministic-price case
 needed by the common-price HMC figures. HMC sampling is submitted as one
 `(xi, price source, transfer)` command per job so transfer levels can run in
-parallel. The HMC stage also runs `relative-entropy` before `hmc-maps`, because
-Figure 16 reads `output/figures/entropy/site_1043/xi1.0/kl_divergences_theta_gamma.csv`.
+parallel. The HMC stage also runs `relative-entropy` after HMC sampling, because
+Figure 16 reads `output/figures/entropy/site_1043/xi1.0/kl_divergences_theta_gamma.csv`
+and the HMC density figures use the companion `density_sites_from_relative_entropy.csv`
+to pick sites from the top KL-divergence results.
 The MPC stage includes the MPC shadow-price optimization grid before
 `mpc-prices`, because `pysrc/mpc/mpc_compute_sp.py` parses those grid outputs.
 Grid jobs recompute and overwrite existing output folders by default, matching

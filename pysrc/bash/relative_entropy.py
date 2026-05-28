@@ -120,6 +120,32 @@ def compute_kl(unadjusted: np.ndarray, adjusted: np.ndarray) -> float:
     return float(entropy(p, q))
 
 
+def density_sites_from_kl(kl_df: pd.DataFrame) -> pd.DataFrame:
+    rows: list[dict[str, object]] = []
+    for parameter, transfer, column in [
+        ("theta", "b0", "theta_b0"),
+        ("theta", "b15", "theta_b15"),
+        ("gamma", "b0", "gamma_b0"),
+        ("gamma", "b15", "gamma_b15"),
+    ]:
+        top = kl_df.nlargest(1, column).iloc[0]
+        rows.append(
+            {
+                "parameter": parameter,
+                "transfer": transfer,
+                "source_column": column,
+                "site_id": int(top["id"]),
+                "relative_entropy": float(top[column]),
+            }
+        )
+    return pd.DataFrame(rows)
+
+
+def ordered_site_ids(selected_sites: pd.DataFrame, parameter: str) -> list[int]:
+    values = selected_sites.loc[selected_sites["parameter"] == parameter, "site_id"]
+    return list(dict.fromkeys(int(value) for value in values))
+
+
 def build_relative_entropy(
     *,
     solver: str,
@@ -128,7 +154,7 @@ def build_relative_entropy(
     xi: float,
     pee: float,
     det_pee: float,
-) -> Path:
+) -> tuple[Path, Path, list[int], list[int]]:
     b0_path = sample_path(solver=solver, sites=sites, pa=pa, xi=xi, pe=pee)
     b15_path = sample_path(
         solver=solver,
@@ -179,13 +205,22 @@ def build_relative_entropy(
     output_path = output_folder / "kl_divergences_theta_gamma.csv"
     kl_df.to_csv(output_path, index=False)
 
+    selected_sites = density_sites_from_kl(kl_df)
+    selected_sites_path = output_folder / "density_sites_from_relative_entropy.csv"
+    selected_sites.to_csv(selected_sites_path, index=False)
+    gamma_sites = ordered_site_ids(selected_sites, "gamma")
+    theta_sites = ordered_site_ids(selected_sites, "theta")
+
     print(f"Relative entropy CSV saved to {output_path}", flush=True)
+    print(f"Density-site selection saved to {selected_sites_path}", flush=True)
+    print(f"Gamma density sites selected from KL output: {gamma_sites}", flush=True)
+    print(f"Theta density sites selected from KL output: {theta_sites}", flush=True)
     print("Top 2 KL divergences per parameter:", flush=True)
     for column in ["theta_b0", "theta_b15", "gamma_b0", "gamma_b15"]:
         for site, value in kl_df.nlargest(2, column)[["id", column]].values.tolist():
             print(f"{column}: id {int(site)} -> KL = {value:.4f}", flush=True)
 
-    return output_path
+    return output_path, selected_sites_path, gamma_sites, theta_sites
 
 
 def main() -> None:
@@ -227,7 +262,7 @@ def main() -> None:
             )
         )
 
-    output_path = build_relative_entropy(
+    output_path, selected_sites_path, gamma_sites, theta_sites = build_relative_entropy(
         solver=args.solver,
         sites=args.sites,
         pa=args.pa,
@@ -240,9 +275,17 @@ def main() -> None:
         from pysrc.analysis.figures import density
 
         print("Generating density plots for the same sample.", flush=True)
-        density(num_sites=args.sites, pee=pee, xi=args.xi, solver=args.solver)
+        density(
+            num_sites=args.sites,
+            pee=pee,
+            xi=args.xi,
+            solver=args.solver,
+            gamma_sites_to_plot=gamma_sites,
+            theta_sites_to_plot=theta_sites,
+        )
 
     print(f"Relative entropy step done: {output_path}", flush=True)
+    print(f"Density-site selection done: {selected_sites_path}", flush=True)
 
 
 if __name__ == "__main__":

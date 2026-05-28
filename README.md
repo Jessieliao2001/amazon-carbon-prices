@@ -365,12 +365,15 @@ sacct -u $USER --format=JobID,JobName,State,ExitCode
 3. `stage-hmc` runs the finite-`xi` shadow prices (`xi=0.5,1,2`), refreshes
    the same carbon-price file, generates the HMC sampling outputs for the
    selected `P^{ee}` plus transfer levels, and then constructs HMC tables and
-   figures. Before the R HMC maps run, it also runs `relative-entropy` to create
-   `output/figures/entropy/site_1043/xi1.0/kl_divergences_theta_gamma.csv`,
-   which Figure 16 needs. For `xi=1`, the sampling step also generates the
-   deterministic `P^{ee}` case used by the common-price HMC figures; both
-   prices are read from `replication/derived/carbon_prices.csv`. Each HMC
-   sampling command is one `(xi, price source, transfer)` job, so
+   figures. After HMC sampling, it also runs `relative-entropy` to create
+   `output/figures/entropy/site_1043/xi1.0/kl_divergences_theta_gamma.csv`
+   and `density_sites_from_relative_entropy.csv`; the latter selects the
+   density-plot sites from the top KL-divergence sites before HMC density
+   figures are regenerated, and Figure 16 reads the former. For `xi=1`, the
+   sampling step also generates the deterministic `P^{ee}` case used by the
+   common-price HMC figures; both prices are read from
+   `replication/derived/carbon_prices.csv`. Each HMC sampling command is one
+   `(xi, price source, transfer)` job, so
    `b=0,10,15,20,25` can run in parallel instead of being bundled into one long
    job.
 

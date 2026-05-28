@@ -166,7 +166,56 @@ def land_allocation(pee=7.6, num_sites=1043, solver="gurobi", pa=41.11, model="d
     return
 
 
-def density(pee=7.6, num_sites=78, solver="gurobi", pa=41.11, xi=1,pee_det=6.6, model="det"):
+def _site_indices_from_ids(site_ids, num_sites):
+    indices = []
+    for site_id in site_ids:
+        site_id = int(site_id)
+        if site_id < 1 or site_id > num_sites:
+            raise ValueError(f"Site id {site_id} is outside 1..{num_sites}.")
+        index = site_id - 1
+        if index not in indices:
+            indices.append(index)
+    return indices
+
+
+def _density_site_ids_from_relative_entropy(num_sites, xi):
+    entropy_folder = (
+        get_path("output") / "figures" / "entropy" / f"site_{num_sites}" / f"xi{xi}"
+    )
+    selected_path = entropy_folder / "density_sites_from_relative_entropy.csv"
+    if selected_path.exists():
+        selected = pd.read_csv(selected_path)
+        gamma_sites = selected.loc[selected["parameter"] == "gamma", "site_id"].tolist()
+        theta_sites = selected.loc[selected["parameter"] == "theta", "site_id"].tolist()
+        return gamma_sites, theta_sites
+
+    kl_path = entropy_folder / "kl_divergences_theta_gamma.csv"
+    if not kl_path.exists():
+        return None
+
+    kl_df = pd.read_csv(kl_path)
+    gamma_sites = [
+        int(kl_df.nlargest(1, "gamma_b0").iloc[0]["id"]),
+        int(kl_df.nlargest(1, "gamma_b15").iloc[0]["id"]),
+    ]
+    theta_sites = [
+        int(kl_df.nlargest(1, "theta_b0").iloc[0]["id"]),
+        int(kl_df.nlargest(1, "theta_b15").iloc[0]["id"]),
+    ]
+    return gamma_sites, theta_sites
+
+
+def density(
+    pee=7.6,
+    num_sites=78,
+    solver="gurobi",
+    pa=41.11,
+    xi=1,
+    pee_det=6.6,
+    model="det",
+    gamma_sites_to_plot=None,
+    theta_sites_to_plot=None,
+):
     output_folder = (
         str(get_path("output")) + f"/figures/density/site_{num_sites}/xi{xi}/"
     )
@@ -219,12 +268,22 @@ def density(pee=7.6, num_sites=78, solver="gurobi", pa=41.11, xi=1,pee_det=6.6, 
     gamma_adjusted_b15 = b15["final_sample"][:16000, num_sites:]
 
 
-    # if xi == 1.0:
-    #     gamma_sites_to_plot = range(num_sites)
-    #     theta_sites_to_plot = range(num_sites)
-    # else:
-    gamma_sites_to_plot = [937, 928]  
-    theta_sites_to_plot = [984, 1027]  
+    entropy_sites = _density_site_ids_from_relative_entropy(num_sites, xi)
+    if entropy_sites is not None:
+        entropy_gamma_sites, entropy_theta_sites = entropy_sites
+    else:
+        entropy_gamma_sites, entropy_theta_sites = None, None
+
+    if gamma_sites_to_plot is None:
+        gamma_sites_to_plot = entropy_gamma_sites or [938, 929]
+    if theta_sites_to_plot is None:
+        theta_sites_to_plot = entropy_theta_sites or [985, 1028]
+
+    gamma_sites_to_plot = _site_indices_from_ids(gamma_sites_to_plot, num_sites)
+    theta_sites_to_plot = _site_indices_from_ids(theta_sites_to_plot, num_sites)
+
+    print("gamma density sites:", [idx + 1 for idx in gamma_sites_to_plot])
+    print("theta density sites:", [idx + 1 for idx in theta_sites_to_plot])
 
     for idx in gamma_sites_to_plot:
         fig, axes = plt.subplots(1, 1, figsize=(8, 6))
@@ -286,7 +345,7 @@ def density(pee=7.6, num_sites=78, solver="gurobi", pa=41.11, xi=1,pee_det=6.6, 
         plt.close()
 
     for idx in theta_sites_to_plot:
-        print("site",idx)
+        print("site",idx + 1)
         fig, axes = plt.subplots(1, 1, figsize=(8, 6))
 
         sns.kdeplot(
