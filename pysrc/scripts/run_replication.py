@@ -151,6 +151,9 @@ def base_steps() -> dict[str, list[list[str]]]:
         "mpc-simulation-tables-unconstrained": mpc_simulation_table_commands("unconstrained"),
         "mpc-figures": mpc_figure_commands("unconstrained"),
         "mpc-figures-unconstrained": mpc_figure_commands("unconstrained"),
+        "aux-figures": [
+            [PY, "pysrc/replication/build_aux_input_tables.py", "--figures-only"]
+        ],
         "mpc-probabilities": mpc_probability_commands(),
         "mpc-probabilities-unconstrained": mpc_probability_commands("unconstrained"),
         "mpc-probabilities-constrained": mpc_probability_commands("constrained"),

@@ -574,6 +574,7 @@ mpc-hmc-figure14
 mpc-hmc-figure14-unconstrained
 mpc-figures
 mpc-figures-unconstrained
+aux-figures
 bayesian-r2
 maps
 postprocess

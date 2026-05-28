@@ -848,7 +848,33 @@ def main() -> int:
         action="store_true",
         help="Do not remove old files from aux_input after generating assets.",
     )
+    parser.add_argument(
+        "--figures-only",
+        action="store_true",
+        help=(
+            "Only copy paper figures into aux_input/Figure[number]_* and write "
+            "the figure manifest. Existing aux_input tables are left untouched."
+        ),
+    )
     args = parser.parse_args()
+
+    if args.figures_only:
+        figure_manifest = _copy_aux_figures(
+            args.root,
+            args.aux_dir,
+            args.paper_tex,
+            args.figure_inputs_out,
+        )
+        args.figure_manifest_out.parent.mkdir(parents=True, exist_ok=True)
+        figure_manifest.to_csv(
+            args.figure_manifest_out,
+            index=False,
+            quoting=csv.QUOTE_MINIMAL,
+        )
+        copied_count = int(figure_manifest["copied"].sum()) if not figure_manifest.empty else 0
+        print(f"Copied {copied_count} aux_input figure files")
+        print(f"Wrote aux figure manifest: {args.figure_manifest_out}")
+        return 0
 
     manifest = build_tables(args.root, args.aux_dir, args.table_reference_dir)
     figure_manifest = _copy_aux_figures(
