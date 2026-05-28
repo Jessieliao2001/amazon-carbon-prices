@@ -22,7 +22,23 @@ def read_theta(num_sites):
 
 
 def read_file(result_directory):
-    
+    required_files = ["Z.txt", "X.txt", "U.txt", "V.txt"]
+    missing = [
+        filename
+        for filename in required_files
+        if not os.path.exists(os.path.join(result_directory, filename))
+    ]
+    if missing:
+        raise FileNotFoundError(
+            f"Missing MPC simulation output(s) {missing} in {result_directory}. "
+            "These simulation rows are used only for the Table 18 comparison. "
+            "Run `./run.sh --steps mpc-hmc-figure14-unconstrained "
+            "mpc-simulation-tables-unconstrained --backend local` locally, or "
+            "`./run.sh --steps mpc-hmc-figure14-unconstrained "
+            "mpc-simulation-tables-unconstrained --backend slurm "
+            "--slurm-account <account>` on the server."
+        )
+
     Z = np.loadtxt(os.path.join(result_directory, "Z.txt"), delimiter=",")
     X = np.sum(np.loadtxt(os.path.join(result_directory, "X.txt"), delimiter=","),axis=1)
     Xdot = np.diff(X, axis=0)
@@ -344,4 +360,3 @@ if __name__ == "__main__":
 #             file.write(summary_table_df.to_latex(index=False))
 
 #     return print("done")
-

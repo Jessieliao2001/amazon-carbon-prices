@@ -38,6 +38,7 @@ DEFAULT_PARALLEL_STEPS = {
     "mpc-tables",
     "mpc-tables-unconstrained",
     "mpc-tables-constrained",
+    "mpc-simulation-tables-unconstrained",
     "mpc-figures-unconstrained",
     "maps",
     "hmc",
@@ -82,6 +83,7 @@ STAGE_ALIASES = {
         "mpc-day0-unconstrained",
         "mpc-tables-unconstrained",
         "mpc-hmc-figure14-unconstrained",
+        "mpc-simulation-tables-unconstrained",
         "mpc-figures-unconstrained",
         "postprocess-unconstrained",
         "mpc-hmc-pre-constrained",
@@ -148,6 +150,7 @@ def base_steps() -> dict[str, list[list[str]]]:
         "mpc-tables": mpc_table_commands(),
         "mpc-tables-unconstrained": mpc_table_commands("unconstrained"),
         "mpc-tables-constrained": mpc_table_commands("constrained"),
+        "mpc-simulation-tables-unconstrained": mpc_simulation_table_commands("unconstrained"),
         "mpc-figures": mpc_figure_commands("unconstrained"),
         "mpc-figures-unconstrained": mpc_figure_commands("unconstrained"),
         "mpc-probabilities": mpc_probability_commands(),
@@ -347,29 +350,61 @@ def mpc_figure_commands(model: str | None = None) -> list[list[str]]:
 
 def mpc_table_commands(model: str | None = None) -> list[list[str]]:
     commands: list[list[str]] = []
-    allowed_models = set(mpc_models(model))
-    specs = [
-        ("unconstrained", ["0", "10", "15", "25"]),
-        ("constrained", ["0", "10", "15", "20", "25"]),
-    ]
-    for model_name, b_values in specs:
-        if model_name not in allowed_models:
-            continue
-        for b_value in b_values:
-            for xi in ["inf", "1", "0.5"]:
-                commands.append(
-                    [
-                        PY,
-                        "pysrc/mpc/mpc_compute.py",
-                        "--model",
-                        model_name,
-                        "--b",
-                        b_value,
-                        "--xi",
-                        xi,
-                    ]
-                )
+    for model_name in mpc_models(model):
+        if model_name == "unconstrained":
+            commands.append(
+                [
+                    PY,
+                    "pysrc/mpc/mpc_compute_day0.py",
+                    "--model",
+                    "unconstrained",
+                    "--b",
+                    "0",
+                    "10",
+                    "15",
+                    "25",
+                    "--xi",
+                    "all",
+                    "--quiet",
+                ]
+            )
+        else:
+            commands.append(
+                [
+                    PY,
+                    "pysrc/mpc/mpc_compute_day0.py",
+                    "--model",
+                    "constrained",
+                    "--b",
+                    "all",
+                    "--xi",
+                    "all",
+                    "--quiet",
+                ]
+            )
     return commands
+
+
+def mpc_simulation_table_commands(model: str | None = None) -> list[list[str]]:
+    if model not in {None, "unconstrained"}:
+        raise ValueError("MPC simulation table rows are currently needed only for unconstrained outputs.")
+    return [
+        [
+            PY,
+            "pysrc/mpc/mpc_compute.py",
+            "--model",
+            "unconstrained",
+            "--b",
+            "0",
+            "10",
+            "15",
+            "25",
+            "--xi",
+            "inf",
+            "--mode",
+            "baseline",
+        ]
+    ]
 
 
 def mpc_sp_grid_commands() -> list[list[str]]:

@@ -384,8 +384,11 @@ sacct -u $USER --format=JobID,JobName,State,ExitCode
    the original scripts and avoiding mixed old/new shadow-price outputs.
    After the MPC carbon prices are derived, the driver runs the unconstrained
    MPC-HMC/pre/day-0/table/figure/postprocess block first, then runs the
-   constrained MPC-HMC/pre/day-0/table/postprocess block. Figure 14 is generated
-   only from the unconstrained MPC-HMC jobs.
+   constrained MPC-HMC/pre/day-0/table/postprocess block. Tables 6, 8, 12, 19,
+   and 21 are reconstructed from day-0 outputs; Table 18 additionally uses
+   simulation rows from `mpc_compute.py`, so those rows run only after the
+   unconstrained Figure 14 MPC-HMC simulation jobs. Figure 14 is generated only
+   from the unconstrained MPC-HMC jobs.
    Large MPC Slurm steps are submitted in groups of five commands. For the
    MPC-HMC steps, each group is one `(model, xi, id, trig)` case with
    `b=0,10,15,20,25`, matching the old `mpc_hmc.sh` loop while reducing the
@@ -565,6 +568,7 @@ mpc-day0-constrained
 mpc-tables
 mpc-tables-unconstrained
 mpc-tables-constrained
+mpc-simulation-tables-unconstrained
 mpc-hmc-figure14
 mpc-hmc-figure14-unconstrained
 mpc-figures
