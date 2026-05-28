@@ -35,36 +35,11 @@ stan_model/compiled_model.pkl
 *.o
 
 # Results
-# Keep large raw solver outputs ignored, but allow the paper-facing generated
-# tables/figures and replication audit files to be version controlled.
-output/**
-!output/
-!output/tables/
-!output/tables/**
-!output/mpc/
-!output/mpc/**
-!output/figures/
-!output/figures/**
+output/
 plot/
-plots/**
-!plots/
-!plots/**/
-!plots/**/*.png
-!plots/**/*.pdf
-!plots/**/*.tex
+plots/
 logs/
 Casadi_Results/
-
-# Replication release artifacts
-!aux_input/
-!aux_input/**
-!replication/*.csv
-!replication/derived/
-!replication/derived/*.csv
-!replication/aux_input_table_templates/
-!replication/aux_input_table_templates/**
-!replication/figure1/
-!replication/figure1/**
 
 # R stuff
 # History files
