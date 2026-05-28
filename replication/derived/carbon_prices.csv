@@ -1,3 +1,12 @@
 context,model,sites,xi,price_model,pee,metric,abs_metric,source_kind,source_file
-parameter_ambiguity,det,78,inf,,6.7,0.006837416196769177,0.006837416196769177,shadow_price_local_log,job-outs/stage_deterministic/01_shadow_prices_det/0019_run.out
-parameter_ambiguity,det,1043,inf,,6.8,-0.0036686558689059826,0.0036686558689059826,shadow_price_local_log,job-outs/stage_deterministic/01_shadow_prices_det/0009_run.out
+parameter_ambiguity,det,78,inf,,6.7,0.006837417275017298,0.006837417275017298,shadow_price_local_log,job-outs/stage_deterministic/01_shadow_prices_det/0019_run.out
+parameter_ambiguity,det,1043,inf,,6.8,-0.004210364121938025,0.004210364121938025,shadow_price_local_log,job-outs/stage_deterministic/01_shadow_prices_det/0009_run.out
+parameter_ambiguity,hmc,1043,0.5,,2.8,0.003062190406135577,0.003062190406135577,shadow_price_local_log,job-outs/stage_hmc/01_shadow_prices_hmc/0009_run.out
+parameter_ambiguity,hmc,1043,1,,4.8,0.001532064788426553,0.001532064788426553,shadow_price_local_log,job-outs/stage_hmc/01_shadow_prices_hmc/0029_run.out
+parameter_ambiguity,hmc,1043,2,,5.6,-0.005259978948524679,0.005259978948524679,shadow_price_local_log,job-outs/stage_hmc/01_shadow_prices_hmc/0038_run.out
+price_stochasticity,constrained,78,0.5,common_variance,5.6,0.0038893784677485606,0.0038893784677485606,mpc_shadow_price_local_log,job-outs/stage_mpc/03_mpc_prices/0001_run.out
+price_stochasticity,constrained,78,1,common_variance,6.2,0.005061040073617833,0.005061040073617833,mpc_shadow_price_local_log,job-outs/stage_mpc/03_mpc_prices/0001_run.out
+price_stochasticity,constrained,78,inf,common_variance,6.7,-0.0040289671602400596,0.0040289671602400596,mpc_shadow_price_local_log,job-outs/stage_mpc/03_mpc_prices/0001_run.out
+price_stochasticity,unconstrained,78,0.5,distinct_variance,6.1,-0.001492278307344841,0.001492278307344841,mpc_shadow_price_local_log,job-outs/stage_mpc/03_mpc_prices/0001_run.out
+price_stochasticity,unconstrained,78,1,distinct_variance,6.5,-0.007285059706555346,0.007285059706555346,mpc_shadow_price_local_log,job-outs/stage_mpc/03_mpc_prices/0001_run.out
+price_stochasticity,unconstrained,78,inf,distinct_variance,6.9,-0.006491441451721289,0.006491441451721289,mpc_shadow_price_local_log,job-outs/stage_mpc/03_mpc_prices/0001_run.out
