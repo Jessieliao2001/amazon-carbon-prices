@@ -402,9 +402,10 @@ sacct -u $USER --format=JobID,JobName,State,ExitCode
    number of submitted Slurm jobs.
 
 6. `stage-postprocess` runs after `stage-mpc` and is intentionally separate
-   from the heavy MPC jobs. It refreshes derived carbon prices, MPC transition
-   probabilities, paper-number manifests, aux-input tables, and aux-input
-   figures.
+   from the heavy MPC jobs. Carbon prices are derived earlier, immediately
+   after the shadow-price and MPC price-search outputs that downstream steps
+   need. The final stage refreshes MPC transition probabilities, paper-number
+   manifests, aux-input tables, and aux-input figures.
 
 7. The first HMC/shadow-price job on a machine may compile
    `stan_model/adjusted` from `stan_model/adjusted.stan`. Parallel server jobs
@@ -428,7 +429,6 @@ After model jobs have produced raw outputs in `job-outs/`, `output/`, and
 This expands to:
 
 ```text
-derive-prices
 mpc-probabilities
 postprocess-final
 aux-figures
@@ -436,10 +436,6 @@ aux-figures
 
 Those steps do the following:
 
-- `pysrc/replication/derive_carbon_prices.py` parses shadow-price and MPC logs,
-  including original `run.out` logs and local numbered `0001_run.out` logs, and
-  writes `replication/derived/carbon_price_candidates.csv` and
-  `replication/derived/carbon_prices.csv`.
 - `pysrc/replication/derive_mpc_transition_probabilities.py` parses
   stage-specific numbered MPC-HMC logs such as
   `job-outs/stage_mpc/mpc_hmc_*/*_run.out`

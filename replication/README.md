@@ -34,8 +34,10 @@ corresponds to one `(model, xi, id, trig)` case and its five transfer levels.
 Within `stage-mpc`, the unconstrained MPC-HMC/pre/day-0/table/figure outputs are
 run before the constrained MPC-HMC/pre/day-0/table outputs. Figure 14 is
 unconstrained-only.
-`stage-postprocess` is separate from `stage-mpc`; it refreshes derived prices,
-transition probabilities, manifests, aux-input tables, and aux-input figures.
+`stage-postprocess` is separate from `stage-mpc`; it refreshes transition
+probabilities, manifests, aux-input tables, and aux-input figures. Carbon
+prices are derived earlier inside the deterministic, HMC, and MPC stages because
+later model steps need them.
 For example:
 
 ```bash

@@ -93,7 +93,6 @@ STAGE_ALIASES = {
         "mpc-tables-constrained",
     ],
     "stage-postprocess": [
-        "derive-prices",
         "mpc-probabilities",
         "postprocess-final",
         "aux-figures",
