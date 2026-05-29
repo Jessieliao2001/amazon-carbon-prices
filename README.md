@@ -499,6 +499,10 @@ job-outs/
       0001_run.err
 ```
 
+When `run.sh` starts, it safely renames older two-digit step folders such as
+`16_postprocess_final` to `postprocess_final`. If the unprefixed folder already
+exists, the old folder is skipped instead of being moved inside it.
+
 MPC-HMC child output is written directly into the same stage-specific numbered
 logs shown above; the driver does not create nested `job-outs/mpc/.../run.out`
 files. Slurm batch scripts are submitted inline rather than saved as per-run

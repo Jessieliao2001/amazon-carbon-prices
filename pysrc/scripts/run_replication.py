@@ -639,6 +639,40 @@ def display_path(path: Path, root: Path) -> str:
         return str(path)
 
 
+def unprefixed_step_dir_name(name: str) -> str | None:
+    if len(name) <= 3:
+        return None
+    if not name[:2].isdigit() or name[2] != "_":
+        return None
+    return name[3:]
+
+
+def normalize_numbered_log_step_dirs(log_base: Path, root: Path) -> None:
+    if not log_base.exists():
+        return
+    for stage_dir in sorted(log_base.iterdir()):
+        if not stage_dir.is_dir():
+            continue
+        for step_dir in sorted(stage_dir.iterdir()):
+            if not step_dir.is_dir():
+                continue
+            target_name = unprefixed_step_dir_name(step_dir.name)
+            if target_name is None:
+                continue
+            target = stage_dir / target_name
+            if target.exists():
+                print(
+                    "Skipping old numbered log folder because target exists: "
+                    f"{display_path(step_dir, root)} -> {display_path(target, root)}"
+                )
+                continue
+            print(
+                "Renaming old numbered log folder: "
+                f"{display_path(step_dir, root)} -> {display_path(target, root)}"
+            )
+            step_dir.rename(target)
+
+
 def elapsed_text(seconds: int) -> str:
     days, rem = divmod(seconds, 86400)
     hours, rem = divmod(rem, 3600)
@@ -1268,6 +1302,8 @@ def main() -> int:
 
     root = args.root.resolve()
     log_base = resolve_local_log_base(root, args.local_log_dir)
+    if not args.no_local_logs and not args.dry_run:
+        normalize_numbered_log_step_dirs(log_base, root)
     local_log_base = None if args.no_local_logs else log_base
     failures: list[tuple[str, list[str], int]] = []
     selected_parallel_steps = parallel_steps(args.parallel_steps)
