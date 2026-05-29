@@ -3,7 +3,7 @@
 .DS_Store
 
 
-
+aux_input/
 job-outs/**
 !job-outs/
 !job-outs/shadow_price/
