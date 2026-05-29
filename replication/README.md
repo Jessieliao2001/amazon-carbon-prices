@@ -54,7 +54,7 @@ For example:
 - `replication/figure1/` stores the repo-internal World Bank inputs for Figure 1. `pysrc/scripts/figure1.py` turns those inputs into `output/figures/scatter_emission_gdp_log.png` and `replication/derived/figure1_source_data.csv`.
 - `pysrc/replication/build_paper_numbers.py` writes `exhibit_manifest.csv`, `paper_numbers.csv`, and `paper_numbers_missing_summary.csv`.
 - `pysrc/replication/build_aux_input_tables.py` writes `aux_input_table_manifest.csv`, `aux_input_figure_manifest.csv`, and refreshes `aux_input/` so it contains only generated `Table<number>_*.tex` and `Figure<number>_*` files.
-- `replication/aux_input_table_templates/` stores stable table-format references so rerunning after `aux_input/` cleanup does not depend on removed unprefixed table files.
+- `replication/aux_input_table_templates/` stores stable table-format references so rerunning after `aux_input/` cleanup does not depend on removed unprefixed table files. Normal post-processing reads this directory but does not write to it; use `pysrc/replication/build_aux_input_tables.py --update-table-references` only for maintenance.
 
 ## Files
 
@@ -64,5 +64,5 @@ For example:
 - `paper_numbers.csv`: output-derived table cells, carbon prices, and MPC transition probabilities.
 - `paper_numbers_missing_summary.csv`: generated-output coverage by table/figure.
 - `aux_input_table_manifest.csv`: source files and optional numeric-format checks for generated aux input tables.
-- `aux_input_table_templates/`: cached table-format references used by `aux_input_table_manifest.csv`.
+- `aux_input_table_templates/`: cached table-format references used read-only by `aux_input_table_manifest.csv` during normal replication.
 - `aux_input_figure_manifest.csv`: paper figure inputs matched to generated figure files copied into `aux_input/`.

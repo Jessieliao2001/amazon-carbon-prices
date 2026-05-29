@@ -216,22 +216,25 @@ def _ensure_table_reference(
     reference_dir: Path,
     name: str,
     generated: Path,
+    *,
+    update_reference: bool = False,
 ) -> tuple[Path, bool, str]:
     reference = reference_dir / name
     unprefixed_aux = aux_dir / name
 
-    if unprefixed_aux.exists():
-        reference.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(unprefixed_aux, reference)
-        return reference, True, "unprefixed_aux_input"
-
     if reference.exists():
         return reference, True, "cached_reference"
 
-    if generated.exists():
-        reference.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(generated, reference)
-        return reference, True, "bootstrapped_from_generated"
+    if update_reference:
+        if unprefixed_aux.exists():
+            reference.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(unprefixed_aux, reference)
+            return reference, True, "unprefixed_aux_input"
+
+        if generated.exists():
+            reference.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(generated, reference)
+            return reference, True, "bootstrapped_from_generated"
 
     return reference, False, "missing_reference"
 
@@ -675,7 +678,13 @@ def render_sigma_table(path: Path) -> str:
     return "\n".join(lines)
 
 
-def build_tables(root: Path, aux_dir: Path, reference_dir: Path) -> pd.DataFrame:
+def build_tables(
+    root: Path,
+    aux_dir: Path,
+    reference_dir: Path,
+    *,
+    update_table_references: bool = False,
+) -> pd.DataFrame:
     prices = pd.read_csv(CARBON_PRICE_FILE)
     prices["xi"] = prices["xi"].map(normalize_xi)
     probabilities = pd.read_csv(MPC_PROBABILITY_FILE)
@@ -693,6 +702,7 @@ def build_tables(root: Path, aux_dir: Path, reference_dir: Path) -> pd.DataFrame
             reference_dir,
             name,
             out,
+            update_reference=update_table_references,
         )
         numeric_note = (
             _numeric_diff_note(reference, out)
@@ -815,8 +825,18 @@ def main() -> int:
         type=Path,
         default=AUX_TABLE_REFERENCE_DIR,
         help=(
-            "Stable cache of paper-format table templates. This prevents the "
-            "manifest from depending on unprefixed files that are cleaned from aux_input."
+            "Stable paper-format table templates used read-only by default. "
+            "This prevents the manifest from depending on unprefixed files "
+            "that are cleaned from aux_input."
+        ),
+    )
+    parser.add_argument(
+        "--update-table-references",
+        action="store_true",
+        help=(
+            "Maintenance mode: create missing files in --table-reference-dir "
+            "from existing aux_input tables or newly generated tables. Normal "
+            "replication runs leave the reference directory untouched."
         ),
     )
     parser.add_argument(
@@ -876,7 +896,12 @@ def main() -> int:
         print(f"Wrote aux figure manifest: {args.figure_manifest_out}")
         return 0
 
-    manifest = build_tables(args.root, args.aux_dir, args.table_reference_dir)
+    manifest = build_tables(
+        args.root,
+        args.aux_dir,
+        args.table_reference_dir,
+        update_table_references=args.update_table_references,
+    )
     figure_manifest = _copy_aux_figures(
         args.root,
         args.aux_dir,
