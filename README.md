@@ -25,12 +25,10 @@ same steps through Slurm.
   Python code lives under one importable package tree.
 - `replication/figure1/`: repo-internal World Bank inputs and documentation for
   reproducing Figure 1 through `pysrc/scripts/figure1.py`.
-- `bash_files/`: legacy cluster helper scripts.
-- `job-outs/`: selected original run logs used to derive reported carbon prices.
-  Only the `run.out` files needed for the replication audit are intended to be
+- `job-outs/`: generated local or Slurm logs, not version controlled.
+- `output/` and `plots/`: generated tables, figures, and model outputs, not
   version controlled.
-- `output/` and `plots/`: generated tables, figures, and model outputs.
-- `replication/`: derived replication metadata, exhibit manifest, and
+- `replication/`: static replication inputs plus generated manifests and
   output-derived manuscript numbers.
 
 ## Requirements
@@ -219,6 +217,7 @@ local command logs under `job-outs/`.
 ./run.sh --steps stage-data --backend local
 ./run.sh --steps stage-hmm --backend local --jobs 2
 ./run.sh --steps stage-deterministic --backend local --jobs 2
+./run.sh --steps stage-time-consistency --backend local --jobs 2
 ./run.sh --steps stage-hmc --backend local --jobs 2
 ./run.sh --steps stage-mpc --backend local --jobs 2
 ./run.sh --steps stage-postprocess --backend local
@@ -302,7 +301,7 @@ export REPLICATION_SLURM_ACCOUNT="pi-lhansen"
    Submit the non-R computation stages on the server with:
 
 ```bash
-./run.sh --steps stage-hmm stage-deterministic stage-hmc stage-mpc stage-postprocess --backend slurm
+./run.sh --steps stage-hmm stage-deterministic stage-time-consistency stage-hmc stage-mpc stage-postprocess --backend slurm
 ```
 
 This submits all Slurm jobs at once, but step order is preserved through Slurm
@@ -327,7 +326,7 @@ steps wait for upstream jobs to finish successfully.
 7. Before submitting a long server run, inspect the exact Slurm plan:
 
 ```bash
-./run.sh --steps stage-hmm stage-deterministic stage-hmc stage-mpc stage-postprocess --backend slurm --dry-run
+./run.sh --steps stage-hmm stage-deterministic stage-time-consistency stage-hmc stage-mpc stage-postprocess --backend slurm --dry-run
 ./run.sh --steps all --backend slurm --run-r-on-slurm --dry-run
 ```
 
@@ -382,7 +381,12 @@ sacct -u $USER --format=JobID,JobName,State,ExitCode
    not have R installed. Add `--run-r-on-slurm` only when R is available and the
    R environment has been restored on the server.
 
-5. `stage-mpc` first creates MPC simulation paths, then runs the MPC
+5. `stage-time-consistency` runs the carrot-policy time-consistency evidence
+   jobs for `bf=3.75` and `bf=5` at 1043 sites. These jobs are independent and
+   can run in parallel. They write cached optimization objects and auditable
+   summaries under `output/time_consistency/bf_*/`.
+
+6. `stage-mpc` first creates MPC simulation paths, then runs the MPC
    shadow-price optimization grid (`xi=0.5,1,10000`, `P^{ee}=5.0,...,7.0`,
    constrained and unconstrained) before `mpc-prices` parses those grid outputs.
    The grid jobs are parallel-safe and are required before
@@ -401,13 +405,13 @@ sacct -u $USER --format=JobID,JobName,State,ExitCode
    `b=0,10,15,20,25`, matching the old `mpc_hmc.sh` loop while reducing the
    number of submitted Slurm jobs.
 
-6. `stage-postprocess` runs after `stage-mpc` and is intentionally separate
+7. `stage-postprocess` runs after `stage-mpc` and is intentionally separate
    from the heavy MPC jobs. Carbon prices are derived earlier, immediately
    after the shadow-price and MPC price-search outputs that downstream steps
    need. The final stage refreshes MPC transition probabilities, paper-number
    manifests, aux-input tables, and aux-input figures.
 
-7. The first HMC/shadow-price job on a machine may compile
+8. The first HMC/shadow-price job on a machine may compile
    `stan_model/adjusted` from `stan_model/adjusted.stan`. Parallel server jobs
    use a compile lock so only one job compiles at a time; other jobs wait and
    then reuse the executable. If a previous failed run left partial compilation
@@ -597,6 +601,7 @@ postprocess-only
 stage-data
 stage-hmm
 stage-deterministic
+stage-time-consistency
 stage-hmc
 stage-mpc
 stage-postprocess
@@ -616,15 +621,8 @@ REPLICATION_SLURM_COMMANDS_PER_JOB="10"
 REPLICATION_SLURM_GROUP_MIN_COMMANDS="100"
 ```
 
-The legacy server helper `bash_files/hmc_shadow_price.sh` now delegates to
-`run.sh` so its Slurm logs use the same numbered `job-outs/` format. Use
-`bash_files/hmc_shadow_price.sh det` for only `xi=\infty` shadow prices, or
-`bash_files/hmc_shadow_price.sh hmc` for only finite-`xi` HMC shadow prices.
-The other replication helper scripts in `bash_files/` that correspond directly
-to named driver steps, such as `price_estimation.sh`, `det_conduction.sh`,
-`hmc_conduction.sh`, `mpc_prepare.sh`, `mpc_compute.sh`, and `mpc_hmc.sh`, also
-delegate to `run.sh --backend slurm`. Low-level diagnostic or sampler helpers
-that are not part of the staged driver keep their raw output layouts.
+The clean replication branch uses `run.sh` as the single entry point for both
+local and Slurm runs.
 
 ### Step 6. Reproducibility Notes
 
@@ -640,9 +638,3 @@ that are not part of the staged driver keep their raw output layouts.
   `--type converge_con` read those derived transition probabilities; they do
   not rely on manually edited probability dictionaries.
 - For a laptop or non-server check, use `--steps postprocess-only`.
-
-## Legacy Scripts
-
-The scripts in `bash_files/` are retained for compatibility with earlier server
-runs. New replication runs should start with `run.sh`, which calls the current
-Python and R entry points and keeps local and Slurm execution paths aligned.

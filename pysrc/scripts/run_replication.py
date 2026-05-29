@@ -44,6 +44,7 @@ DEFAULT_PARALLEL_STEPS = {
     "hmc",
     "relative-entropy",
     "hmc-maps",
+    "time-consistency",
 }
 MPC_GROUP_STEPS = {
     "mpc-sp-grid",
@@ -67,6 +68,7 @@ STAGE_ALIASES = {
         "deterministic",
         "maps",
     ],
+    "stage-time-consistency": ["time-consistency"],
     "stage-hmc": [
         "shadow-prices-hmc",
         "derive-prices",
@@ -102,6 +104,7 @@ FULL_STAGE_SEQUENCE = [
     "stage-data",
     "stage-hmm",
     "stage-deterministic",
+    "stage-time-consistency",
     "stage-hmc",
     "stage-mpc",
     "stage-postprocess",
@@ -134,6 +137,10 @@ def base_steps() -> dict[str, list[list[str]]]:
         ],
         "derive-prices": [[PY, "pysrc/replication/derive_carbon_prices.py"]],
         "deterministic": [[PY, "pysrc/scripts/conduction_det.py"]],
+        "time-consistency": [
+            [PY, "pysrc/scripts/time_consistency.py", "--bf", "3.75", "--sites", "1043"],
+            [PY, "pysrc/scripts/time_consistency.py", "--bf", "5", "--sites", "1043"],
+        ],
         "relative-entropy": [
             [
                 PY,
@@ -1180,7 +1187,8 @@ def main() -> int:
         default=["postprocess-only"],
         help=(
             "all, postprocess-only, stage-data, stage-hmm, stage-deterministic, "
-            "stage-hmc, stage-mpc, stage-postprocess, or an explicit list of step names"
+            "stage-time-consistency, stage-hmc, stage-mpc, stage-postprocess, "
+            "or an explicit list of step names"
         ),
     )
     parser.add_argument("--backend", choices=["local", "slurm"], default="local")

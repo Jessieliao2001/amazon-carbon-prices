@@ -13,8 +13,8 @@ Run the local post-processing check with:
 The normal replication workflow is self-contained and does not require any manuscript TeX or PDF file outside the repository. Maintainers can optionally pass `--paper-tex` directly to `pysrc/replication/build_paper_numbers.py` or `pysrc/replication/build_aux_input_tables.py` only when intentionally refreshing `paper_figure_inputs.csv`.
 
 For long local runs, use the staged aliases documented in the root `README.md`:
-`stage-data`, `stage-hmm`, `stage-deterministic`, `stage-hmc`, `stage-mpc`,
-and `stage-postprocess`.
+`stage-data`, `stage-hmm`, `stage-deterministic`, `stage-time-consistency`,
+`stage-hmc`, `stage-mpc`, and `stage-postprocess`.
 The deterministic stage runs only the `xi=\infty` (`xi=10000`) shadow-price
 searches; the HMC stage runs the finite-`xi` shadow-price searches and refreshes
 the carbon-price file again before HMC outputs are built. The HMC sampling step
@@ -25,6 +25,8 @@ parallel. The HMC stage also runs `relative-entropy` after HMC sampling, because
 Figure 16 reads `output/figures/entropy/site_1043/xi1.0/kl_divergences_theta_gamma.csv`
 and the HMC density figures use the companion `density_sites_from_relative_entropy.csv`
 to pick sites from the top KL-divergence results.
+The time-consistency stage runs the carrot-policy checks for `bf=3.75` and
+`bf=5` and writes summary CSVs under `output/time_consistency/bf_*/`.
 The MPC stage includes the MPC shadow-price optimization grid before
 `mpc-prices`, because `pysrc/mpc/mpc_compute_sp.py` parses those grid outputs.
 Grid jobs recompute and overwrite existing output folders by default, matching
@@ -41,6 +43,7 @@ later model steps need them.
 For example:
 
 ```bash
+./run.sh --steps stage-time-consistency --backend local --jobs 2
 ./run.sh --steps stage-hmc --backend local --jobs 3
 ./run.sh --steps stage-mpc --backend local --jobs 4
 ./run.sh --steps stage-postprocess --backend local
