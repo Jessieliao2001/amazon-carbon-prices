@@ -347,7 +347,7 @@ sacct -u $USER --format=JobID,JobName,State,ExitCode
 ```
 
 10. Slurm writes driver logs to the same stage folders as local runs, for
-   example `job-outs/stage_deterministic/01_shadow_prices_det/0001_run.out`.
+   example `job-outs/stage_deterministic/shadow_prices_det/0001_run.out`.
    When submitting stages separately on Slurm, wait for one stage to finish
    before starting the next, because dependencies are tracked only within one
    `run.sh` invocation.
@@ -435,7 +435,7 @@ Those steps do the following:
   `replication/derived/carbon_prices.csv`.
 - `pysrc/replication/derive_mpc_transition_probabilities.py` parses
   stage-specific numbered MPC-HMC logs such as
-  `job-outs/stage_mpc/*_mpc_hmc_*/*_run.out`
+  `job-outs/stage_mpc/mpc_hmc_*/*_run.out`
   and writes
   `replication/derived/mpc_transition_probabilities.csv`.
 - `pysrc/replication/build_paper_numbers.py` writes
@@ -478,23 +478,23 @@ is only for maintainers who intentionally want to refresh
 ### Step 5. Logs, Parallelism, And Dry Runs
 
 Local and Slurm driver logs are saved under `job-outs/`, grouped first by
-replication stage and then by step. This keeps separate staged runs from all
-writing different `01_*` folders into the top level of `job-outs/`:
+replication stage and then by step. Step folders use only the step name; the
+per-command files keep their numeric prefixes:
 
 ```text
 job-outs/
   stage_deterministic/
-    01_shadow_prices_det/
+    shadow_prices_det/
       0001_run.out
       0001_run.err
       0002_run.out
       0002_run.err
   stage_hmc/
-    01_shadow_prices_hmc/
+    shadow_prices_hmc/
       0001_run.out
       0001_run.err
   stage_mpc/
-    01_mpc_prepare/
+    mpc_prepare/
       0001_run.out
       0001_run.err
 ```
@@ -514,7 +514,7 @@ start/end. The group log also prints which numbered command is currently
 running.
 Running an individual named step also uses its canonical stage folder; for
 example, `./run.sh --steps maps --backend local` writes to
-`job-outs/stage_deterministic/04_maps/`.
+`job-outs/stage_deterministic/maps/`.
 
 To inspect commands without running them:
 

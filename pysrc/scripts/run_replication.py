@@ -615,11 +615,7 @@ def local_log_files(
     step: str,
     command_index: int,
 ) -> LocalLogFiles:
-    step_dir = (
-        base_dir
-        / safe_name(stage)
-        / f"{step_index:02d}_{safe_name(step)}"
-    )
+    step_dir = base_dir / safe_name(stage) / safe_name(step)
     stem = f"{command_index:04d}"
     return LocalLogFiles(
         step_dir=step_dir,
@@ -904,11 +900,7 @@ def submit_slurm_group(
 
     first_command_index = commands[0][0]
     last_command_index = commands[-1][0]
-    step_dir = (
-        log_base_dir
-        / safe_name(stage)
-        / f"{step_index:02d}_{safe_name(step)}"
-    )
+    step_dir = log_base_dir / safe_name(stage) / safe_name(step)
     step_dir.mkdir(parents=True, exist_ok=True)
     group_stem = f"group_{group_index:04d}_{first_command_index:04d}_{last_command_index:04d}"
     group_out = step_dir / f"{group_stem}.out"

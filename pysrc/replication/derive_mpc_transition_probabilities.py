@@ -148,10 +148,12 @@ def _metadata_from_command(command: list[str]) -> dict[str, str]:
 
 def _candidate_logs(root: Path) -> list[Path]:
     # The staged driver writes MPC-HMC child output directly to numbered logs such
-    # as job-outs/stage_mpc/05_mpc_hmc_pre_unconstrained/0001_run.out.
+    # as job-outs/stage_mpc/mpc_hmc_pre_unconstrained/0001_run.out.
     # Do not scan legacy nested job-outs/mpc/... logs, which can mix stale output
     # into a fresh stage-mpc run.
-    paths = list(root.glob("job-outs/**/*_mpc_hmc_*/*_run.out"))
+    paths = list(root.glob("job-outs/**/mpc_hmc_*/*_run.out"))
+    if not paths:
+        paths = list(root.glob("job-outs/**/*_mpc_hmc_*/*_run.out"))
     return _unique_paths(paths)
 
 
