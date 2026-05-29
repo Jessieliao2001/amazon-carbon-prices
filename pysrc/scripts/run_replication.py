@@ -91,6 +91,10 @@ STAGE_ALIASES = {
         "mpc-probabilities-constrained",
         "mpc-day0-constrained",
         "mpc-tables-constrained",
+    ],
+    "stage-postprocess": [
+        "derive-prices",
+        "mpc-probabilities",
         "postprocess-final",
         "aux-figures",
     ],
@@ -101,8 +105,9 @@ FULL_STAGE_SEQUENCE = [
     "stage-deterministic",
     "stage-hmc",
     "stage-mpc",
+    "stage-postprocess",
 ]
-POSTPROCESS_STEPS = ["derive-prices", "mpc-probabilities", "postprocess"]
+POSTPROCESS_STEPS = list(STAGE_ALIASES["stage-postprocess"])
 
 
 @dataclass(frozen=True)
@@ -541,7 +546,7 @@ def execution_plan(selection: list[str]) -> list[ExecutionItem]:
         return plan
 
     elif selection == ["postprocess-only"]:
-        return stage_items("postprocess-only", POSTPROCESS_STEPS, order_index)
+        return stage_items("stage-postprocess", POSTPROCESS_STEPS, order_index)
 
     else:
         current_stage: str | None = None
@@ -1176,7 +1181,7 @@ def main() -> int:
         default=["postprocess-only"],
         help=(
             "all, postprocess-only, stage-data, stage-hmm, stage-deterministic, "
-            "stage-hmc, stage-mpc, or an explicit list of step names"
+            "stage-hmc, stage-mpc, stage-postprocess, or an explicit list of step names"
         ),
     )
     parser.add_argument("--backend", choices=["local", "slurm"], default="local")

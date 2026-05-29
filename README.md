@@ -221,6 +221,7 @@ local command logs under `job-outs/`.
 ./run.sh --steps stage-deterministic --backend local --jobs 2
 ./run.sh --steps stage-hmc --backend local --jobs 2
 ./run.sh --steps stage-mpc --backend local --jobs 2
+./run.sh --steps stage-postprocess --backend local
 ```
 
 3. If you ran the heavy computations elsewhere and only need to refresh the
@@ -301,7 +302,7 @@ export REPLICATION_SLURM_ACCOUNT="pi-lhansen"
    Submit the non-R computation stages on the server with:
 
 ```bash
-./run.sh --steps stage-hmm stage-deterministic stage-hmc stage-mpc --backend slurm
+./run.sh --steps stage-hmm stage-deterministic stage-hmc stage-mpc stage-postprocess --backend slurm
 ```
 
 This submits all Slurm jobs at once, but step order is preserved through Slurm
@@ -326,7 +327,7 @@ steps wait for upstream jobs to finish successfully.
 7. Before submitting a long server run, inspect the exact Slurm plan:
 
 ```bash
-./run.sh --steps stage-hmm stage-deterministic stage-hmc stage-mpc --backend slurm --dry-run
+./run.sh --steps stage-hmm stage-deterministic stage-hmc stage-mpc stage-postprocess --backend slurm --dry-run
 ./run.sh --steps all --backend slurm --run-r-on-slurm --dry-run
 ```
 
@@ -389,8 +390,8 @@ sacct -u $USER --format=JobID,JobName,State,ExitCode
    By default, each grid job recomputes and overwrites its output folder, matching
    the original scripts and avoiding mixed old/new shadow-price outputs.
    After the MPC carbon prices are derived, the driver runs the unconstrained
-   MPC-HMC/pre/day-0/table/figure/postprocess block first, then runs the
-   constrained MPC-HMC/pre/day-0/table/postprocess block. Tables 6, 8, 12, 19,
+   MPC-HMC/pre/day-0/table/figure block first, then runs the
+   constrained MPC-HMC/pre/day-0/table block. Tables 6, 8, 12, 19,
    and 21 are reconstructed from day-0 outputs; Table 18 additionally uses
    simulation rows from `mpc_compute.py`, so those rows run only after the
    unconstrained Figure 14 MPC-HMC simulation jobs. Figure 14 is generated only
@@ -400,7 +401,12 @@ sacct -u $USER --format=JobID,JobName,State,ExitCode
    `b=0,10,15,20,25`, matching the old `mpc_hmc.sh` loop while reducing the
    number of submitted Slurm jobs.
 
-6. The first HMC/shadow-price job on a machine may compile
+6. `stage-postprocess` runs after `stage-mpc` and is intentionally separate
+   from the heavy MPC jobs. It refreshes derived carbon prices, MPC transition
+   probabilities, paper-number manifests, aux-input tables, and aux-input
+   figures.
+
+7. The first HMC/shadow-price job on a machine may compile
    `stan_model/adjusted` from `stan_model/adjusted.stan`. Parallel server jobs
    use a compile lock so only one job compiles at a time; other jobs wait and
    then reuse the executable. If a previous failed run left partial compilation
@@ -424,7 +430,8 @@ This expands to:
 ```text
 derive-prices
 mpc-probabilities
-postprocess
+postprocess-final
+aux-figures
 ```
 
 Those steps do the following:
@@ -596,6 +603,7 @@ stage-hmm
 stage-deterministic
 stage-hmc
 stage-mpc
+stage-postprocess
 all
 ```
 

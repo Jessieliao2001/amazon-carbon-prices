@@ -13,7 +13,8 @@ Run the local post-processing check with:
 The normal replication workflow is self-contained and does not require any manuscript TeX or PDF file outside the repository. Maintainers can optionally pass `--paper-tex` directly to `pysrc/replication/build_paper_numbers.py` or `pysrc/replication/build_aux_input_tables.py` only when intentionally refreshing `paper_figure_inputs.csv`.
 
 For long local runs, use the staged aliases documented in the root `README.md`:
-`stage-data`, `stage-hmm`, `stage-deterministic`, `stage-hmc`, and `stage-mpc`.
+`stage-data`, `stage-hmm`, `stage-deterministic`, `stage-hmc`, `stage-mpc`,
+and `stage-postprocess`.
 The deterministic stage runs only the `xi=\infty` (`xi=10000`) shadow-price
 searches; the HMC stage runs the finite-`xi` shadow-price searches and refreshes
 the carbon-price file again before HMC outputs are built. The HMC sampling step
@@ -33,11 +34,14 @@ corresponds to one `(model, xi, id, trig)` case and its five transfer levels.
 Within `stage-mpc`, the unconstrained MPC-HMC/pre/day-0/table/figure outputs are
 run before the constrained MPC-HMC/pre/day-0/table outputs. Figure 14 is
 unconstrained-only.
+`stage-postprocess` is separate from `stage-mpc`; it refreshes derived prices,
+transition probabilities, manifests, aux-input tables, and aux-input figures.
 For example:
 
 ```bash
 ./run.sh --steps stage-hmc --backend local --jobs 3
 ./run.sh --steps stage-mpc --backend local --jobs 4
+./run.sh --steps stage-postprocess --backend local
 ```
 
 ## Logic
