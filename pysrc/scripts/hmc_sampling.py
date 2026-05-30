@@ -103,9 +103,8 @@ def run_one_sample(
         xi=xi,
         pe=pe,
     )
-    if outfile_path.exists() and not args.force:
-        print(f"Skipping existing HMC sampling output: {outfile_path}", flush=True)
-        return
+    if outfile_path.exists():
+        print(f"Overwriting existing HMC sampling output: {outfile_path}", flush=True)
 
     print(
         f"Running HMC sampling for xi={normalize_xi(xi)}, "
@@ -172,7 +171,6 @@ def main() -> None:
     )
     parser.add_argument("--show-console", action="store_true")
     parser.add_argument("--no-progress", action="store_true")
-    parser.add_argument("--force", action="store_true")
     args = parser.parse_args()
 
     for xi in xi_values(args.xi):

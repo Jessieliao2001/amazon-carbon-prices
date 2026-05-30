@@ -30,7 +30,6 @@ def main() -> None:
     parser.add_argument("--tol", type=float, default=0.005)
     parser.add_argument("--show-console", action="store_true", default=True)
     parser.add_argument("--no-progress", action="store_true")
-    parser.add_argument("--force", action="store_true")
     args = parser.parse_args()
 
     run_one_sample(

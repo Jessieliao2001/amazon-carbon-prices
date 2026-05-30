@@ -13,11 +13,6 @@ parser = argparse.ArgumentParser(description="parameter settings")
 parser.add_argument("--pe",type=float,default=20.76)
 parser.add_argument("--xi",type=float,default=10000)
 parser.add_argument("--type",type=str,default="unconstrained")
-parser.add_argument(
-    "--skip-existing",
-    action="store_true",
-    help="Reuse an existing complete output folder instead of recomputing it.",
-)
 args = parser.parse_args()
 type = args.type
 
@@ -70,9 +65,6 @@ def planner_outputs_exist(output_dir: Path) -> bool:
     )
 
 
-if args.skip_existing and planner_outputs_exist(output_folder):
-    print(f"Skipping existing MPC shadow-price output: {output_folder}")
-    raise SystemExit(0)
 if planner_outputs_exist(output_folder):
     print(f"Overwriting existing MPC shadow-price output: {output_folder}")
 
