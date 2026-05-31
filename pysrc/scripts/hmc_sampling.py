@@ -48,8 +48,8 @@ def base_prices(args: argparse.Namespace, *, xi: float) -> list[tuple[str, float
     if include_hmc:
         prices.append(("hmc", hmc_price(sites=args.sites, xi=xi)))
     if include_det:
-        if normalize_xi(xi) != "1":
-            raise ValueError("The deterministic-price HMC sampling case is only used for xi=1.")
+        if normalize_xi(xi) not in {"1", "inf"}:
+            raise ValueError("The deterministic-price HMC sampling case is only used for xi=1 or xi=10000.")
         prices.append(("det", deterministic_price(sites=args.sites)))
 
     unique_prices: list[tuple[str, float]] = []

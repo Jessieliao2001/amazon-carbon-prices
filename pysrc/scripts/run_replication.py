@@ -156,6 +156,18 @@ def base_steps() -> dict[str, list[list[str]]]:
             ]
         ],
         "hmc-sampling": hmc_sampling_commands(),
+        "hmc-neutral-sampling": [
+            [
+                PY,
+                "pysrc/scripts/hmc_sampling.py",
+                "--xi",
+                "10000",
+                "--price-source",
+                "det",
+                "--transfers",
+                "15",
+            ]
+        ],
         "hmc": hmc_commands(),
         "mpc-prepare": [
             [PY, "pysrc/mpc/mpc_simulating.py", "--type", "baseline"],
@@ -304,6 +316,18 @@ def hmc_sampling_commands() -> list[list[str]]:
                         transfer,
                     ]
                 )
+    commands.append(
+        [
+            PY,
+            "pysrc/scripts/hmc_sampling.py",
+            "--xi",
+            "10000",
+            "--price-source",
+            "det",
+            "--transfers",
+            "15",
+        ]
+    )
     return commands
 
 

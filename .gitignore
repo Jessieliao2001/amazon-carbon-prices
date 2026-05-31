@@ -6,11 +6,24 @@
 aux_input/
 job-outs/**
 !job-outs/
-!job-outs/shadow_price/
-!job-outs/shadow_price/**/
-!job-outs/shadow_price/**/run.out
-!job-outs/mpc_compute_sp/
-!job-outs/mpc_compute_sp/run.out
+!job-outs/stage_deterministic/
+!job-outs/stage_deterministic/shadow_prices_det/
+!job-outs/stage_deterministic/shadow_prices_det/*_run.out
+!job-outs/stage_deterministic/shadow_prices_det/*_run.err
+!job-outs/stage_hmc/
+!job-outs/stage_hmc/shadow_prices_hmc/
+!job-outs/stage_hmc/shadow_prices_hmc/*_run.out
+!job-outs/stage_hmc/shadow_prices_hmc/*_run.err
+!job-outs/stage_mpc/
+!job-outs/stage_mpc/mpc_prices/
+!job-outs/stage_mpc/mpc_prices/*_run.out
+!job-outs/stage_mpc/mpc_prices/*_run.err
+!job-outs/stage_mpc/mpc_hmc_pre_unconstrained/
+!job-outs/stage_mpc/mpc_hmc_pre_unconstrained/*_run.out
+!job-outs/stage_mpc/mpc_hmc_pre_unconstrained/*_run.err
+!job-outs/stage_mpc/mpc_hmc_pre_constrained/
+!job-outs/stage_mpc/mpc_hmc_pre_constrained/*_run.out
+!job-outs/stage_mpc/mpc_hmc_pre_constrained/*_run.err
 test/
 
 # Data

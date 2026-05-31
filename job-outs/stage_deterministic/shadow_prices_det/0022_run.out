@@ -1,0 +1,78 @@
+Command: /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/.venv/bin/python pysrc/bash/shadow_price.py --id 70 --xi 10000 --sites 78
+Working directory: /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices
+Program starts Fri May 22 01:59:27 CDT 2026
+
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/49992699/tmp_fk_r5c_.pyomo.lp
+Reading time = 0.15 seconds
+x1: 31600 rows, 62801 columns, 156166 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 31600 rows, 62801 columns and 156166 nonzeros
+Model fingerprint: 0x4e3adef0
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+03]
+  Objective range  [2e-03, 1e+03]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [2e-04, 1e+00]
+  RHS range        [8e-07, 6e+00]
+Presolve removed 15601 rows and 15602 columns
+Presolve time: 0.05s
+Presolved: 15999 rows, 47199 columns, 93920 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 0.03s
+
+Barrier statistics:
+ AA' NZ     : 4.672e+04
+ Factor NZ  : 5.040e+05 (roughly 30 MB of memory)
+ Factor Ops : 4.218e+07 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -1.15157461e+11  1.10640385e+11  7.89e+04 5.68e-14  1.00e+06     0s
+   1  -6.67017236e+10  6.64525034e+10  5.75e+03 5.33e+01  8.25e+04     0s
+   2  -2.89544587e+10  2.90375210e+10  6.76e+01 5.43e-01  1.83e+03     0s
+   3  -5.47534474e+09  5.56434602e+09  6.20e-01 1.23e-12  1.78e+02     0s
+   4  -1.35906730e+09  1.45070677e+09  8.53e-02 1.18e-12  4.45e+01     0s
+   5  -1.96006316e+08  2.18264972e+08  8.53e-08 1.43e-12  6.44e+00     0s
+   6  -2.83184919e+07  3.19876277e+07  1.29e-13 9.89e-13  9.38e-01     0s
+   7  -4.16617875e+06  5.01415650e+06  2.26e-14 4.30e-13  1.43e-01     0s
+   8  -6.15555550e+05  7.27373399e+05  8.36e-15 1.14e-13  2.09e-02     0s
+   9  -9.31757130e+04  1.10822750e+05  3.41e-15 2.31e-14  3.17e-03     0s
+  10  -1.46012913e+04  1.60149310e+04  2.25e-15 2.40e-15  4.76e-04     0s
+  11  -2.40764106e+03  2.50078562e+03  6.80e-16 8.88e-16  7.63e-05     1s
+  12  -4.38792610e+02  8.08239247e+02  2.24e-16 4.44e-16  1.94e-05     1s
+  13  -3.25511973e+01  2.73268456e+02  1.27e-16 4.44e-16  4.76e-06     1s
+  14   9.41351411e+01  1.85371548e+02  4.47e-17 4.44e-16  1.42e-06     1s
+  15   1.32995882e+02  1.59990621e+02  9.74e-17 6.66e-16  4.20e-07     1s
+  16   1.44838451e+02  1.53542053e+02  1.71e-16 4.44e-16  1.35e-07     1s
+  17   1.45654271e+02  1.53158208e+02  1.35e-16 4.44e-16  1.17e-07     1s
+  18   1.48507018e+02  1.51829579e+02  1.53e-16 4.44e-16  5.17e-08     1s
+  19   1.49548350e+02  1.51353573e+02  8.66e-17 5.55e-16  2.81e-08     1s
+  20   1.50282414e+02  1.51009284e+02  1.04e-16 4.44e-16  1.13e-08     1s
+  21   1.50321609e+02  1.50991930e+02  9.15e-17 6.66e-16  1.04e-08     1s
+  22   1.50615532e+02  1.50862845e+02  9.94e-17 4.44e-16  3.85e-09     1s
+  23   1.50719857e+02  1.50818413e+02  8.29e-17 6.66e-16  1.53e-09     1s
+  24   1.50762239e+02  1.50800641e+02  9.75e-17 4.44e-16  5.97e-10     1s
+  25   1.50782623e+02  1.50792161e+02  1.25e-16 4.44e-16  1.48e-10     1s
+  26   1.50785328e+02  1.50791026e+02  2.04e-16 6.66e-16  8.86e-11     1s
+  27   1.50788488e+02  1.50789710e+02  4.86e-16 4.44e-16  1.90e-11     1s
+  28   1.50789087e+02  1.50789462e+02  5.30e-16 6.66e-16  5.84e-12     1s
+  29   1.50789346e+02  1.50789355e+02  1.05e-15 8.88e-16  1.39e-13     1s
+
+Barrier solved model in 29 iterations and 1.20 seconds (0.43 work units)
+Optimal objective 1.50789346e+02
+
+Done! Time elapsed: 5.007125377655029 seconds.
+min_result -0.04240044040475324 min_pe 7.0
+
+Program ends Fri May 22 01:59:54 CDT 2026
+Exit code: 0
+Elapsed time: 27 seconds

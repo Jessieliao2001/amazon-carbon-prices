@@ -40,17 +40,6 @@ def sample_path(
     )
 
 
-def baseline_path(*, solver: str, sites: int) -> Path:
-    return (
-        get_path("output")
-        / "sampling"
-        / solver
-        / f"{sites}sites"
-        / "baseline"
-        / "results.pcl"
-    )
-
-
 def legacy_neutral_paths(
     *,
     solver: str,
@@ -80,12 +69,6 @@ def adjusted_samples(results: dict, num_sites: int) -> tuple[np.ndarray, np.ndar
     return sample[:, :num_sites], sample[:, num_sites:]
 
 
-def neutral_samples(results: dict, num_sites: int) -> tuple[np.ndarray, np.ndarray]:
-    if "theta" in results and "gamma" in results:
-        return results["theta"][:16000, :num_sites], results["gamma"][:16000, :num_sites]
-    return adjusted_samples(results, num_sites)
-
-
 def load_neutral_samples(
     *,
     solver: str,
@@ -93,19 +76,14 @@ def load_neutral_samples(
     pa: float,
     det_pee: float,
 ) -> tuple[np.ndarray, np.ndarray]:
-    base = baseline_path(solver=solver, sites=sites)
-    if base.exists():
-        print(f"Using baseline sampling output as neutral reference: {base}", flush=True)
-        return neutral_samples(load_pickle(base), sites)
-
     for path in legacy_neutral_paths(solver=solver, sites=sites, pa=pa, det_pee=det_pee):
         if path.exists():
-            print(f"Using legacy xi=10000 sampling output as neutral reference: {path}", flush=True)
-            return neutral_samples(load_pickle(path), sites)
+            print(f"Using old xi=10000 sampling output as neutral reference: {path}", flush=True)
+            return adjusted_samples(load_pickle(path), sites)
 
     raise FileNotFoundError(
-        "Missing neutral sampling output. Expected either "
-        f"{base} or one of {legacy_neutral_paths(solver=solver, sites=sites, pa=pa, det_pee=det_pee)}."
+        "Missing old neutral sampling output. Expected one of "
+        f"{legacy_neutral_paths(solver=solver, sites=sites, pa=pa, det_pee=det_pee)}."
     )
 
 

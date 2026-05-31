@@ -1,0 +1,2320 @@
+Command: /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/.venv/bin/python pysrc/bash/shadow_price.py --id 24 --xi 0.5 --sites 1043
+Working directory: /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices
+Program starts Fri May 29 17:54:27 CDT 2026
+
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+Waiting for Stan compile lock: /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/stan_model/adjusted.compile.lock
+Using Stan model executable: /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/stan_model/adjusted
+Optimization Iteration[1/100]
+
+Theta: [0.19293399 0.39270684 0.39383513 ... 2.1961384  1.20930668 1.03223742]
+
+Gamma: [605.85192903 587.02426052 531.68859839 ... 252.44623295 234.13249733
+ 233.63746894]
+
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/50255446/tmpzgz9q7le.pyomo.lp
+Reading time = 2.17 seconds
+x1: 417600 rows, 834801 columns, 2083271 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 417600 rows, 834801 columns and 2083271 nonzeros
+Model fingerprint: 0x5e8dacb7
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 9e+02]
+  Objective range  [9e-04, 5e+02]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-06, 1e+00]
+  RHS range        [9e-11, 4e-01]
+Presolve removed 208947 rows and 209294 columns
+Presolve time: 0.81s
+Presolved: 208653 rows, 625507 columns, 1249571 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 1.48s
+
+Barrier statistics:
+ AA' NZ     : 6.241e+05
+ Factor NZ  : 6.773e+07 (roughly 900 MB of memory)
+ Factor Ops : 2.543e+10 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -1.30249764e+11  1.10640370e+11  1.04e+06 1.13e-13  1.00e+06     6s
+   1  -6.41166385e+10  6.33689757e+10  4.43e+04 3.08e+01  4.67e+04     8s
+   2  -3.05753192e+10  3.06549113e+10  4.48e+02 1.24e-01  5.43e+02    10s
+   3  -1.08846550e+10  1.09732423e+10  3.21e+00 1.64e-12  2.86e+01    12s
+   4  -2.40157693e+09  2.49962601e+09  2.67e-01 1.34e-12  5.95e+00    17s
+   5  -5.82479266e+08  6.48720589e+08  3.65e-02 3.85e-12  1.46e+00    22s
+   6  -9.62912340e+07  1.09597740e+08  2.74e-03 1.66e-12  2.41e-01    26s
+   7  -1.40993531e+07  1.68818505e+07  2.74e-09 5.28e-12  3.63e-02    31s
+   8  -2.06367122e+06  2.46256151e+06  2.68e-13 1.02e-12  5.30e-03    34s
+   9  -3.05883306e+05  3.78764856e+05  3.83e-14 2.59e-13  8.02e-04    36s
+  10  -4.53520161e+04  5.51244318e+04  2.08e-14 5.57e-14  1.18e-04    38s
+  11  -6.78949502e+03  9.31255786e+03  8.72e-15 6.82e-15  1.89e-05    40s
+  12  -1.22123341e+03  3.84011856e+03  6.89e-15 2.20e-15  5.93e-06    41s
+  13   3.60219614e+01  1.00140087e+03  3.45e-15 2.26e-15  1.13e-06    45s
+  14   3.15653711e+02  5.30725790e+02  3.64e-16 6.66e-16  2.52e-07    48s
+  15   4.01177857e+02  4.85065298e+02  2.91e-16 6.66e-16  9.82e-08    51s
+  16   4.28790620e+02  4.60685770e+02  1.38e-16 5.55e-16  3.73e-08    53s
+  17   4.39507102e+02  4.53382468e+02  1.73e-16 6.66e-16  1.62e-08    55s
+  18   4.44360970e+02  4.50074589e+02  2.42e-16 5.55e-16  6.69e-09    57s
+  19   4.45859892e+02  4.49259574e+02  2.44e-16 5.00e-16  3.98e-09    59s
+  20   4.47028877e+02  4.48661892e+02  1.52e-16 6.66e-16  1.91e-09    61s
+  21   4.47309487e+02  4.48529333e+02  1.09e-16 6.66e-16  1.43e-09    63s
+  22   4.47618591e+02  4.48386511e+02  1.56e-16 5.00e-16  8.99e-10    64s
+  23   4.47756411e+02  4.48324749e+02  1.25e-16 5.55e-16  6.65e-10    66s
+  24   4.47913299e+02  4.48255336e+02  1.95e-16 5.00e-16  4.00e-10    68s
+  25   4.47990646e+02  4.48221938e+02  1.25e-16 5.00e-16  2.71e-10    69s
+  26   4.48016188e+02  4.48210996e+02  1.25e-16 4.44e-16  2.28e-10    71s
+  27   4.48033955e+02  4.48203408e+02  1.56e-16 4.44e-16  1.98e-10    73s
+  28   4.48089077e+02  4.48180103e+02  2.96e-16 5.00e-16  1.07e-10    75s
+  29   4.48097475e+02  4.48176580e+02  2.00e-16 4.44e-16  9.26e-11    77s
+  30   4.48123913e+02  4.48165601e+02  4.29e-16 5.55e-16  4.88e-11    78s
+  31   4.48138106e+02  4.48159763e+02  5.98e-16 5.00e-16  2.54e-11    80s
+  32   4.48145504e+02  4.48156762e+02  4.92e-16 4.44e-16  1.32e-11    82s
+  33   4.48149603e+02  4.48155113e+02  1.36e-15 5.00e-16  6.45e-12    84s
+  34   4.48150856e+02  4.48154613e+02  3.93e-15 4.44e-16  4.40e-12    86s
+  35   4.48152583e+02  4.48153926e+02  9.93e-15 5.55e-16  1.57e-12    87s
+  36   4.48153194e+02  4.48153684e+02  8.50e-15 4.44e-16  5.73e-13    89s
+  37   4.48153433e+02  4.48153589e+02  6.43e-15 5.00e-16  1.82e-13    91s
+  38   4.48153515e+02  4.48153557e+02  9.98e-15 6.11e-16  4.87e-14    93s
+  39   4.48153541e+02  4.48153546e+02  1.48e-14 7.77e-16  6.34e-15    94s
+
+Barrier solved model in 39 iterations and 94.24 seconds (18.07 work units)
+Optimal objective 4.48153541e+02
+
+Done! Time elapsed: 124.7353458404541 seconds.
+Starting HMC sampling...
+
+                                                                                                                                                                                                                                                                                                                                
+Finished sampling! Elapsed Time: 962.7504327297211 seconds
+
+Checking sampler transitions treedepth.
+54 of 16000 (0.34%) transitions hit the maximum treedepth limit of 10, or 2^10 leapfrog steps.
+Trajectories that are prematurely terminated due to this limit will result in slow exploration.
+For optimal performance, increase this limit.
+
+Checking sampler transitions for divergences.
+No divergent transitions found.
+
+Checking E-BFMI - sampler transitions HMC potential energy.
+E-BFMI satisfactory.
+
+Rank-normalized split effective sample size satisfactory for all parameters.
+
+The following parameters had rank-normalized split R-hat greater than 1.01:
+  log_precision_v_theta, sigma_v_theta, nu_theta[2], nu_theta[8], nu_theta[9], nu_theta[10], nu_theta[17], nu_theta[18], nu_theta[22], nu_theta[25], nu_theta[26], nu_theta[35], nu_theta[39], nu_theta[42], nu_theta[44], nu_theta[46], nu_theta[52], nu_theta[53], nu_theta[54], nu_theta[55], nu_theta[57], nu_theta[58], nu_theta[61], nu_theta[64], nu_theta[65], nu_theta_w[11], nu_theta_w[14], nu_theta_w[15], nu_theta_w[20], nu_theta_w[22], nu_theta_w[24], nu_theta_w[25], nu_theta_w[26], nu_theta_w[28], nu_theta_w[36], nu_theta_w[39], nu_theta_w[42], nu_theta_w[43], nu_theta_w[55], nu_theta_w[56], nu_theta_w[57], nu_theta_w[63], nu_theta_w[75], nu_theta_w[82], nu_theta_w[84], nu_theta_w[85], nu_theta_w[86], nu_theta_w[90], nu_theta_w[93], nu_theta_w[98], nu_theta_w[99], nu_theta_w[104], nu_theta_w[106], nu_theta_w[109], nu_theta_w[111], nu_theta_w[119], nu_theta_w[120], nu_theta_w[123], nu_theta_w[125], nu_theta_w[126], nu_theta_w[128], nu_theta_w[131], nu_theta_w[134], nu_theta_w[136], nu_theta_w[144], nu_theta_w[151], nu_theta_w[153], nu_theta_w[161], nu_theta_w[162], nu_theta_w[165], nu_theta_w[171], nu_theta_w[179], nu_theta_w[194], nu_theta_w[195], nu_theta_w[198], nu_theta_w[199], nu_theta_w[201], nu_theta_w[206], nu_theta_w[208], nu_theta_w[285], nu_theta_w[298], nu_theta_w[299], nu_theta_w[301], nu_theta_w[319], nu_theta_w[343], nu_theta_w[345], nu_theta_w[348], nu_theta_w[359], nu_theta_w[360], nu_theta_w[361], nu_theta_w[373], nu_theta_w[375], nu_theta_w[377], nu_theta_w[378], nu_theta_w[379], nu_theta_w[381], nu_theta_w[382], nu_theta_w[387], nu_theta_w[395], nu_theta_w[396], nu_theta_w[397], nu_theta_w[400], nu_theta_w[406], nu_theta_w[411], nu_theta_w[412], nu_theta_w[415], nu_theta_w[417], nu_theta_w[419], nu_theta_w[420], nu_theta_w[421], nu_theta_w[422], nu_theta_w[437], nu_theta_w[440], nu_theta_w[457], nu_theta_w[460], nu_theta_w[461], nu_theta_fit[1], nu_theta_fit[3], nu_theta_fit[5], nu_theta_fit[6], nu_theta_fit[7], nu_theta_fit[8], nu_theta_fit[23], nu_theta_fit[26], nu_theta_fit[43], nu_theta_fit[46], nu_theta_fit[47], nu_theta_fit[53], nu_theta_fit[55], nu_theta_fit[56], nu_theta_fit[57], nu_theta_fit[59], nu_theta_fit[67], nu_theta_fit[70], nu_theta_fit[73], nu_theta_fit[74], nu_theta_fit[76], nu_theta_fit[77], nu_theta_fit[78], nu_theta_fit[81], nu_theta_fit[85], nu_theta_fit[87], nu_theta_fit[88], nu_theta_fit[89], nu_theta_fit[90], nu_theta_fit[92], nu_theta_fit[93], nu_theta_fit[98], nu_theta_fit[106], nu_theta_fit[109], nu_theta_fit[110], nu_theta_fit[111], nu_theta_fit[114], nu_theta_fit[121], nu_theta_fit[124], nu_theta_fit[125], nu_theta_fit[126], nu_theta_fit[130], nu_theta_fit[131], nu_theta_fit[133], nu_theta_fit[134], nu_theta_fit[148], nu_theta_fit[149], nu_theta_fit[150], nu_theta_fit[155], nu_theta_fit[160], nu_theta_fit[166], nu_theta_fit[168], nu_theta_fit[169], nu_theta_fit[170], nu_theta_fit[171], nu_theta_fit[172], nu_theta_fit[183], nu_theta_fit[188], nu_theta_fit[192], nu_theta_fit[195], nu_theta_fit[197], nu_theta_fit[202], nu_theta_fit[204], nu_theta_fit[209], nu_theta_fit[211], nu_theta_fit[216], nu_theta_fit[219], nu_theta_fit[227], nu_theta_fit[239], nu_theta_fit[243], nu_theta_fit[256], nu_theta_fit[265], nu_theta_fit[266], nu_theta_fit[267], nu_theta_fit[271], nu_theta_fit[272], nu_theta_fit[274], nu_theta_fit[277], nu_theta_fit[287], nu_theta_fit[289], nu_theta_fit[290], nu_theta_fit[300], nu_theta_fit[301], nu_theta_fit[302], nu_theta_fit[303], nu_theta_fit[304], nu_theta_fit[305], nu_theta_fit[307], nu_theta_fit[309], nu_theta_fit[360], nu_theta_fit[373], nu_theta_fit[390], nu_theta_fit[394], nu_theta_fit[407], nu_theta_fit[408], nu_theta_fit[411], nu_theta_fit[412], nu_theta_fit[426], nu_theta_fit[429], nu_theta_fit[431], nu_theta_fit[436], nu_theta_fit[459], nu_theta_fit[473], nu_theta_fit[476], nu_theta_fit[486], nu_theta_fit[488], nu_theta_fit[493], nu_theta_fit[494], nu_theta_fit[496], nu_theta_fit[500], nu_theta_fit[501], nu_theta_fit[505], nu_theta_fit[507], nu_theta_fit[510], nu_theta_fit[513], nu_theta_fit[521], nu_theta_fit[528], nu_theta_fit[529], nu_theta_fit[533], nu_theta_fit[535], nu_theta_fit[537], nu_theta_fit[538], nu_theta_fit[540], exp_log_theta[287], exp_log_theta[459], exp_log_theta[473], exp_log_theta[476], exp_log_theta[486], exp_log_theta[488], exp_log_theta[496], exp_log_theta[501], exp_log_theta[505], exp_log_theta[507], exp_log_theta[528], exp_log_theta[529], exp_log_theta[533], exp_log_theta[535], exp_log_theta[537], exp_log_theta[540], theta[650], theta[847], theta[848], theta[849], theta[881], theta[882], theta[883], theta[884], theta[885], theta[914], theta[915], theta[964]
+Such high values indicate incomplete mixing and biased estimation.
+You should consider regularizing your model with additional prior information or a more effective parameterization.
+
+Processing complete.
+
+Parameters from last iteration: [1.92933991e-01 3.92706841e-01 3.93835127e-01 ... 2.52446233e+02
+ 2.34132497e+02 2.33637469e+02]
+
+Parameters from current iteration:
+            [  0.3974495    0.45325781   0.45357301 ... 252.88381135 234.37633133
+ 233.74956227]
+
+Updated uncertain values: [2.44062869e-01 4.07844584e-01 4.08769598e-01 ... 2.52555628e+02
+ 2.34193456e+02 2.33665492e+02]
+
+
+            Iteration [   1]: Absolute Error = 3.2583597075520174,
+            Percentage Error = 0.35481583003803324
+            
+Optimization Iteration[2/100]
+
+Theta: [0.24406287 0.40784458 0.4087696  ... 1.88203774 1.16389191 1.03481998]
+
+Gamma: [605.91007438 587.09585243 531.76134104 ... 252.55562755 234.19345583
+ 233.66549228]
+
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/50255446/tmp23as_1x0.pyomo.lp
+Reading time = 2.16 seconds
+x1: 417600 rows, 834801 columns, 2083271 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 417600 rows, 834801 columns and 2083271 nonzeros
+Model fingerprint: 0x6a871ebf
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 9e+02]
+  Objective range  [9e-04, 5e+02]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-06, 1e+00]
+  RHS range        [9e-11, 4e-01]
+Presolve removed 208947 rows and 209294 columns
+Presolve time: 0.81s
+Presolved: 208653 rows, 625507 columns, 1249571 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 1.01s
+
+Barrier statistics:
+ AA' NZ     : 6.241e+05
+ Factor NZ  : 6.773e+07 (roughly 900 MB of memory)
+ Factor Ops : 2.543e+10 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -1.30809784e+11  1.10640370e+11  1.04e+06 1.13e-13  1.00e+06     6s
+   1  -6.41403168e+10  6.33689647e+10  4.43e+04 3.08e+01  4.67e+04     7s
+   2  -3.05755551e+10  3.06549061e+10  4.48e+02 1.24e-01  5.43e+02     9s
+   3  -1.08846557e+10  1.09732403e+10  3.21e+00 1.42e-12  2.86e+01    11s
+   4  -2.40157746e+09  2.49962579e+09  2.67e-01 1.24e-12  5.95e+00    16s
+   5  -5.82478956e+08  6.48719826e+08  3.65e-02 3.61e-12  1.46e+00    21s
+   6  -9.62911258e+07  1.09597303e+08  2.74e-03 1.38e-12  2.41e-01    26s
+   7  -1.40994359e+07  1.68817059e+07  2.74e-09 1.45e-12  3.63e-02    31s
+   8  -2.06377347e+06  2.46245427e+06  2.65e-13 1.01e-12  5.30e-03    33s
+   9  -3.05980711e+05  3.78648334e+05  3.97e-14 3.20e-13  8.02e-04    35s
+  10  -4.54466957e+04  5.50138877e+04  2.20e-14 7.37e-14  1.18e-04    37s
+  11  -6.84704153e+03  8.93755213e+03  8.06e-15 1.04e-14  1.85e-05    39s
+  12  -1.19035801e+03  2.21165321e+03  1.01e-14 2.04e-15  3.98e-06    42s
+  13  -1.46863204e+02  1.01190914e+03  1.19e-15 5.07e-16  1.36e-06    44s
+  14   2.00391307e+02  4.27079109e+02  5.34e-16 4.44e-16  2.65e-07    46s
+  15   2.41206561e+02  3.88299969e+02  2.71e-16 4.44e-16  1.72e-07    48s
+  16   2.88716552e+02  3.39092600e+02  1.16e-16 4.44e-16  5.90e-08    50s
+  17   3.03583383e+02  3.24741845e+02  9.93e-17 4.44e-16  2.48e-08    52s
+  18   3.05620276e+02  3.23241677e+02  9.58e-17 4.44e-16  2.06e-08    54s
+  19   3.11706204e+02  3.19186651e+02  1.63e-16 5.00e-16  8.76e-09    55s
+  20   3.13214732e+02  3.18177999e+02  1.58e-16 4.44e-16  5.81e-09    57s
+  21   3.14735417e+02  3.17293137e+02  2.10e-16 5.55e-16  2.99e-09    59s
+  22   3.15581134e+02  3.16812284e+02  2.67e-16 4.44e-16  1.44e-09    61s
+  23   3.15801269e+02  3.16700669e+02  2.25e-16 4.44e-16  1.05e-09    63s
+  24   3.16038193e+02  3.16584162e+02  1.88e-16 3.33e-16  6.39e-10    64s
+  25   3.16188708e+02  3.16513498e+02  2.04e-16 4.44e-16  3.80e-10    66s
+  26   3.16279038e+02  3.16472498e+02  1.45e-16 4.44e-16  2.27e-10    68s
+  27   3.16299729e+02  3.16463285e+02  1.41e-16 4.44e-16  1.91e-10    70s
+  28   3.16356074e+02  3.16438710e+02  1.17e-16 4.44e-16  9.67e-11    72s
+  29   3.16368579e+02  3.16433300e+02  1.49e-16 4.44e-16  7.58e-11    73s
+  30   3.16392838e+02  3.16422978e+02  7.42e-16 4.44e-16  3.53e-11    75s
+  31   3.16405764e+02  3.16417581e+02  8.69e-16 6.66e-16  1.38e-11    78s
+  32   3.16412382e+02  3.16414883e+02  2.75e-15 4.44e-16  2.93e-12    80s
+  33   3.16413230e+02  3.16414541e+02  7.54e-15 4.44e-16  1.53e-12    81s
+  34   3.16413893e+02  3.16414273e+02  1.09e-14 4.44e-16  4.45e-13    83s
+  35   3.16414103e+02  3.16414189e+02  9.82e-15 4.44e-16  1.01e-13    85s
+  36   3.16414152e+02  3.16414169e+02  1.11e-14 5.55e-16  1.99e-14    87s
+  37   3.16414163e+02  3.16414165e+02  6.34e-15 5.55e-16  1.44e-15    89s
+
+Barrier solved model in 37 iterations and 88.60 seconds (16.79 work units)
+Optimal objective 3.16414163e+02
+
+Done! Time elapsed: 121.71244192123413 seconds.
+Starting HMC sampling...
+
+                                                                                                                                                                                                                                                                                                                                
+Finished sampling! Elapsed Time: 1003.2822046279907 seconds
+
+Checking sampler transitions treedepth.
+101 of 16000 (0.63%) transitions hit the maximum treedepth limit of 10, or 2^10 leapfrog steps.
+Trajectories that are prematurely terminated due to this limit will result in slow exploration.
+For optimal performance, increase this limit.
+
+Checking sampler transitions for divergences.
+No divergent transitions found.
+
+Checking E-BFMI - sampler transitions HMC potential energy.
+E-BFMI satisfactory.
+
+Rank-normalized split effective sample size satisfactory for all parameters.
+
+The following parameters had rank-normalized split R-hat greater than 1.01:
+  nu_theta_transform[14], nu_theta_transform[52], nu_theta_transform[61], nu_theta_transform[64], nu_theta_transform[68], log_precision_v_theta, sigma_v_theta, nu_theta[1], nu_theta[2], nu_theta[3], nu_theta[4], nu_theta[5], nu_theta[6], nu_theta[7], nu_theta[8], nu_theta[9], nu_theta[10], nu_theta[11], nu_theta[12], nu_theta[13], nu_theta[14], nu_theta[15], nu_theta[16], nu_theta[17], nu_theta[18], nu_theta[19], nu_theta[20], nu_theta[21], nu_theta[22], nu_theta[23], nu_theta[24], nu_theta[25], nu_theta[26], nu_theta[27], nu_theta[28], nu_theta[29], nu_theta[30], nu_theta[31], nu_theta[32], nu_theta[33], nu_theta[34], nu_theta[35], nu_theta[36], nu_theta[37], nu_theta[38], nu_theta[39], nu_theta[40], nu_theta[41], nu_theta[42], nu_theta[43], nu_theta[44], nu_theta[45], nu_theta[46], nu_theta[47], nu_theta[48], nu_theta[49], nu_theta[50], nu_theta[51], nu_theta[52], nu_theta[53], nu_theta[54], nu_theta[55], nu_theta[56], nu_theta[57], nu_theta[58], nu_theta[59], nu_theta[60], nu_theta[61], nu_theta[62], nu_theta[63], nu_theta[64], nu_theta[65], nu_theta[66], nu_theta[67], nu_theta[68], nu_theta[69], nu_theta[70], nu_theta_w[1], nu_theta_w[2], nu_theta_w[3], nu_theta_w[4], nu_theta_w[5], nu_theta_w[6], nu_theta_w[7], nu_theta_w[8], nu_theta_w[9], nu_theta_w[10], nu_theta_w[11], nu_theta_w[12], nu_theta_w[13], nu_theta_w[14], nu_theta_w[15], nu_theta_w[16], nu_theta_w[17], nu_theta_w[18], nu_theta_w[19], nu_theta_w[20], nu_theta_w[21], nu_theta_w[22], nu_theta_w[23], nu_theta_w[24], nu_theta_w[25], nu_theta_w[26], nu_theta_w[27], nu_theta_w[28], nu_theta_w[29], nu_theta_w[30], nu_theta_w[31], nu_theta_w[32], nu_theta_w[33], nu_theta_w[34], nu_theta_w[35], nu_theta_w[36], nu_theta_w[37], nu_theta_w[38], nu_theta_w[39], nu_theta_w[40], nu_theta_w[41], nu_theta_w[42], nu_theta_w[43], nu_theta_w[44], nu_theta_w[45], nu_theta_w[46], nu_theta_w[47], nu_theta_w[48], nu_theta_w[49], nu_theta_w[50], nu_theta_w[51], nu_theta_w[52], nu_theta_w[53], nu_theta_w[54], nu_theta_w[55], nu_theta_w[56], nu_theta_w[57], nu_theta_w[58], nu_theta_w[59], nu_theta_w[60], nu_theta_w[61], nu_theta_w[62], nu_theta_w[63], nu_theta_w[64], nu_theta_w[65], nu_theta_w[66], nu_theta_w[67], nu_theta_w[68], nu_theta_w[69], nu_theta_w[70], nu_theta_w[71], nu_theta_w[72], nu_theta_w[73], nu_theta_w[74], nu_theta_w[75], nu_theta_w[76], nu_theta_w[77], nu_theta_w[78], nu_theta_w[79], nu_theta_w[80], nu_theta_w[81], nu_theta_w[82], nu_theta_w[83], nu_theta_w[84], nu_theta_w[85], nu_theta_w[86], nu_theta_w[87], nu_theta_w[88], nu_theta_w[89], nu_theta_w[90], nu_theta_w[91], nu_theta_w[92], nu_theta_w[93], nu_theta_w[94], nu_theta_w[95], nu_theta_w[96], nu_theta_w[97], nu_theta_w[98], nu_theta_w[99], nu_theta_w[100], nu_theta_w[101], nu_theta_w[102], nu_theta_w[103], nu_theta_w[104], nu_theta_w[105], nu_theta_w[106], nu_theta_w[107], nu_theta_w[108], nu_theta_w[109], nu_theta_w[110], nu_theta_w[111], nu_theta_w[112], nu_theta_w[113], nu_theta_w[114], nu_theta_w[115], nu_theta_w[116], nu_theta_w[117], nu_theta_w[118], nu_theta_w[119], nu_theta_w[120], nu_theta_w[121], nu_theta_w[122], nu_theta_w[123], nu_theta_w[124], nu_theta_w[125], nu_theta_w[126], nu_theta_w[127], nu_theta_w[128], nu_theta_w[129], nu_theta_w[130], nu_theta_w[131], nu_theta_w[132], nu_theta_w[133], nu_theta_w[134], nu_theta_w[135], nu_theta_w[136], nu_theta_w[137], nu_theta_w[138], nu_theta_w[139], nu_theta_w[140], nu_theta_w[141], nu_theta_w[142], nu_theta_w[143], nu_theta_w[144], nu_theta_w[145], nu_theta_w[146], nu_theta_w[147], nu_theta_w[148], nu_theta_w[149], nu_theta_w[150], nu_theta_w[151], nu_theta_w[152], nu_theta_w[153], nu_theta_w[154], nu_theta_w[155], nu_theta_w[156], nu_theta_w[157], nu_theta_w[158], nu_theta_w[159], nu_theta_w[160], nu_theta_w[161], nu_theta_w[162], nu_theta_w[163], nu_theta_w[164], nu_theta_w[165], nu_theta_w[166], nu_theta_w[167], nu_theta_w[168], nu_theta_w[169], nu_theta_w[170], nu_theta_w[171], nu_theta_w[172], nu_theta_w[173], nu_theta_w[174], nu_theta_w[175], nu_theta_w[176], nu_theta_w[177], nu_theta_w[178], nu_theta_w[179], nu_theta_w[180], nu_theta_w[181], nu_theta_w[182], nu_theta_w[183], nu_theta_w[184], nu_theta_w[185], nu_theta_w[186], nu_theta_w[187], nu_theta_w[188], nu_theta_w[189], nu_theta_w[190], nu_theta_w[191], nu_theta_w[192], nu_theta_w[193], nu_theta_w[194], nu_theta_w[195], nu_theta_w[196], nu_theta_w[197], nu_theta_w[198], nu_theta_w[199], nu_theta_w[200], nu_theta_w[201], nu_theta_w[202], nu_theta_w[203], nu_theta_w[204], nu_theta_w[205], nu_theta_w[206], nu_theta_w[207], nu_theta_w[208], nu_theta_w[209], nu_theta_w[210], nu_theta_w[211], nu_theta_w[212], nu_theta_w[213], nu_theta_w[214], nu_theta_w[215], nu_theta_w[216], nu_theta_w[217], nu_theta_w[218], nu_theta_w[219], nu_theta_w[220], nu_theta_w[221], nu_theta_w[222], nu_theta_w[223], nu_theta_w[224], nu_theta_w[225], nu_theta_w[226], nu_theta_w[227], nu_theta_w[228], nu_theta_w[229], nu_theta_w[230], nu_theta_w[231], nu_theta_w[232], nu_theta_w[233], nu_theta_w[234], nu_theta_w[235], nu_theta_w[236], nu_theta_w[237], nu_theta_w[238], nu_theta_w[239], nu_theta_w[240], nu_theta_w[241], nu_theta_w[242], nu_theta_w[243], nu_theta_w[244], nu_theta_w[245], nu_theta_w[246], nu_theta_w[247], nu_theta_w[248], nu_theta_w[249], nu_theta_w[250], nu_theta_w[251], nu_theta_w[252], nu_theta_w[253], nu_theta_w[254], nu_theta_w[255], nu_theta_w[256], nu_theta_w[257], nu_theta_w[258], nu_theta_w[259], nu_theta_w[260], nu_theta_w[261], nu_theta_w[262], nu_theta_w[263], nu_theta_w[264], nu_theta_w[265], nu_theta_w[266], nu_theta_w[267], nu_theta_w[268], nu_theta_w[269], nu_theta_w[270], nu_theta_w[271], nu_theta_w[272], nu_theta_w[273], nu_theta_w[274], nu_theta_w[275], nu_theta_w[276], nu_theta_w[277], nu_theta_w[278], nu_theta_w[279], nu_theta_w[280], nu_theta_w[281], nu_theta_w[282], nu_theta_w[283], nu_theta_w[284], nu_theta_w[285], nu_theta_w[286], nu_theta_w[287], nu_theta_w[288], nu_theta_w[289], nu_theta_w[290], nu_theta_w[291], nu_theta_w[292], nu_theta_w[293], nu_theta_w[294], nu_theta_w[295], nu_theta_w[296], nu_theta_w[297], nu_theta_w[298], nu_theta_w[299], nu_theta_w[300], nu_theta_w[301], nu_theta_w[302], nu_theta_w[303], nu_theta_w[304], nu_theta_w[305], nu_theta_w[306], nu_theta_w[307], nu_theta_w[308], nu_theta_w[309], nu_theta_w[310], nu_theta_w[311], nu_theta_w[312], nu_theta_w[313], nu_theta_w[314], nu_theta_w[315], nu_theta_w[316], nu_theta_w[317], nu_theta_w[318], nu_theta_w[319], nu_theta_w[320], nu_theta_w[321], nu_theta_w[322], nu_theta_w[323], nu_theta_w[324], nu_theta_w[325], nu_theta_w[326], nu_theta_w[327], nu_theta_w[328], nu_theta_w[329], nu_theta_w[330], nu_theta_w[331], nu_theta_w[332], nu_theta_w[333], nu_theta_w[334], nu_theta_w[335], nu_theta_w[336], nu_theta_w[337], nu_theta_w[338], nu_theta_w[339], nu_theta_w[340], nu_theta_w[341], nu_theta_w[342], nu_theta_w[343], nu_theta_w[344], nu_theta_w[345], nu_theta_w[346], nu_theta_w[347], nu_theta_w[348], nu_theta_w[349], nu_theta_w[350], nu_theta_w[351], nu_theta_w[352], nu_theta_w[353], nu_theta_w[354], nu_theta_w[355], nu_theta_w[356], nu_theta_w[357], nu_theta_w[358], nu_theta_w[359], nu_theta_w[360], nu_theta_w[361], nu_theta_w[362], nu_theta_w[363], nu_theta_w[364], nu_theta_w[365], nu_theta_w[366], nu_theta_w[367], nu_theta_w[368], nu_theta_w[369], nu_theta_w[370], nu_theta_w[371], nu_theta_w[372], nu_theta_w[373], nu_theta_w[374], nu_theta_w[375], nu_theta_w[376], nu_theta_w[377], nu_theta_w[378], nu_theta_w[379], nu_theta_w[380], nu_theta_w[381], nu_theta_w[382], nu_theta_w[383], nu_theta_w[384], nu_theta_w[385], nu_theta_w[386], nu_theta_w[387], nu_theta_w[388], nu_theta_w[389], nu_theta_w[390], nu_theta_w[391], nu_theta_w[392], nu_theta_w[393], nu_theta_w[394], nu_theta_w[395], nu_theta_w[396], nu_theta_w[397], nu_theta_w[398], nu_theta_w[399], nu_theta_w[400], nu_theta_w[401], nu_theta_w[402], nu_theta_w[403], nu_theta_w[404], nu_theta_w[405], nu_theta_w[406], nu_theta_w[407], nu_theta_w[408], nu_theta_w[409], nu_theta_w[410], nu_theta_w[411], nu_theta_w[412], nu_theta_w[413], nu_theta_w[414], nu_theta_w[415], nu_theta_w[416], nu_theta_w[417], nu_theta_w[418], nu_theta_w[419], nu_theta_w[420], nu_theta_w[421], nu_theta_w[422], nu_theta_w[423], nu_theta_w[424], nu_theta_w[425], nu_theta_w[426], nu_theta_w[427], nu_theta_w[428], nu_theta_w[429], nu_theta_w[430], nu_theta_w[431], nu_theta_w[432], nu_theta_w[433], nu_theta_w[434], nu_theta_w[435], nu_theta_w[436], nu_theta_w[437], nu_theta_w[438], nu_theta_w[439], nu_theta_w[440], nu_theta_w[441], nu_theta_w[442], nu_theta_w[443], nu_theta_w[444], nu_theta_w[445], nu_theta_w[446], nu_theta_w[447], nu_theta_w[448], nu_theta_w[449], nu_theta_w[450], nu_theta_w[451], nu_theta_w[452], nu_theta_w[453], nu_theta_w[454], nu_theta_w[455], nu_theta_w[456], nu_theta_w[457], nu_theta_w[458], nu_theta_w[459], nu_theta_w[460], nu_theta_w[461], nu_theta_w[462], nu_theta_w[463], nu_theta_w[464], nu_theta_w[465], nu_theta_w[466], nu_theta_fit[1], nu_theta_fit[2], nu_theta_fit[3], nu_theta_fit[4], nu_theta_fit[5], nu_theta_fit[6], nu_theta_fit[7], nu_theta_fit[8], nu_theta_fit[9], nu_theta_fit[10], nu_theta_fit[11], nu_theta_fit[12], nu_theta_fit[13], nu_theta_fit[14], nu_theta_fit[15], nu_theta_fit[16], nu_theta_fit[17], nu_theta_fit[18], nu_theta_fit[19], nu_theta_fit[20], nu_theta_fit[21], nu_theta_fit[22], nu_theta_fit[23], nu_theta_fit[24], nu_theta_fit[25], nu_theta_fit[26], nu_theta_fit[27], nu_theta_fit[28], nu_theta_fit[29], nu_theta_fit[30], nu_theta_fit[31], nu_theta_fit[32], nu_theta_fit[33], nu_theta_fit[34], nu_theta_fit[35], nu_theta_fit[36], nu_theta_fit[37], nu_theta_fit[38], nu_theta_fit[39], nu_theta_fit[40], nu_theta_fit[41], nu_theta_fit[42], nu_theta_fit[43], nu_theta_fit[44], nu_theta_fit[45], nu_theta_fit[46], nu_theta_fit[47], nu_theta_fit[48], nu_theta_fit[49], nu_theta_fit[50], nu_theta_fit[51], nu_theta_fit[52], nu_theta_fit[53], nu_theta_fit[54], nu_theta_fit[55], nu_theta_fit[56], nu_theta_fit[57], nu_theta_fit[58], nu_theta_fit[59], nu_theta_fit[60], nu_theta_fit[61], nu_theta_fit[62], nu_theta_fit[63], nu_theta_fit[64], nu_theta_fit[65], nu_theta_fit[66], nu_theta_fit[67], nu_theta_fit[68], nu_theta_fit[69], nu_theta_fit[70], nu_theta_fit[71], nu_theta_fit[72], nu_theta_fit[73], nu_theta_fit[74], nu_theta_fit[75], nu_theta_fit[76], nu_theta_fit[77], nu_theta_fit[78], nu_theta_fit[79], nu_theta_fit[80], nu_theta_fit[81], nu_theta_fit[82], nu_theta_fit[83], nu_theta_fit[84], nu_theta_fit[85], nu_theta_fit[86], nu_theta_fit[87], nu_theta_fit[88], nu_theta_fit[89], nu_theta_fit[90], nu_theta_fit[91], nu_theta_fit[92], nu_theta_fit[93], nu_theta_fit[94], nu_theta_fit[95], nu_theta_fit[96], nu_theta_fit[97], nu_theta_fit[98], nu_theta_fit[99], nu_theta_fit[100], nu_theta_fit[101], nu_theta_fit[102], nu_theta_fit[103], nu_theta_fit[104], nu_theta_fit[105], nu_theta_fit[106], nu_theta_fit[107], nu_theta_fit[108], nu_theta_fit[109], nu_theta_fit[110], nu_theta_fit[111], nu_theta_fit[112], nu_theta_fit[113], nu_theta_fit[114], nu_theta_fit[115], nu_theta_fit[116], nu_theta_fit[117], nu_theta_fit[118], nu_theta_fit[119], nu_theta_fit[120], nu_theta_fit[121], nu_theta_fit[122], nu_theta_fit[123], nu_theta_fit[124], nu_theta_fit[125], nu_theta_fit[126], nu_theta_fit[127], nu_theta_fit[128], nu_theta_fit[129], nu_theta_fit[130], nu_theta_fit[131], nu_theta_fit[132], nu_theta_fit[133], nu_theta_fit[134], nu_theta_fit[135], nu_theta_fit[136], nu_theta_fit[137], nu_theta_fit[138], nu_theta_fit[139], nu_theta_fit[140], nu_theta_fit[141], nu_theta_fit[142], nu_theta_fit[143], nu_theta_fit[144], nu_theta_fit[145], nu_theta_fit[146], nu_theta_fit[147], nu_theta_fit[148], nu_theta_fit[149], nu_theta_fit[150], nu_theta_fit[151], nu_theta_fit[152], nu_theta_fit[153], nu_theta_fit[154], nu_theta_fit[155], nu_theta_fit[156], nu_theta_fit[157], nu_theta_fit[158], nu_theta_fit[159], nu_theta_fit[160], nu_theta_fit[161], nu_theta_fit[162], nu_theta_fit[163], nu_theta_fit[164], nu_theta_fit[165], nu_theta_fit[166], nu_theta_fit[167], nu_theta_fit[168], nu_theta_fit[169], nu_theta_fit[170], nu_theta_fit[171], nu_theta_fit[172], nu_theta_fit[173], nu_theta_fit[174], nu_theta_fit[175], nu_theta_fit[176], nu_theta_fit[177], nu_theta_fit[178], nu_theta_fit[179], nu_theta_fit[180], nu_theta_fit[181], nu_theta_fit[182], nu_theta_fit[183], nu_theta_fit[184], nu_theta_fit[185], nu_theta_fit[186], nu_theta_fit[187], nu_theta_fit[188], nu_theta_fit[189], nu_theta_fit[190], nu_theta_fit[191], nu_theta_fit[192], nu_theta_fit[193], nu_theta_fit[194], nu_theta_fit[195], nu_theta_fit[196], nu_theta_fit[197], nu_theta_fit[198], nu_theta_fit[199], nu_theta_fit[200], nu_theta_fit[201], nu_theta_fit[202], nu_theta_fit[203], nu_theta_fit[204], nu_theta_fit[205], nu_theta_fit[206], nu_theta_fit[207], nu_theta_fit[208], nu_theta_fit[209], nu_theta_fit[210], nu_theta_fit[211], nu_theta_fit[212], nu_theta_fit[213], nu_theta_fit[214], nu_theta_fit[215], nu_theta_fit[216], nu_theta_fit[217], nu_theta_fit[218], nu_theta_fit[219], nu_theta_fit[220], nu_theta_fit[221], nu_theta_fit[222], nu_theta_fit[223], nu_theta_fit[224], nu_theta_fit[225], nu_theta_fit[226], nu_theta_fit[227], nu_theta_fit[228], nu_theta_fit[229], nu_theta_fit[230], nu_theta_fit[231], nu_theta_fit[232], nu_theta_fit[233], nu_theta_fit[234], nu_theta_fit[235], nu_theta_fit[236], nu_theta_fit[237], nu_theta_fit[238], nu_theta_fit[239], nu_theta_fit[240], nu_theta_fit[241], nu_theta_fit[242], nu_theta_fit[243], nu_theta_fit[244], nu_theta_fit[245], nu_theta_fit[246], nu_theta_fit[247], nu_theta_fit[248], nu_theta_fit[249], nu_theta_fit[250], nu_theta_fit[251], nu_theta_fit[252], nu_theta_fit[253], nu_theta_fit[254], nu_theta_fit[255], nu_theta_fit[256], nu_theta_fit[257], nu_theta_fit[258], nu_theta_fit[259], nu_theta_fit[260], nu_theta_fit[261], nu_theta_fit[262], nu_theta_fit[263], nu_theta_fit[264], nu_theta_fit[265], nu_theta_fit[266], nu_theta_fit[267], nu_theta_fit[268], nu_theta_fit[269], nu_theta_fit[270], nu_theta_fit[271], nu_theta_fit[272], nu_theta_fit[273], nu_theta_fit[274], nu_theta_fit[275], nu_theta_fit[276], nu_theta_fit[277], nu_theta_fit[278], nu_theta_fit[279], nu_theta_fit[280], nu_theta_fit[281], nu_theta_fit[282], nu_theta_fit[283], nu_theta_fit[284], nu_theta_fit[285], nu_theta_fit[286], nu_theta_fit[287], nu_theta_fit[288], nu_theta_fit[289], nu_theta_fit[290], nu_theta_fit[291], nu_theta_fit[292], nu_theta_fit[293], nu_theta_fit[294], nu_theta_fit[295], nu_theta_fit[296], nu_theta_fit[297], nu_theta_fit[298], nu_theta_fit[299], nu_theta_fit[300], nu_theta_fit[301], nu_theta_fit[302], nu_theta_fit[303], nu_theta_fit[304], nu_theta_fit[305], nu_theta_fit[306], nu_theta_fit[307], nu_theta_fit[308], nu_theta_fit[309], nu_theta_fit[310], nu_theta_fit[311], nu_theta_fit[312], nu_theta_fit[313], nu_theta_fit[314], nu_theta_fit[315], nu_theta_fit[316], nu_theta_fit[317], nu_theta_fit[318], nu_theta_fit[319], nu_theta_fit[320], nu_theta_fit[321], nu_theta_fit[322], nu_theta_fit[323], nu_theta_fit[324], nu_theta_fit[325], nu_theta_fit[326], nu_theta_fit[327], nu_theta_fit[328], nu_theta_fit[329], nu_theta_fit[330], nu_theta_fit[331], nu_theta_fit[332], nu_theta_fit[333], nu_theta_fit[334], nu_theta_fit[335], nu_theta_fit[336], nu_theta_fit[337], nu_theta_fit[338], nu_theta_fit[339], nu_theta_fit[340], nu_theta_fit[341], nu_theta_fit[342], nu_theta_fit[343], nu_theta_fit[344], nu_theta_fit[345], nu_theta_fit[346], nu_theta_fit[347], nu_theta_fit[348], nu_theta_fit[349], nu_theta_fit[350], nu_theta_fit[351], nu_theta_fit[352], nu_theta_fit[353], nu_theta_fit[354], nu_theta_fit[355], nu_theta_fit[356], nu_theta_fit[357], nu_theta_fit[358], nu_theta_fit[359], nu_theta_fit[360], nu_theta_fit[361], nu_theta_fit[362], nu_theta_fit[363], nu_theta_fit[364], nu_theta_fit[365], nu_theta_fit[366], nu_theta_fit[367], nu_theta_fit[368], nu_theta_fit[369], nu_theta_fit[370], nu_theta_fit[371], nu_theta_fit[372], nu_theta_fit[373], nu_theta_fit[374], nu_theta_fit[375], nu_theta_fit[376], nu_theta_fit[377], nu_theta_fit[378], nu_theta_fit[379], nu_theta_fit[380], nu_theta_fit[381], nu_theta_fit[382], nu_theta_fit[383], nu_theta_fit[384], nu_theta_fit[385], nu_theta_fit[386], nu_theta_fit[387], nu_theta_fit[388], nu_theta_fit[389], nu_theta_fit[390], nu_theta_fit[391], nu_theta_fit[392], nu_theta_fit[393], nu_theta_fit[394], nu_theta_fit[395], nu_theta_fit[396], nu_theta_fit[397], nu_theta_fit[398], nu_theta_fit[399], nu_theta_fit[400], nu_theta_fit[401], nu_theta_fit[402], nu_theta_fit[403], nu_theta_fit[404], nu_theta_fit[405], nu_theta_fit[406], nu_theta_fit[407], nu_theta_fit[408], nu_theta_fit[409], nu_theta_fit[410], nu_theta_fit[411], nu_theta_fit[412], nu_theta_fit[413], nu_theta_fit[414], nu_theta_fit[415], nu_theta_fit[416], nu_theta_fit[417], nu_theta_fit[418], nu_theta_fit[419], nu_theta_fit[420], nu_theta_fit[421], nu_theta_fit[422], nu_theta_fit[423], nu_theta_fit[424], nu_theta_fit[425], nu_theta_fit[426], nu_theta_fit[427], nu_theta_fit[428], nu_theta_fit[429], nu_theta_fit[430], nu_theta_fit[431], nu_theta_fit[432], nu_theta_fit[433], nu_theta_fit[434], nu_theta_fit[435], nu_theta_fit[436], nu_theta_fit[437], nu_theta_fit[438], nu_theta_fit[439], nu_theta_fit[440], nu_theta_fit[441], nu_theta_fit[442], nu_theta_fit[443], nu_theta_fit[444], nu_theta_fit[445], nu_theta_fit[446], nu_theta_fit[447], nu_theta_fit[448], nu_theta_fit[449], nu_theta_fit[450], nu_theta_fit[451], nu_theta_fit[452], nu_theta_fit[453], nu_theta_fit[454], nu_theta_fit[455], nu_theta_fit[456], nu_theta_fit[457], nu_theta_fit[458], nu_theta_fit[459], nu_theta_fit[460], nu_theta_fit[461], nu_theta_fit[462], nu_theta_fit[463], nu_theta_fit[464], nu_theta_fit[465], nu_theta_fit[466], nu_theta_fit[467], nu_theta_fit[468], nu_theta_fit[469], nu_theta_fit[470], nu_theta_fit[471], nu_theta_fit[472], nu_theta_fit[473], nu_theta_fit[474], nu_theta_fit[475], nu_theta_fit[476], nu_theta_fit[477], nu_theta_fit[478], nu_theta_fit[479], nu_theta_fit[480], nu_theta_fit[481], nu_theta_fit[482], nu_theta_fit[483], nu_theta_fit[484], nu_theta_fit[485], nu_theta_fit[486], nu_theta_fit[487], nu_theta_fit[488], nu_theta_fit[489], nu_theta_fit[490], nu_theta_fit[491], nu_theta_fit[492], nu_theta_fit[493], nu_theta_fit[494], nu_theta_fit[495], nu_theta_fit[496], nu_theta_fit[497], nu_theta_fit[498], nu_theta_fit[499], nu_theta_fit[500], nu_theta_fit[501], nu_theta_fit[502], nu_theta_fit[503], nu_theta_fit[504], nu_theta_fit[505], nu_theta_fit[506], nu_theta_fit[507], nu_theta_fit[508], nu_theta_fit[509], nu_theta_fit[510], nu_theta_fit[511], nu_theta_fit[512], nu_theta_fit[513], nu_theta_fit[514], nu_theta_fit[515], nu_theta_fit[516], nu_theta_fit[517], nu_theta_fit[518], nu_theta_fit[519], nu_theta_fit[520], nu_theta_fit[521], nu_theta_fit[522], nu_theta_fit[523], nu_theta_fit[524], nu_theta_fit[525], nu_theta_fit[526], nu_theta_fit[527], nu_theta_fit[528], nu_theta_fit[529], nu_theta_fit[530], nu_theta_fit[531], nu_theta_fit[532], nu_theta_fit[533], nu_theta_fit[534], nu_theta_fit[535], nu_theta_fit[536], nu_theta_fit[537], nu_theta_fit[538], nu_theta_fit[539], nu_theta_fit[540], exp_log_theta[11], exp_log_theta[12], exp_log_theta[13], exp_log_theta[14], exp_log_theta[15], exp_log_theta[16], exp_log_theta[18], exp_log_theta[20], exp_log_theta[21], exp_log_theta[25], exp_log_theta[29], exp_log_theta[33], exp_log_theta[34], exp_log_theta[35], exp_log_theta[37], exp_log_theta[38], exp_log_theta[39], exp_log_theta[41], exp_log_theta[42], exp_log_theta[44], exp_log_theta[45], exp_log_theta[48], exp_log_theta[49], exp_log_theta[50], exp_log_theta[51], exp_log_theta[52], exp_log_theta[53], exp_log_theta[70], exp_log_theta[87], exp_log_theta[90], exp_log_theta[109], exp_log_theta[121], exp_log_theta[131], exp_log_theta[155], exp_log_theta[172], exp_log_theta[176], exp_log_theta[183], exp_log_theta[192], exp_log_theta[197], exp_log_theta[199], exp_log_theta[209], exp_log_theta[211], exp_log_theta[216], exp_log_theta[227], exp_log_theta[237], exp_log_theta[239], exp_log_theta[242], exp_log_theta[251], exp_log_theta[267], exp_log_theta[271], exp_log_theta[274], exp_log_theta[277], exp_log_theta[287], exp_log_theta[293], exp_log_theta[310], exp_log_theta[311], exp_log_theta[312], exp_log_theta[313], exp_log_theta[314], exp_log_theta[315], exp_log_theta[322], exp_log_theta[335], exp_log_theta[340], exp_log_theta[342], exp_log_theta[344], exp_log_theta[345], exp_log_theta[347], exp_log_theta[348], exp_log_theta[459], exp_log_theta[463], exp_log_theta[472], exp_log_theta[473], exp_log_theta[475], exp_log_theta[476], exp_log_theta[482], exp_log_theta[486], exp_log_theta[487], exp_log_theta[488], exp_log_theta[489], exp_log_theta[496], exp_log_theta[501], exp_log_theta[505], exp_log_theta[507], exp_log_theta[515], exp_log_theta[524], exp_log_theta[528], exp_log_theta[529], exp_log_theta[533], exp_log_theta[535], exp_log_theta[537], exp_log_theta[540], theta[420], theta[466], theta[467], theta[513], theta[514], theta[515], theta[538], theta[539], theta[559], theta[560], theta[561], theta[562], theta[578], theta[579], theta[580], theta[581], theta[582], theta[583], theta[584], theta[585], theta[604], theta[605], theta[606], theta[607], theta[608], theta[609], theta[622], theta[623], theta[624], theta[625], theta[626], theta[627], theta[648], theta[649], theta[650], theta[651], theta[652], theta[661], theta[664], theta[665], theta[666], theta[667], theta[668], theta[669], theta[670], theta[691], theta[692], theta[693], theta[694], theta[695], theta[703], theta[704], theta[705], theta[706], theta[707], theta[708], theta[709], theta[710], theta[711], theta[712], theta[735], theta[736], theta[745], theta[746], theta[747], theta[748], theta[749], theta[750], theta[751], theta[752], theta[753], theta[754], theta[788], theta[789], theta[790], theta[791], theta[792], theta[793], theta[796], theta[797], theta[798], theta[799], theta[830], theta[837], theta[838], theta[839], theta[846], theta[847], theta[848], theta[849], theta[850], theta[851], theta[867], theta[872], theta[873], theta[874], theta[881], theta[882], theta[883], theta[884], theta[885], theta[886], theta[903], theta[904], theta[905], theta[914], theta[915], theta[916], theta[928], theta[929], theta[930], theta[940], theta[943], theta[954], theta[955], theta[963], theta[964], theta[968], theta[969], theta[977], theta[978], theta[985], theta[986], theta[991], theta[1003], theta[1004], theta[1009], theta[1029]
+Such high values indicate incomplete mixing and biased estimation.
+You should consider regularizing your model with additional prior information or a more effective parameterization.
+
+Processing complete.
+
+Parameters from last iteration: [2.44062869e-01 4.07844584e-01 4.08769598e-01 ... 2.52555628e+02
+ 2.34193456e+02 2.33665492e+02]
+
+Parameters from current iteration:
+            [  0.40525198   0.42970036   0.42983844 ... 252.80472131 234.30170382
+ 233.69344477]
+
+Updated uncertain values: [  0.28436015   0.41330853   0.41403681 ... 252.61790099 234.22051783
+ 233.6724804 ]
+
+
+            Iteration [   2]: Absolute Error = 1.5602285183592812,
+            Percentage Error = 0.23284031507764083
+            
+Optimization Iteration[3/100]
+
+Theta: [0.28436015 0.41330853 0.41403681 ... 1.64864501 1.13997492 1.04857006]
+
+Gamma: [606.01908766 587.20961597 531.85939328 ... 252.61790099 234.22051783
+ 233.6724804 ]
+
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/50255446/tmplpiv_3uj.pyomo.lp
+Reading time = 2.16 seconds
+x1: 417600 rows, 834801 columns, 2083271 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 417600 rows, 834801 columns and 2083271 nonzeros
+Model fingerprint: 0x7209657b
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 9e+02]
+  Objective range  [1e-05, 5e+02]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-06, 1e+00]
+  RHS range        [9e-11, 4e-01]
+Presolve removed 208947 rows and 209294 columns
+Presolve time: 0.80s
+Presolved: 208653 rows, 625507 columns, 1249571 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 1.25s
+
+Barrier statistics:
+ AA' NZ     : 6.241e+05
+ Factor NZ  : 6.773e+07 (roughly 900 MB of memory)
+ Factor Ops : 2.543e+10 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -2.07333735e+10  1.08047412e+08  1.04e+06 1.14e-13  1.01e+06     6s
+   1  -5.57209727e+08  3.36464107e+07  2.66e+04 1.10e-12  2.75e+04     7s
+   2  -6.98960994e+06  5.23990375e+06  9.25e+01 1.52e-12  1.08e+02     9s
+   3  -8.52228825e+05  9.11807561e+05  1.11e+00 2.63e-12  3.23e+00    11s
+   4  -1.50042603e+05  2.11529654e+05  3.88e-02 1.41e-12  4.64e-01    13s
+   5  -2.78595746e+04  3.53962761e+04  1.58e-03 1.07e-12  7.63e-02    15s
+   6  -8.00246286e+03  1.11894265e+04  2.79e-04 1.22e-12  2.31e-02    17s
+   7  -2.44655440e+03  3.72846621e+03  6.35e-05 6.54e-13  7.41e-03    18s
+   8  -1.09297335e+03  2.41560397e+03  1.86e-05 1.02e-12  4.21e-03    20s
+   9  -3.66740265e+02  1.13889244e+03  6.67e-06 6.31e-13  1.81e-03    22s
+  10   5.20627734e+01  4.35948897e+02  5.03e-07 3.28e-13  4.60e-04    24s
+  11   1.60872899e+02  3.00459920e+02  1.08e-07 2.27e-13  1.67e-04    26s
+  12   2.07995989e+02  2.58279368e+02  1.58e-08 2.27e-13  6.03e-05    28s
+  13   2.22388447e+02  2.42688048e+02  2.45e-09 2.45e-13  2.43e-05    30s
+  14   2.28242255e+02  2.37912940e+02  6.86e-10 2.27e-13  1.16e-05    32s
+  15   2.31405585e+02  2.35732737e+02  1.84e-10 3.41e-13  5.19e-06    34s
+  16   2.31577958e+02  2.35626711e+02  1.65e-10 2.91e-13  4.85e-06    35s
+  17   2.32644472e+02  2.35006657e+02  5.50e-11 3.98e-13  2.83e-06    37s
+  18   2.33474037e+02  2.34539618e+02  1.09e-11 5.68e-13  1.28e-06    40s
+  19   2.33655499e+02  2.34447073e+02  6.33e-12 4.55e-13  9.49e-07    42s
+  20   2.33832949e+02  2.34360330e+02  2.74e-12 3.41e-13  6.32e-07    44s
+  21   2.33970782e+02  2.34294680e+02  1.37e-12 3.41e-13  3.88e-07    45s
+  22   2.34033290e+02  2.34265598e+02  8.48e-13 4.55e-13  2.79e-07    47s
+  23   2.34114987e+02  2.34227991e+02  2.18e-13 4.55e-13  1.35e-07    49s
+  24   2.34139911e+02  2.34217013e+02  1.25e-13 4.55e-13  9.24e-08    51s
+  25   2.34162998e+02  2.34206978e+02  5.89e-14 4.55e-13  5.27e-08    53s
+  26   2.34179513e+02  2.34199874e+02  1.52e-14 4.55e-13  2.44e-08    55s
+  27   2.34184688e+02  2.34197694e+02  9.88e-15 4.55e-13  1.56e-08    57s
+  28   2.34191498e+02  2.34194855e+02  1.90e-15 4.55e-13  4.02e-09    59s
+  29   2.34192694e+02  2.34194365e+02  3.27e-15 4.55e-13  2.00e-09    61s
+  30   2.34193633e+02  2.34193980e+02  5.49e-15 5.68e-13  4.16e-10    63s
+  31   2.34193820e+02  2.34193903e+02  5.44e-15 4.55e-13  1.00e-10    64s
+  32   2.34193866e+02  2.34193884e+02  2.50e-15 4.55e-13  2.17e-11    66s
+  33   2.34193877e+02  2.34193880e+02  9.65e-16 4.55e-13  4.17e-12    68s
+  34   2.34193879e+02  2.34193879e+02  4.15e-16 5.68e-13  4.04e-13    70s
+
+Barrier solved model in 34 iterations and 69.63 seconds (15.32 work units)
+Optimal objective 2.34193879e+02
+
+Done! Time elapsed: 100.19596195220947 seconds.
+Starting HMC sampling...
+
+                                                                                                                                                                                                                                                                                                                                
+Finished sampling! Elapsed Time: 1039.9937782287598 seconds
+
+Checking sampler transitions treedepth.
+87 of 16000 (0.54%) transitions hit the maximum treedepth limit of 10, or 2^10 leapfrog steps.
+Trajectories that are prematurely terminated due to this limit will result in slow exploration.
+For optimal performance, increase this limit.
+
+Checking sampler transitions for divergences.
+79 of 16000 (0.49%) transitions ended with a divergence.
+These divergent transitions indicate that HMC is not fully able to explore the posterior distribution.
+Try increasing adapt delta closer to 1.
+If this doesn't remove all divergences, try to reparameterize the model.
+
+Checking E-BFMI - sampler transitions HMC potential energy.
+E-BFMI satisfactory.
+
+The following parameters had fewer than 0.001 effective draws per transition:
+  log_precision_v_theta, sigma_v_theta
+Such low values indicate that the effective sample size estimators may be biased high and actual performance may be substantially lower than quoted.
+
+The following parameters had rank-normalized split R-hat greater than 1.01:
+  log_precision_v_theta, sigma_v_theta, nu_theta[1], nu_theta[2], nu_theta[3], nu_theta[4], nu_theta[5], nu_theta[6], nu_theta[7], nu_theta[8], nu_theta[9], nu_theta[10], nu_theta[11], nu_theta[12], nu_theta[13], nu_theta[14], nu_theta[15], nu_theta[16], nu_theta[17], nu_theta[18], nu_theta[19], nu_theta[20], nu_theta[21], nu_theta[22], nu_theta[23], nu_theta[24], nu_theta[25], nu_theta[26], nu_theta[27], nu_theta[28], nu_theta[29], nu_theta[30], nu_theta[31], nu_theta[32], nu_theta[33], nu_theta[34], nu_theta[35], nu_theta[36], nu_theta[37], nu_theta[38], nu_theta[39], nu_theta[40], nu_theta[41], nu_theta[42], nu_theta[43], nu_theta[44], nu_theta[45], nu_theta[46], nu_theta[47], nu_theta[48], nu_theta[49], nu_theta[50], nu_theta[51], nu_theta[52], nu_theta[53], nu_theta[54], nu_theta[55], nu_theta[56], nu_theta[57], nu_theta[58], nu_theta[59], nu_theta[60], nu_theta[61], nu_theta[62], nu_theta[63], nu_theta[64], nu_theta[65], nu_theta[66], nu_theta[67], nu_theta[68], nu_theta[69], nu_theta[70], nu_theta_w[1], nu_theta_w[2], nu_theta_w[3], nu_theta_w[4], nu_theta_w[5], nu_theta_w[6], nu_theta_w[7], nu_theta_w[8], nu_theta_w[9], nu_theta_w[10], nu_theta_w[11], nu_theta_w[12], nu_theta_w[13], nu_theta_w[14], nu_theta_w[15], nu_theta_w[16], nu_theta_w[17], nu_theta_w[18], nu_theta_w[19], nu_theta_w[20], nu_theta_w[21], nu_theta_w[22], nu_theta_w[23], nu_theta_w[24], nu_theta_w[25], nu_theta_w[26], nu_theta_w[27], nu_theta_w[28], nu_theta_w[29], nu_theta_w[30], nu_theta_w[31], nu_theta_w[32], nu_theta_w[33], nu_theta_w[34], nu_theta_w[35], nu_theta_w[36], nu_theta_w[37], nu_theta_w[38], nu_theta_w[39], nu_theta_w[40], nu_theta_w[41], nu_theta_w[42], nu_theta_w[43], nu_theta_w[44], nu_theta_w[45], nu_theta_w[46], nu_theta_w[47], nu_theta_w[48], nu_theta_w[49], nu_theta_w[50], nu_theta_w[51], nu_theta_w[52], nu_theta_w[53], nu_theta_w[54], nu_theta_w[55], nu_theta_w[56], nu_theta_w[57], nu_theta_w[58], nu_theta_w[59], nu_theta_w[60], nu_theta_w[61], nu_theta_w[62], nu_theta_w[63], nu_theta_w[64], nu_theta_w[65], nu_theta_w[66], nu_theta_w[67], nu_theta_w[68], nu_theta_w[69], nu_theta_w[70], nu_theta_w[71], nu_theta_w[72], nu_theta_w[73], nu_theta_w[74], nu_theta_w[75], nu_theta_w[76], nu_theta_w[77], nu_theta_w[78], nu_theta_w[79], nu_theta_w[80], nu_theta_w[81], nu_theta_w[82], nu_theta_w[83], nu_theta_w[84], nu_theta_w[85], nu_theta_w[86], nu_theta_w[87], nu_theta_w[88], nu_theta_w[89], nu_theta_w[90], nu_theta_w[91], nu_theta_w[92], nu_theta_w[93], nu_theta_w[94], nu_theta_w[95], nu_theta_w[96], nu_theta_w[97], nu_theta_w[98], nu_theta_w[99], nu_theta_w[100], nu_theta_w[101], nu_theta_w[102], nu_theta_w[103], nu_theta_w[104], nu_theta_w[105], nu_theta_w[106], nu_theta_w[107], nu_theta_w[108], nu_theta_w[109], nu_theta_w[110], nu_theta_w[111], nu_theta_w[112], nu_theta_w[113], nu_theta_w[114], nu_theta_w[115], nu_theta_w[116], nu_theta_w[117], nu_theta_w[118], nu_theta_w[119], nu_theta_w[120], nu_theta_w[121], nu_theta_w[122], nu_theta_w[123], nu_theta_w[124], nu_theta_w[125], nu_theta_w[126], nu_theta_w[127], nu_theta_w[128], nu_theta_w[129], nu_theta_w[130], nu_theta_w[131], nu_theta_w[132], nu_theta_w[133], nu_theta_w[134], nu_theta_w[135], nu_theta_w[136], nu_theta_w[137], nu_theta_w[138], nu_theta_w[139], nu_theta_w[140], nu_theta_w[141], nu_theta_w[142], nu_theta_w[143], nu_theta_w[144], nu_theta_w[145], nu_theta_w[146], nu_theta_w[147], nu_theta_w[148], nu_theta_w[149], nu_theta_w[150], nu_theta_w[151], nu_theta_w[152], nu_theta_w[153], nu_theta_w[154], nu_theta_w[155], nu_theta_w[156], nu_theta_w[157], nu_theta_w[158], nu_theta_w[159], nu_theta_w[160], nu_theta_w[161], nu_theta_w[162], nu_theta_w[163], nu_theta_w[164], nu_theta_w[165], nu_theta_w[166], nu_theta_w[167], nu_theta_w[168], nu_theta_w[169], nu_theta_w[170], nu_theta_w[171], nu_theta_w[172], nu_theta_w[173], nu_theta_w[174], nu_theta_w[175], nu_theta_w[176], nu_theta_w[177], nu_theta_w[178], nu_theta_w[179], nu_theta_w[180], nu_theta_w[181], nu_theta_w[182], nu_theta_w[183], nu_theta_w[184], nu_theta_w[185], nu_theta_w[186], nu_theta_w[187], nu_theta_w[188], nu_theta_w[189], nu_theta_w[190], nu_theta_w[191], nu_theta_w[192], nu_theta_w[193], nu_theta_w[194], nu_theta_w[195], nu_theta_w[196], nu_theta_w[197], nu_theta_w[198], nu_theta_w[199], nu_theta_w[200], nu_theta_w[201], nu_theta_w[202], nu_theta_w[203], nu_theta_w[204], nu_theta_w[205], nu_theta_w[206], nu_theta_w[207], nu_theta_w[208], nu_theta_w[209], nu_theta_w[210], nu_theta_w[211], nu_theta_w[212], nu_theta_w[213], nu_theta_w[214], nu_theta_w[215], nu_theta_w[216], nu_theta_w[217], nu_theta_w[218], nu_theta_w[219], nu_theta_w[220], nu_theta_w[221], nu_theta_w[222], nu_theta_w[223], nu_theta_w[224], nu_theta_w[225], nu_theta_w[226], nu_theta_w[227], nu_theta_w[228], nu_theta_w[229], nu_theta_w[230], nu_theta_w[231], nu_theta_w[232], nu_theta_w[233], nu_theta_w[234], nu_theta_w[235], nu_theta_w[236], nu_theta_w[237], nu_theta_w[238], nu_theta_w[239], nu_theta_w[240], nu_theta_w[241], nu_theta_w[242], nu_theta_w[243], nu_theta_w[244], nu_theta_w[245], nu_theta_w[246], nu_theta_w[247], nu_theta_w[248], nu_theta_w[249], nu_theta_w[250], nu_theta_w[251], nu_theta_w[252], nu_theta_w[253], nu_theta_w[254], nu_theta_w[255], nu_theta_w[256], nu_theta_w[257], nu_theta_w[258], nu_theta_w[259], nu_theta_w[260], nu_theta_w[261], nu_theta_w[262], nu_theta_w[263], nu_theta_w[264], nu_theta_w[265], nu_theta_w[266], nu_theta_w[267], nu_theta_w[268], nu_theta_w[269], nu_theta_w[270], nu_theta_w[271], nu_theta_w[272], nu_theta_w[273], nu_theta_w[274], nu_theta_w[275], nu_theta_w[276], nu_theta_w[277], nu_theta_w[278], nu_theta_w[279], nu_theta_w[280], nu_theta_w[281], nu_theta_w[282], nu_theta_w[283], nu_theta_w[284], nu_theta_w[285], nu_theta_w[286], nu_theta_w[287], nu_theta_w[288], nu_theta_w[289], nu_theta_w[290], nu_theta_w[291], nu_theta_w[292], nu_theta_w[293], nu_theta_w[294], nu_theta_w[295], nu_theta_w[296], nu_theta_w[297], nu_theta_w[298], nu_theta_w[299], nu_theta_w[300], nu_theta_w[301], nu_theta_w[302], nu_theta_w[303], nu_theta_w[304], nu_theta_w[305], nu_theta_w[306], nu_theta_w[307], nu_theta_w[308], nu_theta_w[309], nu_theta_w[310], nu_theta_w[311], nu_theta_w[312], nu_theta_w[313], nu_theta_w[314], nu_theta_w[315], nu_theta_w[316], nu_theta_w[317], nu_theta_w[318], nu_theta_w[319], nu_theta_w[320], nu_theta_w[321], nu_theta_w[322], nu_theta_w[323], nu_theta_w[324], nu_theta_w[325], nu_theta_w[326], nu_theta_w[327], nu_theta_w[328], nu_theta_w[329], nu_theta_w[330], nu_theta_w[331], nu_theta_w[332], nu_theta_w[333], nu_theta_w[334], nu_theta_w[335], nu_theta_w[336], nu_theta_w[337], nu_theta_w[338], nu_theta_w[339], nu_theta_w[340], nu_theta_w[341], nu_theta_w[342], nu_theta_w[343], nu_theta_w[344], nu_theta_w[345], nu_theta_w[346], nu_theta_w[347], nu_theta_w[348], nu_theta_w[349], nu_theta_w[350], nu_theta_w[351], nu_theta_w[352], nu_theta_w[353], nu_theta_w[354], nu_theta_w[355], nu_theta_w[356], nu_theta_w[357], nu_theta_w[358], nu_theta_w[359], nu_theta_w[360], nu_theta_w[361], nu_theta_w[362], nu_theta_w[363], nu_theta_w[364], nu_theta_w[365], nu_theta_w[366], nu_theta_w[367], nu_theta_w[368], nu_theta_w[369], nu_theta_w[370], nu_theta_w[371], nu_theta_w[372], nu_theta_w[373], nu_theta_w[374], nu_theta_w[375], nu_theta_w[376], nu_theta_w[377], nu_theta_w[378], nu_theta_w[379], nu_theta_w[380], nu_theta_w[381], nu_theta_w[382], nu_theta_w[383], nu_theta_w[384], nu_theta_w[385], nu_theta_w[386], nu_theta_w[387], nu_theta_w[388], nu_theta_w[389], nu_theta_w[390], nu_theta_w[391], nu_theta_w[392], nu_theta_w[393], nu_theta_w[394], nu_theta_w[395], nu_theta_w[396], nu_theta_w[397], nu_theta_w[398], nu_theta_w[399], nu_theta_w[400], nu_theta_w[401], nu_theta_w[402], nu_theta_w[403], nu_theta_w[404], nu_theta_w[405], nu_theta_w[406], nu_theta_w[407], nu_theta_w[408], nu_theta_w[409], nu_theta_w[410], nu_theta_w[411], nu_theta_w[412], nu_theta_w[413], nu_theta_w[414], nu_theta_w[415], nu_theta_w[416], nu_theta_w[417], nu_theta_w[418], nu_theta_w[419], nu_theta_w[420], nu_theta_w[421], nu_theta_w[422], nu_theta_w[423], nu_theta_w[424], nu_theta_w[425], nu_theta_w[426], nu_theta_w[427], nu_theta_w[428], nu_theta_w[429], nu_theta_w[430], nu_theta_w[431], nu_theta_w[432], nu_theta_w[433], nu_theta_w[434], nu_theta_w[435], nu_theta_w[436], nu_theta_w[437], nu_theta_w[438], nu_theta_w[439], nu_theta_w[440], nu_theta_w[441], nu_theta_w[442], nu_theta_w[443], nu_theta_w[444], nu_theta_w[445], nu_theta_w[446], nu_theta_w[447], nu_theta_w[448], nu_theta_w[449], nu_theta_w[450], nu_theta_w[451], nu_theta_w[452], nu_theta_w[453], nu_theta_w[454], nu_theta_w[455], nu_theta_w[456], nu_theta_w[457], nu_theta_w[458], nu_theta_w[459], nu_theta_w[460], nu_theta_w[461], nu_theta_w[462], nu_theta_w[463], nu_theta_w[464], nu_theta_w[465], nu_theta_w[466], nu_theta_fit[1], nu_theta_fit[2], nu_theta_fit[3], nu_theta_fit[4], nu_theta_fit[5], nu_theta_fit[6], nu_theta_fit[7], nu_theta_fit[8], nu_theta_fit[9], nu_theta_fit[10], nu_theta_fit[11], nu_theta_fit[12], nu_theta_fit[13], nu_theta_fit[14], nu_theta_fit[15], nu_theta_fit[16], nu_theta_fit[17], nu_theta_fit[18], nu_theta_fit[19], nu_theta_fit[20], nu_theta_fit[21], nu_theta_fit[22], nu_theta_fit[23], nu_theta_fit[24], nu_theta_fit[25], nu_theta_fit[26], nu_theta_fit[27], nu_theta_fit[28], nu_theta_fit[29], nu_theta_fit[30], nu_theta_fit[31], nu_theta_fit[32], nu_theta_fit[33], nu_theta_fit[34], nu_theta_fit[35], nu_theta_fit[36], nu_theta_fit[37], nu_theta_fit[38], nu_theta_fit[39], nu_theta_fit[40], nu_theta_fit[41], nu_theta_fit[42], nu_theta_fit[43], nu_theta_fit[44], nu_theta_fit[45], nu_theta_fit[46], nu_theta_fit[47], nu_theta_fit[48], nu_theta_fit[49], nu_theta_fit[50], nu_theta_fit[51], nu_theta_fit[52], nu_theta_fit[53], nu_theta_fit[54], nu_theta_fit[55], nu_theta_fit[56], nu_theta_fit[57], nu_theta_fit[58], nu_theta_fit[59], nu_theta_fit[60], nu_theta_fit[61], nu_theta_fit[62], nu_theta_fit[63], nu_theta_fit[64], nu_theta_fit[65], nu_theta_fit[66], nu_theta_fit[67], nu_theta_fit[68], nu_theta_fit[69], nu_theta_fit[70], nu_theta_fit[71], nu_theta_fit[72], nu_theta_fit[73], nu_theta_fit[74], nu_theta_fit[75], nu_theta_fit[76], nu_theta_fit[77], nu_theta_fit[78], nu_theta_fit[79], nu_theta_fit[80], nu_theta_fit[81], nu_theta_fit[82], nu_theta_fit[83], nu_theta_fit[84], nu_theta_fit[85], nu_theta_fit[86], nu_theta_fit[87], nu_theta_fit[88], nu_theta_fit[89], nu_theta_fit[90], nu_theta_fit[91], nu_theta_fit[92], nu_theta_fit[93], nu_theta_fit[94], nu_theta_fit[95], nu_theta_fit[96], nu_theta_fit[97], nu_theta_fit[98], nu_theta_fit[99], nu_theta_fit[100], nu_theta_fit[101], nu_theta_fit[102], nu_theta_fit[103], nu_theta_fit[104], nu_theta_fit[105], nu_theta_fit[106], nu_theta_fit[107], nu_theta_fit[108], nu_theta_fit[109], nu_theta_fit[110], nu_theta_fit[111], nu_theta_fit[112], nu_theta_fit[113], nu_theta_fit[114], nu_theta_fit[115], nu_theta_fit[116], nu_theta_fit[117], nu_theta_fit[118], nu_theta_fit[119], nu_theta_fit[120], nu_theta_fit[121], nu_theta_fit[122], nu_theta_fit[123], nu_theta_fit[124], nu_theta_fit[125], nu_theta_fit[126], nu_theta_fit[127], nu_theta_fit[128], nu_theta_fit[129], nu_theta_fit[130], nu_theta_fit[131], nu_theta_fit[132], nu_theta_fit[133], nu_theta_fit[134], nu_theta_fit[135], nu_theta_fit[136], nu_theta_fit[137], nu_theta_fit[138], nu_theta_fit[139], nu_theta_fit[140], nu_theta_fit[141], nu_theta_fit[142], nu_theta_fit[143], nu_theta_fit[144], nu_theta_fit[145], nu_theta_fit[146], nu_theta_fit[147], nu_theta_fit[148], nu_theta_fit[149], nu_theta_fit[150], nu_theta_fit[151], nu_theta_fit[152], nu_theta_fit[153], nu_theta_fit[154], nu_theta_fit[155], nu_theta_fit[156], nu_theta_fit[157], nu_theta_fit[158], nu_theta_fit[159], nu_theta_fit[160], nu_theta_fit[161], nu_theta_fit[162], nu_theta_fit[163], nu_theta_fit[164], nu_theta_fit[165], nu_theta_fit[166], nu_theta_fit[167], nu_theta_fit[168], nu_theta_fit[169], nu_theta_fit[170], nu_theta_fit[171], nu_theta_fit[172], nu_theta_fit[173], nu_theta_fit[174], nu_theta_fit[175], nu_theta_fit[176], nu_theta_fit[177], nu_theta_fit[178], nu_theta_fit[179], nu_theta_fit[180], nu_theta_fit[181], nu_theta_fit[182], nu_theta_fit[183], nu_theta_fit[184], nu_theta_fit[185], nu_theta_fit[186], nu_theta_fit[187], nu_theta_fit[188], nu_theta_fit[189], nu_theta_fit[190], nu_theta_fit[191], nu_theta_fit[192], nu_theta_fit[193], nu_theta_fit[194], nu_theta_fit[195], nu_theta_fit[196], nu_theta_fit[197], nu_theta_fit[198], nu_theta_fit[199], nu_theta_fit[200], nu_theta_fit[201], nu_theta_fit[202], nu_theta_fit[203], nu_theta_fit[204], nu_theta_fit[205], nu_theta_fit[206], nu_theta_fit[207], nu_theta_fit[208], nu_theta_fit[209], nu_theta_fit[210], nu_theta_fit[211], nu_theta_fit[212], nu_theta_fit[213], nu_theta_fit[214], nu_theta_fit[215], nu_theta_fit[216], nu_theta_fit[217], nu_theta_fit[218], nu_theta_fit[219], nu_theta_fit[220], nu_theta_fit[221], nu_theta_fit[222], nu_theta_fit[223], nu_theta_fit[224], nu_theta_fit[225], nu_theta_fit[226], nu_theta_fit[227], nu_theta_fit[228], nu_theta_fit[229], nu_theta_fit[230], nu_theta_fit[231], nu_theta_fit[232], nu_theta_fit[233], nu_theta_fit[234], nu_theta_fit[235], nu_theta_fit[236], nu_theta_fit[237], nu_theta_fit[238], nu_theta_fit[239], nu_theta_fit[240], nu_theta_fit[241], nu_theta_fit[242], nu_theta_fit[243], nu_theta_fit[244], nu_theta_fit[245], nu_theta_fit[246], nu_theta_fit[247], nu_theta_fit[248], nu_theta_fit[249], nu_theta_fit[250], nu_theta_fit[251], nu_theta_fit[252], nu_theta_fit[253], nu_theta_fit[254], nu_theta_fit[255], nu_theta_fit[256], nu_theta_fit[257], nu_theta_fit[258], nu_theta_fit[259], nu_theta_fit[260], nu_theta_fit[261], nu_theta_fit[262], nu_theta_fit[263], nu_theta_fit[264], nu_theta_fit[265], nu_theta_fit[266], nu_theta_fit[267], nu_theta_fit[268], nu_theta_fit[269], nu_theta_fit[270], nu_theta_fit[271], nu_theta_fit[272], nu_theta_fit[273], nu_theta_fit[274], nu_theta_fit[275], nu_theta_fit[276], nu_theta_fit[277], nu_theta_fit[278], nu_theta_fit[279], nu_theta_fit[280], nu_theta_fit[281], nu_theta_fit[282], nu_theta_fit[283], nu_theta_fit[284], nu_theta_fit[285], nu_theta_fit[286], nu_theta_fit[287], nu_theta_fit[288], nu_theta_fit[289], nu_theta_fit[290], nu_theta_fit[291], nu_theta_fit[292], nu_theta_fit[293], nu_theta_fit[294], nu_theta_fit[295], nu_theta_fit[296], nu_theta_fit[297], nu_theta_fit[298], nu_theta_fit[299], nu_theta_fit[300], nu_theta_fit[301], nu_theta_fit[302], nu_theta_fit[303], nu_theta_fit[304], nu_theta_fit[305], nu_theta_fit[306], nu_theta_fit[307], nu_theta_fit[308], nu_theta_fit[309], nu_theta_fit[310], nu_theta_fit[311], nu_theta_fit[312], nu_theta_fit[313], nu_theta_fit[314], nu_theta_fit[315], nu_theta_fit[316], nu_theta_fit[317], nu_theta_fit[318], nu_theta_fit[319], nu_theta_fit[320], nu_theta_fit[321], nu_theta_fit[322], nu_theta_fit[323], nu_theta_fit[324], nu_theta_fit[325], nu_theta_fit[326], nu_theta_fit[327], nu_theta_fit[328], nu_theta_fit[329], nu_theta_fit[330], nu_theta_fit[331], nu_theta_fit[332], nu_theta_fit[333], nu_theta_fit[334], nu_theta_fit[335], nu_theta_fit[336], nu_theta_fit[337], nu_theta_fit[338], nu_theta_fit[339], nu_theta_fit[340], nu_theta_fit[341], nu_theta_fit[342], nu_theta_fit[343], nu_theta_fit[344], nu_theta_fit[345], nu_theta_fit[346], nu_theta_fit[347], nu_theta_fit[348], nu_theta_fit[349], nu_theta_fit[350], nu_theta_fit[351], nu_theta_fit[352], nu_theta_fit[353], nu_theta_fit[354], nu_theta_fit[355], nu_theta_fit[356], nu_theta_fit[357], nu_theta_fit[358], nu_theta_fit[359], nu_theta_fit[360], nu_theta_fit[361], nu_theta_fit[362], nu_theta_fit[363], nu_theta_fit[364], nu_theta_fit[365], nu_theta_fit[366], nu_theta_fit[367], nu_theta_fit[368], nu_theta_fit[369], nu_theta_fit[370], nu_theta_fit[371], nu_theta_fit[372], nu_theta_fit[373], nu_theta_fit[374], nu_theta_fit[375], nu_theta_fit[376], nu_theta_fit[377], nu_theta_fit[378], nu_theta_fit[379], nu_theta_fit[380], nu_theta_fit[381], nu_theta_fit[382], nu_theta_fit[383], nu_theta_fit[384], nu_theta_fit[385], nu_theta_fit[386], nu_theta_fit[387], nu_theta_fit[388], nu_theta_fit[389], nu_theta_fit[390], nu_theta_fit[391], nu_theta_fit[392], nu_theta_fit[393], nu_theta_fit[394], nu_theta_fit[395], nu_theta_fit[396], nu_theta_fit[397], nu_theta_fit[398], nu_theta_fit[399], nu_theta_fit[400], nu_theta_fit[401], nu_theta_fit[402], nu_theta_fit[403], nu_theta_fit[404], nu_theta_fit[405], nu_theta_fit[406], nu_theta_fit[407], nu_theta_fit[408], nu_theta_fit[409], nu_theta_fit[410], nu_theta_fit[411], nu_theta_fit[412], nu_theta_fit[413], nu_theta_fit[414], nu_theta_fit[415], nu_theta_fit[416], nu_theta_fit[417], nu_theta_fit[418], nu_theta_fit[419], nu_theta_fit[420], nu_theta_fit[421], nu_theta_fit[422], nu_theta_fit[423], nu_theta_fit[424], nu_theta_fit[425], nu_theta_fit[426], nu_theta_fit[427], nu_theta_fit[428], nu_theta_fit[429], nu_theta_fit[430], nu_theta_fit[431], nu_theta_fit[432], nu_theta_fit[433], nu_theta_fit[434], nu_theta_fit[435], nu_theta_fit[436], nu_theta_fit[437], nu_theta_fit[438], nu_theta_fit[439], nu_theta_fit[440], nu_theta_fit[441], nu_theta_fit[442], nu_theta_fit[443], nu_theta_fit[444], nu_theta_fit[445], nu_theta_fit[446], nu_theta_fit[447], nu_theta_fit[448], nu_theta_fit[449], nu_theta_fit[450], nu_theta_fit[451], nu_theta_fit[452], nu_theta_fit[453], nu_theta_fit[454], nu_theta_fit[455], nu_theta_fit[456], nu_theta_fit[457], nu_theta_fit[458], nu_theta_fit[459], nu_theta_fit[460], nu_theta_fit[461], nu_theta_fit[462], nu_theta_fit[463], nu_theta_fit[464], nu_theta_fit[465], nu_theta_fit[466], nu_theta_fit[467], nu_theta_fit[468], nu_theta_fit[469], nu_theta_fit[470], nu_theta_fit[471], nu_theta_fit[472], nu_theta_fit[473], nu_theta_fit[474], nu_theta_fit[475], nu_theta_fit[476], nu_theta_fit[477], nu_theta_fit[478], nu_theta_fit[479], nu_theta_fit[480], nu_theta_fit[481], nu_theta_fit[482], nu_theta_fit[483], nu_theta_fit[484], nu_theta_fit[485], nu_theta_fit[486], nu_theta_fit[487], nu_theta_fit[488], nu_theta_fit[489], nu_theta_fit[490], nu_theta_fit[491], nu_theta_fit[492], nu_theta_fit[493], nu_theta_fit[494], nu_theta_fit[495], nu_theta_fit[496], nu_theta_fit[497], nu_theta_fit[498], nu_theta_fit[499], nu_theta_fit[500], nu_theta_fit[501], nu_theta_fit[502], nu_theta_fit[503], nu_theta_fit[504], nu_theta_fit[505], nu_theta_fit[506], nu_theta_fit[507], nu_theta_fit[508], nu_theta_fit[509], nu_theta_fit[510], nu_theta_fit[511], nu_theta_fit[512], nu_theta_fit[513], nu_theta_fit[514], nu_theta_fit[515], nu_theta_fit[516], nu_theta_fit[517], nu_theta_fit[518], nu_theta_fit[519], nu_theta_fit[520], nu_theta_fit[521], nu_theta_fit[522], nu_theta_fit[523], nu_theta_fit[524], nu_theta_fit[525], nu_theta_fit[526], nu_theta_fit[527], nu_theta_fit[528], nu_theta_fit[529], nu_theta_fit[530], nu_theta_fit[531], nu_theta_fit[532], nu_theta_fit[533], nu_theta_fit[534], nu_theta_fit[535], nu_theta_fit[536], nu_theta_fit[537], nu_theta_fit[538], nu_theta_fit[539], nu_theta_fit[540]
+Such high values indicate incomplete mixing and biased estimation.
+You should consider regularizing your model with additional prior information or a more effective parameterization.
+
+Processing complete.
+
+Parameters from last iteration: [  0.28436015   0.41330853   0.41403681 ... 252.61790099 234.22051783
+ 233.6724804 ]
+
+Parameters from current iteration:
+            [  0.42299858   0.42143948   0.42143068 ... 252.78846273 234.26794002
+ 233.66208143]
+
+Updated uncertain values: [  0.31901975   0.41534127   0.41588528 ... 252.66054142 234.23237338
+ 233.66988066]
+
+
+            Iteration [   3]: Absolute Error = 0.967958775927741,
+            Percentage Error = 0.21431839238201245
+            
+Optimization Iteration[4/100]
+
+Theta: [0.31901975 0.41534127 0.41588528 ... 1.47662437 1.13283741 1.07133163]
+
+Gamma: [606.13110457 587.33032669 531.95438758 ... 252.66054142 234.23237338
+ 233.66988066]
+
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/50255446/tmp00b7zozj.pyomo.lp
+Reading time = 2.16 seconds
+x1: 417600 rows, 834801 columns, 2083271 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 417600 rows, 834801 columns and 2083271 nonzeros
+Model fingerprint: 0x52c87435
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 9e+02]
+  Objective range  [9e-04, 5e+02]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-06, 1e+00]
+  RHS range        [9e-11, 4e-01]
+Presolve removed 208947 rows and 209294 columns
+Presolve time: 0.81s
+Presolved: 208653 rows, 625507 columns, 1249571 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 1.26s
+
+Barrier statistics:
+ AA' NZ     : 6.241e+05
+ Factor NZ  : 6.773e+07 (roughly 900 MB of memory)
+ Factor Ops : 2.543e+10 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -1.31418792e+11  1.10640370e+11  1.04e+06 1.14e-13  1.00e+06     6s
+   1  -6.41660747e+10  6.33689588e+10  4.43e+04 3.08e+01  4.67e+04     7s
+   2  -3.05758140e+10  3.06549033e+10  4.48e+02 1.24e-01  5.43e+02    10s
+   3  -1.08846571e+10  1.09732392e+10  3.21e+00 1.45e-12  2.86e+01    12s
+   4  -2.40157847e+09  2.49962616e+09  2.67e-01 1.24e-12  5.95e+00    16s
+   5  -5.82478614e+08  6.48719095e+08  3.65e-02 3.36e-12  1.46e+00    21s
+   6  -9.62909976e+07  1.09596854e+08  2.74e-03 1.58e-12  2.41e-01    26s
+   7  -1.40995247e+07  1.68815754e+07  2.74e-09 1.35e-12  3.63e-02    31s
+   8  -2.06388397e+06  2.46233664e+06  2.68e-13 1.01e-12  5.30e-03    33s
+   9  -3.06084052e+05  3.78501057e+05  3.60e-14 3.48e-13  8.02e-04    35s
+  10  -4.55478183e+04  5.48849488e+04  2.00e-14 6.02e-14  1.18e-04    37s
+  11  -6.89309142e+03  8.47376379e+03  9.08e-15 7.28e-15  1.80e-05    39s
+  12  -1.57098169e+03  1.90153749e+03  1.64e-14 1.47e-15  4.07e-06    42s
+  13  -3.76856436e+02  1.02707772e+03  1.30e-15 4.59e-16  1.64e-06    44s
+  14  -9.81453976e+00  3.62933539e+02  5.67e-16 4.44e-16  4.36e-07    47s
+  15   1.07098543e+02  2.62514268e+02  2.74e-16 3.33e-16  1.82e-07    49s
+  16   1.46293740e+02  2.24374771e+02  1.63e-16 4.44e-16  9.14e-08    51s
+  17   1.68006922e+02  1.97817223e+02  7.29e-17 2.78e-16  3.49e-08    52s
+  18   1.72691637e+02  1.92551873e+02  5.88e-17 2.78e-16  2.33e-08    54s
+  19   1.78663527e+02  1.87105010e+02  8.13e-17 3.33e-16  9.88e-09    56s
+  20   1.80502928e+02  1.85660635e+02  9.11e-17 3.33e-16  6.04e-09    58s
+  21   1.82058065e+02  1.84641648e+02  7.76e-17 4.44e-16  3.02e-09    59s
+  22   1.82426426e+02  1.84415474e+02  6.42e-17 3.33e-16  2.33e-09    61s
+  23   1.82906694e+02  1.84142628e+02  9.09e-17 3.33e-16  1.45e-09    63s
+  24   1.83198510e+02  1.83983899e+02  1.06e-16 3.33e-16  9.20e-10    65s
+  25   1.83368704e+02  1.83893364e+02  9.41e-17 3.33e-16  6.14e-10    67s
+  26   1.83482034e+02  1.83835578e+02  1.64e-16 4.44e-16  4.14e-10    68s
+  27   1.83552048e+02  1.83801375e+02  2.55e-16 3.33e-16  2.92e-10    70s
+  28   1.83594855e+02  1.83780624e+02  1.32e-16 3.33e-16  2.17e-10    72s
+  29   1.83643253e+02  1.83757964e+02  2.15e-16 3.33e-16  1.34e-10    74s
+  30   1.83693978e+02  1.83734665e+02  3.62e-16 4.44e-16  4.76e-11    76s
+  31   1.83694827e+02  1.83734301e+02  3.40e-16 5.55e-16  4.62e-11    78s
+  32   1.83700916e+02  1.83731686e+02  2.18e-16 4.44e-16  3.60e-11    80s
+  33   1.83717754e+02  1.83724556e+02  8.52e-16 4.44e-16  7.96e-12    82s
+  34   1.83720312e+02  1.83723496e+02  4.21e-15 4.44e-16  3.73e-12    84s
+  35   1.83721524e+02  1.83722997e+02  1.44e-14 4.44e-16  1.72e-12    86s
+  36   1.83722233e+02  1.83722705e+02  2.56e-14 4.44e-16  5.52e-13    87s
+  37   1.83722473e+02  1.83722607e+02  3.63e-15 5.55e-16  1.56e-13    89s
+  38   1.83722560e+02  1.83722571e+02  3.41e-15 4.44e-16  1.23e-14    91s
+
+Barrier solved model in 38 iterations and 91.16 seconds (17.28 work units)
+Optimal objective 1.83722560e+02
+
+Done! Time elapsed: 121.77290678024292 seconds.
+Starting HMC sampling...
+
+                                                                                                                                                                                                                                                                                                                                
+Finished sampling! Elapsed Time: 906.1022624969482 seconds
+
+Checking sampler transitions treedepth.
+101 of 16000 (0.63%) transitions hit the maximum treedepth limit of 10, or 2^10 leapfrog steps.
+Trajectories that are prematurely terminated due to this limit will result in slow exploration.
+For optimal performance, increase this limit.
+
+Checking sampler transitions for divergences.
+297 of 16000 (1.86%) transitions ended with a divergence.
+These divergent transitions indicate that HMC is not fully able to explore the posterior distribution.
+Try increasing adapt delta closer to 1.
+If this doesn't remove all divergences, try to reparameterize the model.
+
+Checking E-BFMI - sampler transitions HMC potential energy.
+E-BFMI satisfactory.
+
+The following parameters had fewer than 0.001 effective draws per transition:
+  log_precision_v_theta
+Such low values indicate that the effective sample size estimators may be biased high and actual performance may be substantially lower than quoted.
+
+The following parameters had rank-normalized split R-hat greater than 1.01:
+  log_precision_v_theta
+Such high values indicate incomplete mixing and biased estimation.
+You should consider regularizing your model with additional prior information or a more effective parameterization.
+
+Processing complete.
+
+Parameters from last iteration: [  0.31901975   0.41534127   0.41588528 ... 252.66054142 234.23237338
+ 233.66988066]
+
+Parameters from current iteration:
+            [  0.416651     0.42459038   0.42463522 ... 252.77242898 234.28216612
+ 233.76283605]
+
+Updated uncertain values: [  0.34342757   0.41765355   0.41807276 ... 252.68851331 234.24482156
+ 233.6931195 ]
+
+
+            Iteration [   4]: Absolute Error = 0.8583782293237618,
+            Percentage Error = 0.18922289400151981
+            
+Optimization Iteration[5/100]
+
+Theta: [0.34342757 0.41765355 0.41807276 ... 1.36097963 1.13381325 1.09348388]
+
+Gamma: [606.41835386 587.59799025 532.13567937 ... 252.68851331 234.24482156
+ 233.6931195 ]
+
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/50255446/tmp0cm1pkdz.pyomo.lp
+Reading time = 2.17 seconds
+x1: 417600 rows, 834801 columns, 2083271 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 417600 rows, 834801 columns and 2083271 nonzeros
+Model fingerprint: 0xac8b35a8
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 9e+02]
+  Objective range  [9e-04, 5e+02]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-06, 1e+00]
+  RHS range        [9e-11, 4e-01]
+Presolve removed 208947 rows and 209294 columns
+Presolve time: 0.80s
+Presolved: 208653 rows, 625507 columns, 1249571 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 1.00s
+
+Barrier statistics:
+ AA' NZ     : 6.241e+05
+ Factor NZ  : 6.773e+07 (roughly 900 MB of memory)
+ Factor Ops : 2.543e+10 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -1.31554274e+11  1.10640370e+11  1.04e+06 1.13e-13  1.00e+06     5s
+   1  -6.41718089e+10  6.33689600e+10  4.43e+04 3.08e+01  4.67e+04     7s
+   2  -3.05758725e+10  3.06549038e+10  4.48e+02 1.24e-01  5.43e+02     9s
+   3  -1.08846578e+10  1.09732394e+10  3.21e+00 1.54e-12  2.86e+01    11s
+   4  -2.40157886e+09  2.49962648e+09  2.67e-01 1.24e-12  5.95e+00    16s
+   5  -5.82478538e+08  6.48718966e+08  3.65e-02 3.12e-12  1.46e+00    20s
+   6  -9.62909658e+07  1.09596763e+08  2.74e-03 1.63e-12  2.41e-01    25s
+   7  -1.40995416e+07  1.68815407e+07  2.74e-09 1.41e-12  3.63e-02    30s
+   8  -2.06390865e+06  2.46231432e+06  2.86e-13 1.16e-12  5.30e-03    33s
+   9  -3.06104954e+05  3.78453702e+05  4.13e-14 2.52e-13  8.01e-04    35s
+  10  -4.55693138e+04  5.48498978e+04  2.31e-14 6.83e-14  1.18e-04    37s
+  11  -6.90851396e+03  8.40447070e+03  9.74e-15 1.00e-14  1.79e-05    39s
+  12  -1.40033866e+03  1.65925687e+03  1.66e-14 1.39e-15  3.58e-06    41s
+  13  -2.97724943e+02  6.06465374e+02  1.42e-15 6.66e-16  1.06e-06    44s
+  14   5.18491290e+00  3.24014343e+02  5.28e-16 3.33e-16  3.73e-07    46s
+  15   1.04189025e+02  2.07435781e+02  2.55e-16 3.33e-16  1.21e-07    49s
+  16   1.24312064e+02  1.84929238e+02  1.34e-16 4.44e-16  7.10e-08    51s
+  17   1.46755767e+02  1.59611653e+02  1.10e-16 3.33e-16  1.51e-08    53s
+  18   1.50126394e+02  1.56748861e+02  7.31e-17 2.78e-16  7.75e-09    55s
+  19   1.52172922e+02  1.55378944e+02  6.55e-17 3.33e-16  3.75e-09    56s
+  20   1.52724053e+02  1.55052993e+02  5.16e-17 2.22e-16  2.73e-09    58s
+  21   1.53300973e+02  1.54731358e+02  1.19e-16 2.22e-16  1.67e-09    60s
+  22   1.53607819e+02  1.54565648e+02  1.10e-16 3.33e-16  1.12e-09    62s
+  23   1.53809489e+02  1.54462064e+02  1.27e-16 3.89e-16  7.64e-10    63s
+  24   1.53953010e+02  1.54389792e+02  1.10e-16 2.78e-16  5.11e-10    65s
+  25   1.54058438e+02  1.54338491e+02  7.85e-17 3.33e-16  3.28e-10    67s
+  26   1.54093455e+02  1.54321610e+02  4.97e-17 3.33e-16  2.67e-10    69s
+  27   1.54108999e+02  1.54314343e+02  5.36e-17 4.44e-16  2.40e-10    71s
+  28   1.54170600e+02  1.54285942e+02  1.02e-16 3.33e-16  1.35e-10    72s
+  29   1.54201183e+02  1.54272076e+02  7.07e-17 3.33e-16  8.30e-11    74s
+  30   1.54225705e+02  1.54261326e+02  3.38e-16 2.78e-16  4.17e-11    76s
+  31   1.54238110e+02  1.54255948e+02  6.07e-16 3.33e-16  2.09e-11    77s
+  32   1.54245301e+02  1.54252858e+02  4.95e-16 3.33e-16  8.85e-12    79s
+  33   1.54248429e+02  1.54251537e+02  1.28e-15 3.33e-16  3.64e-12    81s
+  34   1.54249976e+02  1.54250887e+02  1.04e-14 3.89e-16  1.07e-12    83s
+  35   1.54250260e+02  1.54250769e+02  4.69e-15 3.33e-16  5.96e-13    85s
+  36   1.54250558e+02  1.54250646e+02  3.07e-15 3.33e-16  1.03e-13    87s
+  37   1.54250590e+02  1.54250633e+02  1.30e-15 3.33e-16  4.98e-14    89s
+  38   1.54250613e+02  1.54250623e+02  1.30e-15 3.89e-16  1.13e-14    91s
+
+Barrier solved model in 38 iterations and 90.56 seconds (17.27 work units)
+Optimal objective 1.54250613e+02
+
+Done! Time elapsed: 121.46027040481567 seconds.
+Starting HMC sampling...
+
+                                                                                                                                                                                                                                                                                                                                
+Finished sampling! Elapsed Time: 954.7892365455627 seconds
+
+Checking sampler transitions treedepth.
+220 of 16000 (1.38%) transitions hit the maximum treedepth limit of 10, or 2^10 leapfrog steps.
+Trajectories that are prematurely terminated due to this limit will result in slow exploration.
+For optimal performance, increase this limit.
+
+Checking sampler transitions for divergences.
+No divergent transitions found.
+
+Checking E-BFMI - sampler transitions HMC potential energy.
+E-BFMI satisfactory.
+
+The following parameters had fewer than 0.001 effective draws per transition:
+  log_precision_v_theta
+Such low values indicate that the effective sample size estimators may be biased high and actual performance may be substantially lower than quoted.
+
+The following parameters had rank-normalized split R-hat greater than 1.01:
+  log_precision_v_theta
+Such high values indicate incomplete mixing and biased estimation.
+You should consider regularizing your model with additional prior information or a more effective parameterization.
+
+Processing complete.
+
+Parameters from last iteration: [  0.34342757   0.41765355   0.41807276 ... 252.68851331 234.24482156
+ 233.6931195 ]
+
+Parameters from current iteration:
+            [  0.39812124   0.40383448   0.40386675 ... 252.81280568 234.34697441
+ 233.82397374]
+
+Updated uncertain values: [  0.35710099   0.41419878   0.41452126 ... 252.71958641 234.27035977
+ 233.72583306]
+
+
+            Iteration [   5]: Absolute Error = 0.7191160547272375,
+            Percentage Error = 0.15544481885846942
+            
+Optimization Iteration[6/100]
+
+Theta: [0.35710099 0.41419878 0.41452126 ... 1.28565924 1.13948081 1.11387749]
+
+Gamma: [606.4800112  587.63865781 532.13122701 ... 252.71958641 234.27035977
+ 233.72583306]
+
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/50255446/tmp2adp1a0y.pyomo.lp
+Reading time = 2.17 seconds
+x1: 417600 rows, 834801 columns, 2083271 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 417600 rows, 834801 columns and 2083271 nonzeros
+Model fingerprint: 0xed795010
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 9e+02]
+  Objective range  [9e-04, 5e+02]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-06, 1e+00]
+  RHS range        [9e-11, 4e-01]
+Presolve removed 208947 rows and 209294 columns
+Presolve time: 0.80s
+Presolved: 208653 rows, 625507 columns, 1249571 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 1.05s
+
+Barrier statistics:
+ AA' NZ     : 6.241e+05
+ Factor NZ  : 6.773e+07 (roughly 900 MB of memory)
+ Factor Ops : 2.543e+10 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -1.31624079e+11  1.10640370e+11  1.04e+06 1.14e-13  1.00e+06     5s
+   1  -6.41747653e+10  6.33689612e+10  4.43e+04 3.08e+01  4.67e+04     7s
+   2  -3.05759029e+10  3.06549043e+10  4.48e+02 1.24e-01  5.43e+02     9s
+   3  -1.08846581e+10  1.09732397e+10  3.21e+00 1.47e-12  2.86e+01    11s
+   4  -2.40157911e+09  2.49962672e+09  2.67e-01 1.22e-12  5.95e+00    15s
+   5  -5.82478497e+08  6.48718915e+08  3.65e-02 2.87e-12  1.46e+00    20s
+   6  -9.62909483e+07  1.09596722e+08  2.74e-03 1.47e-12  2.41e-01    24s
+   7  -1.40995484e+07  1.68815171e+07  2.74e-09 4.03e-12  3.63e-02    29s
+   8  -2.06392118e+06  2.46230438e+06  2.54e-13 1.17e-12  5.30e-03    32s
+   9  -3.06113991e+05  3.78418290e+05  4.26e-14 3.01e-13  8.01e-04    34s
+  10  -4.55796103e+04  5.48270743e+04  2.14e-14 6.31e-14  1.18e-04    36s
+  11  -6.91890163e+03  8.38164991e+03  1.09e-14 7.25e-15  1.79e-05    38s
+  12  -1.13572962e+03  1.42958619e+03  1.78e-14 1.46e-15  3.00e-06    39s
+  13  -2.44021052e+02  5.00942455e+02  9.48e-16 5.55e-16  8.72e-07    43s
+  14   1.04962282e+01  2.79978705e+02  7.80e-16 3.33e-16  3.16e-07    45s
+  15   9.29331087e+01  1.85653256e+02  2.88e-16 3.33e-16  1.09e-07    48s
+  16   1.11589323e+02  1.63483981e+02  1.04e-16 3.89e-16  6.08e-08    49s
+  17   1.31100707e+02  1.42193360e+02  6.90e-17 3.33e-16  1.30e-08    52s
+  18   1.34229364e+02  1.39580361e+02  6.22e-17 2.78e-16  6.26e-09    54s
+  19   1.35719382e+02  1.38605028e+02  8.33e-17 3.33e-16  3.38e-09    56s
+  20   1.36408102e+02  1.38205664e+02  8.89e-17 3.33e-16  2.10e-09    57s
+  21   1.36864925e+02  1.37952494e+02  1.19e-16 2.22e-16  1.27e-09    59s
+  22   1.37073732e+02  1.37844131e+02  1.04e-16 2.22e-16  9.02e-10    61s
+  23   1.37216532e+02  1.37771936e+02  1.39e-16 2.78e-16  6.50e-10    63s
+  24   1.37315487e+02  1.37722947e+02  1.34e-16 2.78e-16  4.77e-10    64s
+  25   1.37426839e+02  1.37669714e+02  2.77e-16 3.33e-16  2.84e-10    66s
+  26   1.37481459e+02  1.37643913e+02  4.69e-16 2.22e-16  1.90e-10    68s
+  27   1.37526128e+02  1.37623365e+02  1.18e-16 2.22e-16  1.14e-10    70s
+  28   1.37545812e+02  1.37614407e+02  1.64e-16 3.33e-16  8.03e-11    72s
+  29   1.37564776e+02  1.37606001e+02  1.08e-16 2.22e-16  4.83e-11    73s
+  30   1.37583115e+02  1.37597954e+02  7.16e-16 3.33e-16  1.74e-11    75s
+  31   1.37583385e+02  1.37597838e+02  6.50e-16 4.44e-16  1.69e-11    77s
+  32   1.37588002e+02  1.37595865e+02  1.77e-16 4.44e-16  9.21e-12    79s
+  33   1.37590653e+02  1.37594748e+02  5.32e-16 3.33e-16  4.79e-12    80s
+  34   1.37592404e+02  1.37594010e+02  2.23e-15 4.44e-16  1.88e-12    82s
+  35   1.37593122e+02  1.37593711e+02  3.90e-15 3.33e-16  6.90e-13    84s
+  36   1.37593413e+02  1.37593591e+02  3.05e-15 4.44e-16  2.09e-13    86s
+  37   1.37593479e+02  1.37593563e+02  4.47e-15 2.78e-16  9.90e-14    88s
+  38   1.37593531e+02  1.37593542e+02  5.15e-15 3.33e-16  1.25e-14    90s
+
+Barrier solved model in 38 iterations and 89.61 seconds (17.27 work units)
+Optimal objective 1.37593531e+02
+
+Done! Time elapsed: 120.32007122039795 seconds.
+Starting HMC sampling...
+
+                                                                                                                                                                                                                                                                                                                                
+Finished sampling! Elapsed Time: 814.5146749019623 seconds
+
+Checking sampler transitions treedepth.
+108 of 16000 (0.68%) transitions hit the maximum treedepth limit of 10, or 2^10 leapfrog steps.
+Trajectories that are prematurely terminated due to this limit will result in slow exploration.
+For optimal performance, increase this limit.
+
+Checking sampler transitions for divergences.
+No divergent transitions found.
+
+Checking E-BFMI - sampler transitions HMC potential energy.
+E-BFMI satisfactory.
+
+The following parameters had fewer than 0.001 effective draws per transition:
+  log_precision_v_theta
+Such low values indicate that the effective sample size estimators may be biased high and actual performance may be substantially lower than quoted.
+
+The following parameters had rank-normalized split R-hat greater than 1.01:
+  log_precision_v_theta
+Such high values indicate incomplete mixing and biased estimation.
+You should consider regularizing your model with additional prior information or a more effective parameterization.
+
+Processing complete.
+
+Parameters from last iteration: [  0.35710099   0.41419878   0.41452126 ... 252.71958641 234.27035977
+ 233.72583306]
+
+Parameters from current iteration:
+            [  0.37628636   0.38444525   0.38449133 ... 252.73373463 234.28601844
+ 233.78716685]
+
+Updated uncertain values: [  0.36189733   0.4067604    0.40701378 ... 252.72312346 234.27427444
+ 233.74116651]
+
+
+            Iteration [   6]: Absolute Error = 0.6854325512281321,
+            Percentage Error = 0.11880107080071187
+            
+Optimization Iteration[7/100]
+
+Theta: [0.36189733 0.4067604  0.40701378 ... 1.23457943 1.14407118 1.12860948]
+
+Gamma: [606.49195933 587.65505617 532.11983042 ... 252.72312346 234.27427444
+ 233.74116651]
+
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/50255446/tmp41q2ywjq.pyomo.lp
+Reading time = 2.16 seconds
+x1: 417600 rows, 834801 columns, 2083271 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 417600 rows, 834801 columns and 2083271 nonzeros
+Model fingerprint: 0xb1db3eb8
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 9e+02]
+  Objective range  [9e-04, 5e+02]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-06, 1e+00]
+  RHS range        [9e-11, 4e-01]
+Presolve removed 208947 rows and 209294 columns
+Presolve time: 0.80s
+Presolved: 208653 rows, 625507 columns, 1249571 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 1.02s
+
+Barrier statistics:
+ AA' NZ     : 6.241e+05
+ Factor NZ  : 6.773e+07 (roughly 900 MB of memory)
+ Factor Ops : 2.543e+10 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -2.12052281e+10  1.08047323e+08  1.04e+06 1.14e-13  1.01e+06     5s
+   1  -5.68388629e+08  3.36462425e+07  2.66e+04 1.03e-12  2.75e+04     7s
+   2  -7.02629644e+06  5.23948812e+06  9.24e+01 1.67e-12  1.08e+02     9s
+   3  -8.52607761e+05  9.11647455e+05  1.10e+00 2.16e-12  3.22e+00    11s
+   4  -1.50007583e+05  2.11279199e+05  3.85e-02 1.54e-12  4.63e-01    13s
+   5  -2.80555597e+04  3.55309206e+04  1.60e-03 1.07e-12  7.67e-02    15s
+   6  -6.44551609e+03  8.56816495e+03  1.42e-04 7.94e-13  1.80e-02    17s
+   7  -1.80339580e+03  2.58676472e+03  2.42e-05 3.18e-12  5.26e-03    18s
+   8  -4.98879539e+02  9.14238153e+02  4.34e-06 7.90e-13  1.69e-03    20s
+   9  -2.65354268e+02  6.67760536e+02  2.06e-06 4.21e-13  1.12e-03    22s
+  10   1.55163202e+01  2.42315243e+02  1.85e-07 2.09e-13  2.72e-04    24s
+  11   8.54921883e+01  1.66905393e+02  2.26e-08 2.27e-13  9.76e-05    26s
+  12   1.10583947e+02  1.44616750e+02  2.30e-09 2.27e-13  4.08e-05    28s
+  13   1.20683979e+02  1.33959391e+02  4.75e-10 1.30e-13  1.59e-05    30s
+  14   1.21631315e+02  1.33184281e+02  4.13e-10 2.27e-13  1.39e-05    32s
+  15   1.22713546e+02  1.32322989e+02  3.41e-10 2.43e-13  1.15e-05    34s
+  16   1.23524327e+02  1.31699662e+02  2.89e-10 2.27e-13  9.80e-06    35s
+  17   1.23741002e+02  1.31529398e+02  2.67e-10 2.74e-13  9.34e-06    37s
+  18   1.24673630e+02  1.30840497e+02  2.10e-10 2.65e-13  7.39e-06    39s
+  19   1.25376027e+02  1.30322932e+02  1.54e-10 2.49e-13  5.93e-06    41s
+  20   1.27079584e+02  1.29150537e+02  2.35e-11 2.84e-13  2.48e-06    44s
+  21   1.27734840e+02  1.28776825e+02  9.38e-12 2.84e-13  1.25e-06    46s
+  22   1.28077242e+02  1.28592536e+02  3.25e-12 3.41e-13  6.18e-07    48s
+  23   1.28105543e+02  1.28578143e+02  2.84e-12 3.41e-13  5.67e-07    50s
+  24   1.28199521e+02  1.28531329e+02  1.78e-12 3.41e-13  3.98e-07    51s
+  25   1.28270884e+02  1.28495930e+02  9.18e-13 3.41e-13  2.70e-07    53s
+  26   1.28296213e+02  1.28483696e+02  6.68e-13 2.27e-13  2.25e-07    55s
+  27   1.28307133e+02  1.28478474e+02  5.76e-13 3.41e-13  2.05e-07    56s
+  28   1.28344623e+02  1.28460847e+02  3.32e-13 3.41e-13  1.39e-07    58s
+  29   1.28370073e+02  1.28449065e+02  1.88e-13 2.27e-13  9.47e-08    60s
+  30   1.28404212e+02  1.28433589e+02  3.83e-14 3.41e-13  3.52e-08    62s
+  31   1.28413361e+02  1.28429597e+02  1.55e-14 3.41e-13  1.95e-08    64s
+  32   1.28419129e+02  1.28427134e+02  3.53e-15 3.41e-13  9.60e-09    65s
+  33   1.28422509e+02  1.28425695e+02  1.47e-15 2.27e-13  3.82e-09    67s
+  34   1.28423638e+02  1.28425219e+02  1.62e-15 3.41e-13  1.90e-09    69s
+  35   1.28424454e+02  1.28424877e+02  7.28e-15 3.41e-13  5.07e-10    71s
+  36   1.28424647e+02  1.28424796e+02  3.76e-15 5.68e-13  1.79e-10    73s
+  37   1.28424735e+02  1.28424759e+02  6.76e-15 4.55e-13  2.93e-11    74s
+  38   1.28424749e+02  1.28424754e+02  5.08e-15 3.41e-13  5.45e-12    76s
+  39   1.28424752e+02  1.28424752e+02  5.62e-15 3.41e-13  1.82e-13    78s
+
+Barrier solved model in 39 iterations and 77.98 seconds (17.58 work units)
+Optimal objective 1.28424752e+02
+
+Done! Time elapsed: 111.30580139160156 seconds.
+Starting HMC sampling...
+
+                                                                                                                                                                                                                                                                                                                                
+Finished sampling! Elapsed Time: 849.7324707508087 seconds
+
+Checking sampler transitions treedepth.
+169 of 16000 (1.06%) transitions hit the maximum treedepth limit of 10, or 2^10 leapfrog steps.
+Trajectories that are prematurely terminated due to this limit will result in slow exploration.
+For optimal performance, increase this limit.
+
+Checking sampler transitions for divergences.
+No divergent transitions found.
+
+Checking E-BFMI - sampler transitions HMC potential energy.
+E-BFMI satisfactory.
+
+The following parameters had fewer than 0.001 effective draws per transition:
+  log_precision_v_theta
+Such low values indicate that the effective sample size estimators may be biased high and actual performance may be substantially lower than quoted.
+
+The following parameters had rank-normalized split R-hat greater than 1.01:
+  log_precision_v_theta
+Such high values indicate incomplete mixing and biased estimation.
+You should consider regularizing your model with additional prior information or a more effective parameterization.
+
+Processing complete.
+
+Parameters from last iteration: [  0.36189733   0.4067604    0.40701378 ... 252.72312346 234.27427444
+ 233.74116651]
+
+Parameters from current iteration:
+            [  0.35587932   0.36744641   0.36751174 ... 252.70923448 234.29426209
+ 233.82918331]
+
+Updated uncertain values: [  0.36039283   0.3969319    0.39713827 ... 252.71965122 234.27927135
+ 233.76317071]
+
+
+            Iteration [   7]: Absolute Error = 0.6161091342605687,
+            Percentage Error = 0.0844746212916483
+            
+Optimization Iteration[8/100]
+
+Theta: [0.36039283 0.3969319  0.39713827 ... 1.20015269 1.14842322 1.14003592]
+
+Gamma: [606.58811424 587.72103658 532.12906079 ... 252.71965122 234.27927135
+ 233.76317071]
+
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/50255446/tmprd2uoxwh.pyomo.lp
+Reading time = 2.15 seconds
+x1: 417600 rows, 834801 columns, 2083271 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 417600 rows, 834801 columns and 2083271 nonzeros
+Model fingerprint: 0x02cf4206
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 9e+02]
+  Objective range  [9e-04, 5e+02]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-06, 1e+00]
+  RHS range        [9e-11, 4e-01]
+Presolve removed 208947 rows and 209294 columns
+Presolve time: 0.80s
+Presolved: 208653 rows, 625507 columns, 1249571 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 1.20s
+
+Barrier statistics:
+ AA' NZ     : 6.241e+05
+ Factor NZ  : 6.773e+07 (roughly 900 MB of memory)
+ Factor Ops : 2.543e+10 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -2.12183408e+10  1.08047320e+08  1.04e+06 1.14e-13  1.01e+06     5s
+   1  -5.68734061e+08  3.36469656e+07  2.66e+04 1.18e-12  2.75e+04     7s
+   2  -7.02748134e+06  5.23959778e+06  9.24e+01 1.55e-12  1.08e+02     9s
+   3  -8.52638696e+05  9.11663448e+05  1.10e+00 2.15e-12  3.22e+00    11s
+   4  -1.50009476e+05  2.11276433e+05  3.85e-02 1.55e-12  4.63e-01    13s
+   5  -2.80700206e+04  3.55498188e+04  1.61e-03 1.24e-12  7.67e-02    15s
+   6  -6.30219281e+03  8.33533683e+03  1.29e-04 1.46e-12  1.76e-02    17s
+   7  -1.75631808e+03  2.50897158e+03  2.17e-05 1.35e-12  5.12e-03    19s
+   8  -4.84757716e+02  8.63962278e+02  4.16e-06 5.31e-13  1.62e-03    21s
+   9  -3.39089381e+02  7.18719604e+02  2.81e-06 4.17e-13  1.27e-03    23s
+  10  -2.07696836e+01  2.82755093e+02  3.57e-07 2.27e-13  3.64e-04    25s
+  11   6.32849394e+01  1.81579202e+02  9.15e-08 1.40e-13  1.42e-04    27s
+  12   1.02312060e+02  1.41121994e+02  1.47e-08 1.71e-13  4.65e-05    29s
+  13   1.12275782e+02  1.31778172e+02  4.05e-09 2.27e-13  2.34e-05    31s
+  14   1.17669544e+02  1.27334903e+02  1.23e-09 2.27e-13  1.16e-05    33s
+  15   1.20212025e+02  1.25352963e+02  5.58e-10 1.60e-13  6.16e-06    34s
+  16   1.21826198e+02  1.24192879e+02  1.94e-10 1.46e-13  2.84e-06    36s
+  17   1.22529857e+02  1.23729385e+02  6.34e-11 3.41e-13  1.44e-06    38s
+  18   1.22909390e+02  1.23512758e+02  2.71e-11 2.27e-13  7.23e-07    40s
+  19   1.23017145e+02  1.23450971e+02  1.51e-11 2.27e-13  5.20e-07    42s
+  20   1.23125188e+02  1.23393347e+02  6.71e-12 3.41e-13  3.21e-07    44s
+  21   1.23166631e+02  1.23372267e+02  4.26e-12 2.27e-13  2.47e-07    46s
+  22   1.23214485e+02  1.23348949e+02  2.18e-12 2.27e-13  1.61e-07    48s
+  23   1.23269529e+02  1.23322454e+02  3.24e-13 3.41e-13  6.35e-08    50s
+  24   1.23281038e+02  1.23317305e+02  1.83e-13 2.84e-13  4.35e-08    51s
+  25   1.23292663e+02  1.23312194e+02  3.98e-14 3.41e-13  2.34e-08    53s
+  26   1.23301321e+02  1.23308441e+02  8.17e-15 2.84e-13  8.54e-09    55s
+  27   1.23304845e+02  1.23306935e+02  1.94e-15 3.41e-13  2.51e-09    57s
+  28   1.23305999e+02  1.23306449e+02  8.36e-16 3.41e-13  5.39e-10    59s
+  29   1.23306227e+02  1.23306353e+02  1.64e-15 4.55e-13  1.52e-10    61s
+  30   1.23306271e+02  1.23306335e+02  2.01e-15 3.41e-13  7.66e-11    63s
+  31   1.23306308e+02  1.23306320e+02  3.61e-15 3.98e-13  1.38e-11    65s
+  32   1.23306316e+02  1.23306316e+02  1.96e-15 3.41e-13  6.24e-13    67s
+
+Barrier solved model in 32 iterations and 66.61 seconds (14.65 work units)
+Optimal objective 1.23306316e+02
+
+Done! Time elapsed: 97.21471571922302 seconds.
+Starting HMC sampling...
+
+                                                                                                                                                                                                                                                                                                                                
+Finished sampling! Elapsed Time: 936.4653172492981 seconds
+
+Checking sampler transitions treedepth.
+121 of 16000 (0.76%) transitions hit the maximum treedepth limit of 10, or 2^10 leapfrog steps.
+Trajectories that are prematurely terminated due to this limit will result in slow exploration.
+For optimal performance, increase this limit.
+
+Checking sampler transitions for divergences.
+No divergent transitions found.
+
+Checking E-BFMI - sampler transitions HMC potential energy.
+E-BFMI satisfactory.
+
+The following parameters had fewer than 0.001 effective draws per transition:
+  log_precision_v_theta
+Such low values indicate that the effective sample size estimators may be biased high and actual performance may be substantially lower than quoted.
+
+The following parameters had rank-normalized split R-hat greater than 1.01:
+  log_precision_v_theta
+Such high values indicate incomplete mixing and biased estimation.
+You should consider regularizing your model with additional prior information or a more effective parameterization.
+
+Processing complete.
+
+Parameters from last iteration: [  0.36039283   0.3969319    0.39713827 ... 252.71965122 234.27927135
+ 233.76317071]
+
+Parameters from current iteration:
+            [  0.33899094   0.35444388   0.35453115 ... 252.96116131 234.48271384
+ 233.96867705]
+
+Updated uncertain values: [  0.35504235   0.38630989   0.38648649 ... 252.78002874 234.33013197
+ 233.81454729]
+
+
+            Iteration [   8]: Absolute Error = 0.6438046183891402,
+            Percentage Error = 0.05838484987285933
+            
+Optimization Iteration[9/100]
+
+Theta: [0.35504235 0.38630989 0.38648649 ... 1.17683702 1.15164084 1.14810914]
+
+Gamma: [606.55938209 587.69078802 532.08418699 ... 252.78002874 234.33013197
+ 233.81454729]
+
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/50255446/tmpx9nvo5x3.pyomo.lp
+Reading time = 2.28 seconds
+x1: 417600 rows, 834801 columns, 2083271 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 417600 rows, 834801 columns and 2083271 nonzeros
+Model fingerprint: 0x953ee593
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 9e+02]
+  Objective range  [9e-04, 5e+02]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-06, 1e+00]
+  RHS range        [9e-11, 4e-01]
+Presolve removed 208947 rows and 209294 columns
+Presolve time: 0.80s
+Presolved: 208653 rows, 625507 columns, 1249571 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 1.08s
+
+Barrier statistics:
+ AA' NZ     : 6.241e+05
+ Factor NZ  : 6.773e+07 (roughly 900 MB of memory)
+ Factor Ops : 2.543e+10 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -1.31671361e+11  1.10640369e+11  1.04e+06 1.13e-13  1.00e+06     5s
+   1  -6.41767753e+10  6.33689657e+10  4.43e+04 3.08e+01  4.67e+04     7s
+   2  -3.05759248e+10  3.06549064e+10  4.48e+02 1.24e-01  5.43e+02     9s
+   3  -1.08846588e+10  1.09732405e+10  3.21e+00 1.40e-12  2.86e+01    11s
+   4  -2.40157931e+09  2.49962703e+09  2.67e-01 1.25e-12  5.95e+00    16s
+   5  -5.82478497e+08  6.48718970e+08  3.65e-02 3.01e-12  1.46e+00    21s
+   6  -9.62909383e+07  1.09596721e+08  2.74e-03 1.40e-12  2.41e-01    25s
+   7  -1.40995471e+07  1.68814838e+07  2.74e-09 1.31e-12  3.63e-02    30s
+   8  -2.06392960e+06  2.46230636e+06  2.91e-13 1.80e-12  5.30e-03    33s
+   9  -3.06114125e+05  3.78356150e+05  5.19e-14 3.39e-13  8.01e-04    35s
+  10  -4.55841082e+04  5.47961251e+04  2.72e-14 6.14e-14  1.18e-04    37s
+  11  -6.92454593e+03  8.34961944e+03  1.11e-14 9.52e-15  1.79e-05    39s
+  12  -1.04811603e+03  1.36478350e+03  1.68e-14 1.59e-15  2.82e-06    40s
+  13  -1.65639907e+02  5.80366726e+02  1.10e-15 4.44e-16  8.73e-07    44s
+  14   2.72292618e+01  2.03634719e+02  3.80e-16 3.33e-16  2.07e-07    47s
+  15   8.71871311e+01  1.44296635e+02  1.66e-16 3.33e-16  6.69e-08    50s
+  16   1.09376631e+02  1.26192856e+02  9.39e-17 3.33e-16  1.97e-08    52s
+  17   1.14737850e+02  1.23424980e+02  5.16e-17 2.78e-16  1.02e-08    55s
+  18   1.16762738e+02  1.22503463e+02  4.45e-17 2.22e-16  6.72e-09    57s
+  19   1.18628514e+02  1.21577109e+02  5.12e-17 2.78e-16  3.45e-09    58s
+  20   1.19351013e+02  1.21254852e+02  4.55e-17 2.22e-16  2.23e-09    60s
+  21   1.19698900e+02  1.21100242e+02  3.53e-17 2.22e-16  1.64e-09    62s
+  22   1.19971224e+02  1.20979048e+02  6.25e-17 2.22e-16  1.18e-09    64s
+  23   1.20219411e+02  1.20862674e+02  6.59e-17 2.22e-16  7.53e-10    65s
+  24   1.20288628e+02  1.20832631e+02  7.55e-17 2.22e-16  6.37e-10    67s
+  25   1.20355677e+02  1.20803553e+02  7.70e-17 2.22e-16  5.24e-10    69s
+  26   1.20420997e+02  1.20774766e+02  9.71e-17 2.22e-16  4.14e-10    70s
+  27   1.20461132e+02  1.20757335e+02  9.69e-17 2.22e-16  3.47e-10    72s
+  28   1.20547300e+02  1.20719641e+02  1.08e-16 2.22e-16  2.02e-10    74s
+  29   1.20611382e+02  1.20691605e+02  1.11e-16 2.22e-16  9.39e-11    76s
+  30   1.20635107e+02  1.20681354e+02  1.66e-16 2.22e-16  5.41e-11    78s
+  31   1.20644402e+02  1.20677368e+02  1.28e-16 2.22e-16  3.86e-11    80s
+  32   1.20657278e+02  1.20671850e+02  1.55e-16 2.22e-16  1.71e-11    82s
+  33   1.20662590e+02  1.20669609e+02  1.28e-16 3.33e-16  8.22e-12    83s
+  34   1.20665349e+02  1.20668452e+02  5.20e-16 3.33e-16  3.63e-12    85s
+  35   1.20665883e+02  1.20668229e+02  7.08e-16 3.33e-16  2.75e-12    87s
+  36   1.20666758e+02  1.20667864e+02  2.40e-15 2.78e-16  1.29e-12    88s
+  37   1.20667295e+02  1.20667640e+02  3.26e-15 3.33e-16  4.04e-13    90s
+  38   1.20667443e+02  1.20667578e+02  4.50e-15 2.22e-16  1.57e-13    92s
+  39   1.20667506e+02  1.20667552e+02  2.59e-15 3.33e-16  5.40e-14    94s
+  40   1.20667534e+02  1.20667540e+02  3.55e-15 3.33e-16  6.65e-15    95s
+
+Barrier solved model in 40 iterations and 95.39 seconds (19.27 work units)
+Optimal objective 1.20667534e+02
+
+Done! Time elapsed: 126.49805283546448 seconds.
+Starting HMC sampling...
+
+                                                                                                                                                                                                                                                                                                                                
+Finished sampling! Elapsed Time: 1095.3437938690186 seconds
+
+Checking sampler transitions treedepth.
+38 of 16000 (0.24%) transitions hit the maximum treedepth limit of 10, or 2^10 leapfrog steps.
+Trajectories that are prematurely terminated due to this limit will result in slow exploration.
+For optimal performance, increase this limit.
+
+Checking sampler transitions for divergences.
+No divergent transitions found.
+
+Checking E-BFMI - sampler transitions HMC potential energy.
+E-BFMI satisfactory.
+
+The following parameters had fewer than 0.001 effective draws per transition:
+  log_precision_v_theta
+Such low values indicate that the effective sample size estimators may be biased high and actual performance may be substantially lower than quoted.
+
+The following parameters had rank-normalized split R-hat greater than 1.01:
+  log_precision_v_theta
+Such high values indicate incomplete mixing and biased estimation.
+You should consider regularizing your model with additional prior information or a more effective parameterization.
+
+Processing complete.
+
+Parameters from last iteration: [  0.35504235   0.38630989   0.38648649 ... 252.78002874 234.33013197
+ 233.81454729]
+
+Parameters from current iteration:
+            [  0.32989066   0.3469884    0.34708496 ... 252.86612016 234.44345869
+ 233.96376005]
+
+Updated uncertain values: [  0.34875443   0.37647952   0.37663611 ... 252.8015516  234.35846365
+ 233.85185048]
+
+
+            Iteration [   9]: Absolute Error = 0.4725471905142058,
+            Percentage Error = 0.044038482811596884
+            
+Optimization Iteration[10/100]
+
+Theta: [0.34875443 0.37647952 0.37663611 ... 1.15995109 1.15344444 1.15333754]
+
+Gamma: [606.53207929 587.65582811 532.04118323 ... 252.8015516  234.35846365
+ 233.85185048]
+
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/50255446/tmpwcl03w76.pyomo.lp
+Reading time = 2.16 seconds
+x1: 417600 rows, 834801 columns, 2083271 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 417600 rows, 834801 columns and 2083271 nonzeros
+Model fingerprint: 0x39563a63
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 9e+02]
+  Objective range  [9e-04, 5e+02]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-06, 1e+00]
+  RHS range        [9e-11, 4e-01]
+Presolve removed 208947 rows and 209294 columns
+Presolve time: 0.80s
+Presolved: 208653 rows, 625507 columns, 1249571 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 1.10s
+
+Barrier statistics:
+ AA' NZ     : 6.241e+05
+ Factor NZ  : 6.773e+07 (roughly 900 MB of memory)
+ Factor Ops : 2.543e+10 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -2.12210812e+10  1.08047319e+08  1.04e+06 1.14e-13  1.01e+06     5s
+   1  -5.68846387e+08  3.36484845e+07  2.66e+04 1.08e-12  2.75e+04     7s
+   2  -7.02799457e+06  5.23983929e+06  9.25e+01 1.78e-12  1.08e+02     9s
+   3  -8.52679938e+05  9.11702855e+05  1.10e+00 2.16e-12  3.22e+00    11s
+   4  -1.50015336e+05  2.11283225e+05  3.85e-02 1.60e-12  4.63e-01    13s
+   5  -2.80850276e+04  3.55737371e+04  1.61e-03 9.76e-13  7.67e-02    15s
+   6  -6.11660251e+03  8.03822775e+03  1.12e-04 1.96e-12  1.70e-02    17s
+   7  -1.66875818e+03  2.37559793e+03  1.77e-05 2.46e-12  4.85e-03    19s
+   8  -4.49709889e+02  8.05622894e+02  3.27e-06 5.84e-13  1.51e-03    21s
+   9  -3.48546957e+02  7.06085409e+02  2.49e-06 4.71e-13  1.26e-03    23s
+  10  -2.49850158e+01  2.84033182e+02  2.47e-07 1.90e-13  3.70e-04    25s
+  11   6.09246285e+01  1.75753609e+02  5.83e-08 1.35e-13  1.38e-04    27s
+  12   9.97249225e+01  1.37682386e+02  5.89e-09 2.27e-13  4.55e-05    29s
+  13   1.10918829e+02  1.24734591e+02  4.10e-10 2.27e-13  1.66e-05    30s
+  14   1.12358581e+02  1.23591317e+02  3.06e-10 2.27e-13  1.35e-05    32s
+  15   1.15474758e+02  1.21261027e+02  1.34e-10 1.71e-13  6.94e-06    34s
+  16   1.16686830e+02  1.20399340e+02  6.17e-11 2.27e-13  4.45e-06    36s
+  17   1.17666847e+02  1.19777666e+02  3.39e-11 2.27e-13  2.53e-06    38s
+  18   1.18174970e+02  1.19473134e+02  1.73e-11 2.27e-13  1.56e-06    40s
+  19   1.18460212e+02  1.19312799e+02  9.74e-12 2.27e-13  1.02e-06    42s
+  20   1.18674626e+02  1.19196193e+02  4.88e-12 2.27e-13  6.25e-07    44s
+  21   1.18764821e+02  1.19148154e+02  2.94e-12 2.27e-13  4.60e-07    46s
+  22   1.18840863e+02  1.19108955e+02  1.66e-12 2.27e-13  3.21e-07    48s
+  23   1.18874575e+02  1.19091792e+02  1.14e-12 2.27e-13  2.60e-07    49s
+  24   1.18936397e+02  1.19061804e+02  5.43e-13 2.27e-13  1.50e-07    51s
+  25   1.18966176e+02  1.19047541e+02  2.56e-13 2.27e-13  9.75e-08    53s
+  26   1.18988654e+02  1.19037202e+02  1.31e-13 2.27e-13  5.82e-08    55s
+  27   1.19001522e+02  1.19031329e+02  5.38e-14 2.27e-13  3.57e-08    57s
+  28   1.19016260e+02  1.19024840e+02  3.87e-15 3.41e-13  1.03e-08    59s
+  29   1.19018395e+02  1.19023917e+02  1.95e-15 3.41e-13  6.62e-09    61s
+  30   1.19020475e+02  1.19023033e+02  4.17e-15 3.41e-13  3.07e-09    63s
+  31   1.19021464e+02  1.19022614e+02  1.05e-14 3.41e-13  1.38e-09    65s
+  32   1.19021839e+02  1.19022456e+02  1.59e-14 3.41e-13  7.39e-10    67s
+  33   1.19022144e+02  1.19022328e+02  1.81e-14 2.84e-13  2.21e-10    68s
+  34   1.19022237e+02  1.19022289e+02  3.13e-15 3.98e-13  6.14e-11    70s
+  35   1.19022269e+02  1.19022275e+02  6.85e-15 3.98e-13  7.73e-12    73s
+  36   1.19022273e+02  1.19022274e+02  2.42e-15 4.55e-13  7.90e-13    75s
+
+Barrier solved model in 36 iterations and 74.64 seconds (16.54 work units)
+Optimal objective 1.19022273e+02
+
+Done! Time elapsed: 105.28974986076355 seconds.
+Starting HMC sampling...
+
+                                                                                                                                                                                                                                                                                                                                
+Finished sampling! Elapsed Time: 1013.3127188682556 seconds
+
+Checking sampler transitions treedepth.
+96 of 16000 (0.60%) transitions hit the maximum treedepth limit of 10, or 2^10 leapfrog steps.
+Trajectories that are prematurely terminated due to this limit will result in slow exploration.
+For optimal performance, increase this limit.
+
+Checking sampler transitions for divergences.
+60 of 16000 (0.38%) transitions ended with a divergence.
+These divergent transitions indicate that HMC is not fully able to explore the posterior distribution.
+Try increasing adapt delta closer to 1.
+If this doesn't remove all divergences, try to reparameterize the model.
+
+Checking E-BFMI - sampler transitions HMC potential energy.
+E-BFMI satisfactory.
+
+The following parameters had fewer than 0.001 effective draws per transition:
+  log_precision_v_theta
+Such low values indicate that the effective sample size estimators may be biased high and actual performance may be substantially lower than quoted.
+
+The following parameters had rank-normalized split R-hat greater than 1.01:
+  log_precision_v_theta
+Such high values indicate incomplete mixing and biased estimation.
+You should consider regularizing your model with additional prior information or a more effective parameterization.
+
+Processing complete.
+
+Parameters from last iteration: [  0.34875443   0.37647952   0.37663611 ... 252.8015516  234.35846365
+ 233.85185048]
+
+Parameters from current iteration:
+            [  0.32452758   0.34350761   0.34361481 ... 252.64884824 234.29071763
+ 233.88787494]
+
+Updated uncertain values: [  0.34269772   0.36823654   0.36838078 ... 252.76337576 234.34152715
+ 233.8608566 ]
+
+
+            Iteration [  10]: Absolute Error = 0.5314416710755268,
+            Percentage Error = 0.03293068601646588
+            
+Optimization Iteration[11/100]
+
+Theta: [0.34269772 0.36823654 0.36838078 ... 1.14720486 1.15361039 1.15587806]
+
+Gamma: [606.57638093 587.68364211 532.02973899 ... 252.76337576 234.34152715
+ 233.8608566 ]
+
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/50255446/tmpxas4v0vo.pyomo.lp
+Reading time = 2.19 seconds
+x1: 417600 rows, 834801 columns, 2083271 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 417600 rows, 834801 columns and 2083271 nonzeros
+Model fingerprint: 0xc0de023f
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 9e+02]
+  Objective range  [9e-04, 5e+02]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-06, 1e+00]
+  RHS range        [9e-11, 4e-01]
+Presolve removed 208947 rows and 209294 columns
+Presolve time: 0.79s
+Presolved: 208653 rows, 625507 columns, 1249571 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 1.31s
+
+Barrier statistics:
+ AA' NZ     : 6.241e+05
+ Factor NZ  : 6.773e+07 (roughly 900 MB of memory)
+ Factor Ops : 2.543e+10 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -2.12196383e+10  1.08047319e+08  1.04e+06 1.14e-13  1.01e+06     5s
+   1  -5.68812499e+08  3.36489637e+07  2.66e+04 9.65e-13  2.75e+04     7s
+   2  -7.02794989e+06  5.23991198e+06  9.25e+01 1.64e-12  1.08e+02     9s
+   3  -8.52689332e+05  9.11714995e+05  1.10e+00 2.37e-12  3.22e+00    11s
+   4  -1.50017170e+05  2.11286172e+05  3.85e-02 1.40e-12  4.63e-01    13s
+   5  -2.80894914e+04  3.55818666e+04  1.61e-03 1.17e-12  7.68e-02    15s
+   6  -6.05710493e+03  7.94366176e+03  1.06e-04 1.14e-12  1.68e-02    17s
+   7  -1.65601550e+03  2.35734707e+03  1.69e-05 2.67e-12  4.81e-03    19s
+   8  -4.48122321e+02  8.00935308e+02  3.16e-06 7.35e-13  1.50e-03    21s
+   9  -3.50706900e+02  7.05384750e+02  2.43e-06 5.65e-13  1.27e-03    23s
+  10  -2.72144674e+01  2.85899513e+02  2.42e-07 2.27e-13  3.75e-04    24s
+  11   6.08277589e+01  1.73717850e+02  5.45e-08 1.71e-13  1.35e-04    27s
+  12   9.89413008e+01  1.36490363e+02  5.56e-09 1.31e-13  4.50e-05    29s
+  13   1.09949717e+02  1.23747344e+02  3.89e-10 1.21e-13  1.65e-05    30s
+  14   1.12202325e+02  1.21964717e+02  2.38e-10 1.63e-13  1.17e-05    32s
+  15   1.14679952e+02  1.20147651e+02  1.16e-10 2.27e-13  6.56e-06    34s
+  16   1.15646720e+02  1.19483454e+02  8.01e-11 2.27e-13  4.60e-06    36s
+  17   1.16560327e+02  1.18865605e+02  3.25e-11 2.27e-13  2.76e-06    38s
+  18   1.17385927e+02  1.18360774e+02  3.74e-12 2.84e-13  1.17e-06    40s
+  19   1.17576252e+02  1.18260492e+02  1.47e-12 2.84e-13  8.20e-07    42s
+  20   1.17764564e+02  1.18163953e+02  5.85e-13 2.27e-13  4.79e-07    44s
+  21   1.17838016e+02  1.18128078e+02  3.86e-13 2.27e-13  3.48e-07    45s
+  22   1.17889595e+02  1.18103039e+02  2.35e-13 2.27e-13  2.56e-07    47s
+  23   1.17954526e+02  1.18072249e+02  9.78e-14 2.27e-13  1.41e-07    49s
+  24   1.17989770e+02  1.18055849e+02  3.00e-14 3.41e-13  7.92e-08    51s
+  25   1.18021960e+02  1.18041514e+02  3.69e-15 2.84e-13  2.34e-08    53s
+  26   1.18024678e+02  1.18040321e+02  2.58e-15 3.41e-13  1.88e-08    55s
+  27   1.18032008e+02  1.18037150e+02  7.00e-16 2.84e-13  6.17e-09    57s
+  28   1.18034394e+02  1.18036133e+02  3.12e-15 2.84e-13  2.09e-09    59s
+  29   1.18035215e+02  1.18035786e+02  1.86e-15 2.84e-13  6.84e-10    61s
+  30   1.18035451e+02  1.18035686e+02  2.90e-15 2.84e-13  2.82e-10    63s
+  31   1.18035578e+02  1.18035633e+02  5.62e-15 3.41e-13  6.60e-11    65s
+  32   1.18035610e+02  1.18035620e+02  1.37e-15 3.41e-13  1.18e-11    66s
+  33   1.18035616e+02  1.18035617e+02  1.38e-15 3.41e-13  1.89e-12    68s
+  34   1.18035617e+02  1.18035617e+02  5.07e-16 3.98e-13  4.74e-14    70s
+
+Barrier solved model in 34 iterations and 70.05 seconds (15.45 work units)
+Optimal objective 1.18035617e+02
+
+Done! Time elapsed: 100.69734644889832 seconds.
+Starting HMC sampling...
+
+                                                                                                                                                                                                                                                                                                                                
+Finished sampling! Elapsed Time: 905.0280420780182 seconds
+
+Checking sampler transitions treedepth.
+36 of 16000 (0.23%) transitions hit the maximum treedepth limit of 10, or 2^10 leapfrog steps.
+Trajectories that are prematurely terminated due to this limit will result in slow exploration.
+For optimal performance, increase this limit.
+
+Checking sampler transitions for divergences.
+85 of 16000 (0.53%) transitions ended with a divergence.
+These divergent transitions indicate that HMC is not fully able to explore the posterior distribution.
+Try increasing adapt delta closer to 1.
+If this doesn't remove all divergences, try to reparameterize the model.
+
+Checking E-BFMI - sampler transitions HMC potential energy.
+E-BFMI satisfactory.
+
+Rank-normalized split effective sample size satisfactory for all parameters.
+
+The following parameters had rank-normalized split R-hat greater than 1.01:
+  log_precision_v_theta
+Such high values indicate incomplete mixing and biased estimation.
+You should consider regularizing your model with additional prior information or a more effective parameterization.
+
+Processing complete.
+
+Parameters from last iteration: [  0.34269772   0.36823654   0.36838078 ... 252.76337576 234.34152715
+ 233.8608566 ]
+
+Parameters from current iteration:
+            [  0.3210509    0.34230214   0.34242216 ... 252.7514162  234.35711266
+ 233.90391229]
+
+Updated uncertain values: [  0.33728601   0.36175294   0.36189113 ... 252.76038587 234.34542353
+ 233.87162052]
+
+
+            Iteration [  11]: Absolute Error = 0.46447660237799937,
+            Percentage Error = 0.025657473286048213
+            
+Optimization Iteration[12/100]
+
+Theta: [0.33728601 0.36175294 0.36189113 ... 1.13762672 1.15326648 1.15723463]
+
+Gamma: [606.53387035 587.65332571 532.00760609 ... 252.76038587 234.34542353
+ 233.87162052]
+
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/50255446/tmp4n49waci.pyomo.lp
+Reading time = 2.14 seconds
+x1: 417600 rows, 834801 columns, 2083271 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 417600 rows, 834801 columns and 2083271 nonzeros
+Model fingerprint: 0xa86effff
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 9e+02]
+  Objective range  [9e-04, 5e+02]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-06, 1e+00]
+  RHS range        [9e-11, 4e-01]
+Presolve removed 208947 rows and 209294 columns
+Presolve time: 0.80s
+Presolved: 208653 rows, 625507 columns, 1249571 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 1.15s
+
+Barrier statistics:
+ AA' NZ     : 6.241e+05
+ Factor NZ  : 6.773e+07 (roughly 900 MB of memory)
+ Factor Ops : 2.543e+10 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -2.12178108e+10  1.08047320e+08  1.04e+06 1.14e-13  1.01e+06     5s
+   1  -5.68760260e+08  3.36496699e+07  2.66e+04 1.06e-12  2.75e+04     7s
+   2  -7.02789772e+06  5.24001608e+06  9.25e+01 1.55e-12  1.08e+02     9s
+   3  -8.52702922e+05  9.11732238e+05  1.10e+00 2.08e-12  3.22e+00    11s
+   4  -1.50020390e+05  2.11290744e+05  3.85e-02 1.52e-12  4.63e-01    13s
+   5  -2.80926164e+04  3.55876909e+04  1.61e-03 9.47e-13  7.68e-02    15s
+   6  -6.01239726e+03  7.87274293e+03  1.02e-04 1.34e-12  1.67e-02    17s
+   7  -1.64874263e+03  2.34711069e+03  1.64e-05 1.06e-12  4.79e-03    19s
+   8  -4.47493812e+02  7.98260531e+02  3.09e-06 4.69e-13  1.49e-03    21s
+   9  -3.51387780e+02  7.04180989e+02  2.39e-06 4.12e-13  1.27e-03    22s
+  10  -2.87192046e+01  2.87863470e+02  2.34e-07 2.37e-13  3.80e-04    24s
+  11   5.84561850e+01  1.75482908e+02  5.69e-08 1.33e-13  1.40e-04    27s
+  12   9.77378466e+01  1.36541318e+02  6.06e-09 1.21e-13  4.65e-05    29s
+  13   1.08817198e+02  1.23542762e+02  4.53e-10 1.31e-13  1.77e-05    30s
+  14   1.12931928e+02  1.20259016e+02  1.63e-10 2.27e-13  8.78e-06    32s
+  15   1.14445086e+02  1.19186403e+02  8.95e-11 2.27e-13  5.68e-06    34s
+  16   1.15938703e+02  1.18205567e+02  3.47e-11 2.27e-13  2.72e-06    35s
+  17   1.16366829e+02  1.17935937e+02  1.39e-11 2.27e-13  1.88e-06    38s
+  18   1.16942275e+02  1.17611628e+02  4.11e-12 3.41e-13  8.02e-07    40s
+  19   1.17198038e+02  1.17474754e+02  8.71e-13 2.84e-13  3.32e-07    42s
+  20   1.17227592e+02  1.17460183e+02  6.46e-13 2.27e-13  2.79e-07    43s
+  21   1.17291894e+02  1.17429376e+02  3.40e-13 2.27e-13  1.65e-07    45s
+  22   1.17316202e+02  1.17417788e+02  2.07e-13 3.41e-13  1.22e-07    47s
+  23   1.17360082e+02  1.17397437e+02  4.68e-14 3.41e-13  4.48e-08    49s
+  24   1.17374410e+02  1.17391036e+02  1.46e-14 2.27e-13  1.99e-08    51s
+  25   1.17381162e+02  1.17388096e+02  2.79e-15 3.41e-13  8.31e-09    53s
+  26   1.17383621e+02  1.17387046e+02  1.25e-15 2.84e-13  4.11e-09    54s
+  27   1.17385296e+02  1.17386337e+02  8.02e-15 3.98e-13  1.25e-09    56s
+  28   1.17385811e+02  1.17386120e+02  1.19e-14 3.41e-13  3.71e-10    59s
+  29   1.17385960e+02  1.17386057e+02  5.39e-15 3.41e-13  1.17e-10    60s
+  30   1.17386016e+02  1.17386034e+02  1.16e-15 3.41e-13  2.15e-11    62s
+  31   1.17386026e+02  1.17386029e+02  1.39e-15 2.84e-13  3.66e-12    64s
+  32   1.17386028e+02  1.17386029e+02  1.61e-15 4.55e-13  1.39e-13    66s
+
+Barrier solved model in 32 iterations and 65.80 seconds (14.65 work units)
+Optimal objective 1.17386028e+02
+
+Done! Time elapsed: 96.30594754219055 seconds.
+Starting HMC sampling...
+
+                                                                                                                                                                                                                                                                                                                                
+Finished sampling! Elapsed Time: 892.9389245510101 seconds
+
+Checking sampler transitions treedepth.
+209 of 16000 (1.31%) transitions hit the maximum treedepth limit of 10, or 2^10 leapfrog steps.
+Trajectories that are prematurely terminated due to this limit will result in slow exploration.
+For optimal performance, increase this limit.
+
+Checking sampler transitions for divergences.
+No divergent transitions found.
+
+Checking E-BFMI - sampler transitions HMC potential energy.
+E-BFMI satisfactory.
+
+The following parameters had fewer than 0.001 effective draws per transition:
+  log_precision_v_theta
+Such low values indicate that the effective sample size estimators may be biased high and actual performance may be substantially lower than quoted.
+
+The following parameters had rank-normalized split R-hat greater than 1.01:
+  log_precision_v_theta
+Such high values indicate incomplete mixing and biased estimation.
+You should consider regularizing your model with additional prior information or a more effective parameterization.
+
+Processing complete.
+
+Parameters from last iteration: [  0.33728601   0.36175294   0.36189113 ... 252.76038587 234.34542353
+ 233.87162052]
+
+Parameters from current iteration:
+            [  0.31879656   0.33980898   0.33992766 ... 252.75787912 234.37862181
+ 233.94239855]
+
+Updated uncertain values: [  0.33266365   0.35626695   0.35640026 ... 252.75975918 234.3537231
+ 233.88931503]
+
+
+            Iteration [  12]: Absolute Error = 0.4166236281049578,
+            Percentage Error = 0.020031122875953804
+            
+Optimization Iteration[13/100]
+
+Theta: [0.33266365 0.35626695 0.35640026 ... 1.13074881 1.15304501 1.15823894]
+
+Gamma: [606.58851558 587.68825125 532.01837185 ... 252.75975918 234.3537231
+ 233.88931503]
+
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/50255446/tmpv69892kk.pyomo.lp
+Reading time = 2.22 seconds
+x1: 417600 rows, 834801 columns, 2083271 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 417600 rows, 834801 columns and 2083271 nonzeros
+Model fingerprint: 0xf5ac27c8
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 9e+02]
+  Objective range  [9e-04, 5e+02]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-06, 1e+00]
+  RHS range        [9e-11, 4e-01]
+Presolve removed 208947 rows and 209294 columns
+Presolve time: 0.96s
+Presolved: 208653 rows, 625507 columns, 1249571 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 1.07s
+
+Barrier statistics:
+ AA' NZ     : 6.241e+05
+ Factor NZ  : 6.773e+07 (roughly 900 MB of memory)
+ Factor Ops : 2.543e+10 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -2.12166143e+10  1.08047320e+08  1.04e+06 1.14e-13  1.01e+06     6s
+   1  -5.68727667e+08  3.36498299e+07  2.66e+04 1.14e-12  2.75e+04     8s
+   2  -7.02781696e+06  5.24003913e+06  9.25e+01 2.33e-12  1.08e+02    10s
+   3  -8.52704808e+05  9.11736187e+05  1.10e+00 2.30e-12  3.22e+00    12s
+   4  -1.50020693e+05  2.11291667e+05  3.85e-02 1.55e-12  4.63e-01    14s
+   5  -2.80952567e+04  3.55927105e+04  1.61e-03 1.14e-12  7.68e-02    16s
+   6  -5.97978064e+03  7.82094183e+03  9.92e-05 1.44e-12  1.66e-02    18s
+   7  -1.64351426e+03  2.33968917e+03  1.59e-05 1.74e-12  4.78e-03    20s
+   8  -4.47243611e+02  7.96502609e+02  3.04e-06 5.04e-13  1.49e-03    22s
+   9  -3.49980498e+02  7.01400122e+02  2.34e-06 3.90e-13  1.26e-03    24s
+  10  -2.84868941e+01  2.86955349e+02  2.24e-07 1.97e-13  3.78e-04    26s
+  11   5.48976205e+01  1.84907895e+02  6.16e-08 1.34e-13  1.56e-04    28s
+  12   9.64536087e+01  1.37102925e+02  8.27e-09 1.71e-13  4.87e-05    30s
+  13   1.07054699e+02  1.24330088e+02  1.08e-09 1.21e-13  2.07e-05    32s
+  14   1.12250852e+02  1.19935888e+02  3.51e-10 1.71e-13  9.21e-06    34s
+  15   1.13445479e+02  1.19035139e+02  2.10e-10 2.27e-13  6.70e-06    35s
+  16   1.15212203e+02  1.17821278e+02  7.41e-11 2.27e-13  3.13e-06    37s
+  17   1.15886215e+02  1.17399097e+02  3.18e-11 2.27e-13  1.81e-06    39s
+  18   1.16230445e+02  1.17190758e+02  7.70e-12 3.41e-13  1.15e-06    42s
+  19   1.16620872e+02  1.16980723e+02  1.09e-12 3.41e-13  4.31e-07    44s
+  20   1.16663042e+02  1.16960303e+02  8.94e-13 2.27e-13  3.56e-07    46s
+  21   1.16686614e+02  1.16948968e+02  7.26e-13 2.84e-13  3.15e-07    47s
+  22   1.16760876e+02  1.16913754e+02  3.55e-13 3.41e-13  1.83e-07    49s
+  23   1.16812636e+02  1.16889531e+02  1.03e-13 2.27e-13  9.22e-08    51s
+  24   1.16835355e+02  1.16879210e+02  4.40e-14 2.84e-13  5.26e-08    53s
+  25   1.16853593e+02  1.16871086e+02  7.76e-15 3.41e-13  2.10e-08    55s
+  26   1.16858371e+02  1.16869023e+02  4.21e-15 3.41e-13  1.28e-08    56s
+  27   1.16862919e+02  1.16867071e+02  1.42e-15 2.84e-13  4.98e-09    59s
+  28   1.16864367e+02  1.16866458e+02  4.25e-15 4.55e-13  2.51e-09    61s
+  29   1.16865417e+02  1.16866013e+02  1.17e-14 3.41e-13  7.13e-10    63s
+  30   1.16865660e+02  1.16865910e+02  8.84e-15 2.84e-13  3.01e-10    65s
+  31   1.16865778e+02  1.16865861e+02  4.97e-15 2.27e-13  9.88e-11    67s
+  32   1.16865826e+02  1.16865840e+02  1.57e-15 3.41e-13  1.67e-11    68s
+  33   1.16865835e+02  1.16865837e+02  1.58e-15 3.41e-13  2.32e-12    70s
+  34   1.16865836e+02  1.16865836e+02  1.53e-15 3.41e-13  1.01e-13    72s
+
+Barrier solved model in 34 iterations and 72.37 seconds (15.45 work units)
+Optimal objective 1.16865836e+02
+
+Done! Time elapsed: 104.59743475914001 seconds.
+Starting HMC sampling...
+
+                                                                                                                                                                                                                                                                                                                                
+Finished sampling! Elapsed Time: 999.7907350063324 seconds
+
+Checking sampler transitions treedepth.
+40 of 16000 (0.25%) transitions hit the maximum treedepth limit of 10, or 2^10 leapfrog steps.
+Trajectories that are prematurely terminated due to this limit will result in slow exploration.
+For optimal performance, increase this limit.
+
+Checking sampler transitions for divergences.
+188 of 16000 (1.18%) transitions ended with a divergence.
+These divergent transitions indicate that HMC is not fully able to explore the posterior distribution.
+Try increasing adapt delta closer to 1.
+If this doesn't remove all divergences, try to reparameterize the model.
+
+Checking E-BFMI - sampler transitions HMC potential energy.
+E-BFMI satisfactory.
+
+The following parameters had fewer than 0.001 effective draws per transition:
+  log_precision_v_theta
+Such low values indicate that the effective sample size estimators may be biased high and actual performance may be substantially lower than quoted.
+
+The following parameters had rank-normalized split R-hat greater than 1.01:
+  log_precision_v_theta
+Such high values indicate incomplete mixing and biased estimation.
+You should consider regularizing your model with additional prior information or a more effective parameterization.
+
+Processing complete.
+
+Parameters from last iteration: [  0.33266365   0.35626695   0.35640026 ... 252.75975918 234.3537231
+ 233.88931503]
+
+Parameters from current iteration:
+            [  0.3155085    0.33818445   0.33831252 ... 252.62174219 234.24299465
+ 233.81217844]
+
+Updated uncertain values: [  0.32837486   0.35174633   0.35187832 ... 252.72525493 234.32604098
+ 233.87003088]
+
+
+            Iteration [  13]: Absolute Error = 0.3253700076656969,
+            Percentage Error = 0.01567921561135044
+            
+Optimization Iteration[14/100]
+
+Theta: [0.32837486 0.35174633 0.35187832 ... 1.12517106 1.15221826 1.15828673]
+
+Gamma: [606.62606423 587.72060464 532.03382929 ... 252.72525493 234.32604098
+ 233.87003088]
+
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/50255446/tmpbhils5kn.pyomo.lp
+Reading time = 2.19 seconds
+x1: 417600 rows, 834801 columns, 2083271 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 417600 rows, 834801 columns and 2083271 nonzeros
+Model fingerprint: 0x1e9f7cfd
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 9e+02]
+  Objective range  [9e-04, 5e+02]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-06, 1e+00]
+  RHS range        [9e-11, 4e-01]
+Presolve removed 208947 rows and 209294 columns
+Presolve time: 0.92s
+Presolved: 208653 rows, 625507 columns, 1249571 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 1.23s
+
+Barrier statistics:
+ AA' NZ     : 6.241e+05
+ Factor NZ  : 6.773e+07 (roughly 900 MB of memory)
+ Factor Ops : 2.543e+10 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -1.31666099e+11  1.10640369e+11  1.04e+06 1.13e-13  1.00e+06     6s
+   1  -6.41765614e+10  6.33689699e+10  4.43e+04 3.08e+01  4.67e+04     8s
+   2  -3.05759242e+10  3.06549084e+10  4.48e+02 1.24e-01  5.43e+02    10s
+   3  -1.08846593e+10  1.09732412e+10  3.21e+00 1.57e-12  2.86e+01    12s
+   4  -2.40157920e+09  2.49962703e+09  2.67e-01 1.25e-12  5.95e+00    17s
+   5  -5.82478551e+08  6.48719078e+08  3.65e-02 4.05e-12  1.46e+00    22s
+   6  -9.62909456e+07  1.09596753e+08  2.74e-03 1.36e-12  2.41e-01    27s
+   7  -1.40995420e+07  1.68814724e+07  2.74e-09 1.38e-12  3.63e-02    31s
+   8  -2.06392919e+06  2.46231920e+06  2.83e-13 1.14e-12  5.30e-03    34s
+   9  -3.06107050e+05  3.78319012e+05  3.81e-14 3.82e-13  8.01e-04    36s
+  10  -4.55806118e+04  5.47825696e+04  2.16e-14 5.22e-14  1.18e-04    38s
+  11  -6.92237811e+03  8.33597618e+03  8.95e-15 1.04e-14  1.79e-05    40s
+  12  -1.04711869e+03  1.34793607e+03  1.75e-14 1.18e-15  2.80e-06    42s
+  13  -1.71891435e+02  5.95224977e+02  9.55e-16 4.44e-16  8.98e-07    45s
+  14   1.55778053e+01  2.31941122e+02  5.00e-16 4.44e-16  2.53e-07    48s
+  15   8.36716652e+01  1.48598440e+02  1.33e-16 2.78e-16  7.60e-08    51s
+  16   9.75764389e+01  1.31605786e+02  8.74e-17 2.22e-16  3.98e-08    53s
+  17   1.08273591e+02  1.21506951e+02  4.77e-17 3.33e-16  1.55e-08    56s
+  18   1.12176544e+02  1.19081167e+02  3.51e-17 3.33e-16  8.08e-09    58s
+  19   1.14487149e+02  1.17558932e+02  3.27e-17 2.78e-16  3.60e-09    59s
+  20   1.14862720e+02  1.17345827e+02  3.64e-17 3.33e-16  2.91e-09    61s
+  21   1.15559088e+02  1.16962674e+02  3.58e-17 2.78e-16  1.64e-09    63s
+  22   1.15869699e+02  1.16798939e+02  4.45e-17 2.22e-16  1.09e-09    65s
+  23   1.16110267e+02  1.16676825e+02  6.05e-17 2.22e-16  6.63e-10    67s
+  24   1.16229596e+02  1.16617447e+02  6.42e-17 2.22e-16  4.54e-10    69s
+  25   1.16339670e+02  1.16563917e+02  1.23e-16 2.22e-16  2.63e-10    71s
+  26   1.16391226e+02  1.16539458e+02  9.48e-17 2.78e-16  1.74e-10    73s
+  27   1.16414852e+02  1.16528395e+02  8.04e-17 2.22e-16  1.33e-10    74s
+  28   1.16439164e+02  1.16517120e+02  1.25e-16 2.22e-16  9.13e-11    76s
+  29   1.16462023e+02  1.16506675e+02  9.09e-17 2.78e-16  5.23e-11    78s
+  30   1.16471781e+02  1.16502318e+02  2.29e-16 2.22e-16  3.58e-11    80s
+  31   1.16480388e+02  1.16498490e+02  1.22e-16 2.22e-16  2.12e-11    81s
+  32   1.16485210e+02  1.16496368e+02  4.81e-16 2.22e-16  1.31e-11    83s
+  33   1.16487330e+02  1.16495444e+02  2.40e-16 2.22e-16  9.50e-12    85s
+  34   1.16490293e+02  1.16494165e+02  4.06e-16 2.22e-16  4.53e-12    87s
+  35   1.16491005e+02  1.16493856e+02  1.50e-15 3.33e-16  3.34e-12    89s
+  36   1.16492243e+02  1.16493329e+02  4.28e-15 4.44e-16  1.27e-12    91s
+  37   1.16492897e+02  1.16493052e+02  1.60e-14 3.33e-16  1.82e-13    93s
+  38   1.16492958e+02  1.16493026e+02  2.42e-15 3.33e-16  7.88e-14    95s
+  39   1.16492994e+02  1.16493011e+02  1.55e-15 2.78e-16  1.88e-14    97s
+  40   1.16493003e+02  1.16493007e+02  8.83e-16 3.33e-16  5.16e-15    99s
+
+Barrier solved model in 40 iterations and 98.60 seconds (18.19 work units)
+Optimal objective 1.16493003e+02
+
+Done! Time elapsed: 130.8746256828308 seconds.
+Starting HMC sampling...
+
+                                                                                                                                                                                                                                                                                                                                
+Finished sampling! Elapsed Time: 852.6468305587769 seconds
+
+Checking sampler transitions treedepth.
+124 of 16000 (0.78%) transitions hit the maximum treedepth limit of 10, or 2^10 leapfrog steps.
+Trajectories that are prematurely terminated due to this limit will result in slow exploration.
+For optimal performance, increase this limit.
+
+Checking sampler transitions for divergences.
+No divergent transitions found.
+
+Checking E-BFMI - sampler transitions HMC potential energy.
+E-BFMI satisfactory.
+
+The following parameters had fewer than 0.001 effective draws per transition:
+  log_precision_v_theta
+Such low values indicate that the effective sample size estimators may be biased high and actual performance may be substantially lower than quoted.
+
+The following parameters had rank-normalized split R-hat greater than 1.01:
+  log_precision_v_theta
+Such high values indicate incomplete mixing and biased estimation.
+You should consider regularizing your model with additional prior information or a more effective parameterization.
+
+Processing complete.
+
+Parameters from last iteration: [  0.32837486   0.35174633   0.35187832 ... 252.72525493 234.32604098
+ 233.87003088]
+
+Parameters from current iteration:
+            [  0.31529482   0.33826539   0.33839513 ... 252.75914108 234.32035966
+ 233.8401154 ]
+
+Updated uncertain values: [  0.32510485   0.34837609   0.34850752 ... 252.73372647 234.32462065
+ 233.86255201]
+
+
+            Iteration [  14]: Absolute Error = 0.2678546221079614,
+            Percentage Error = 0.01081348958475091
+            
+Optimization Iteration[15/100]
+
+Theta: [0.32510485 0.34837609 0.34850752 ... 1.12090908 1.15156301 1.15829559]
+
+Gamma: [606.65110104 587.75101944 532.06105497 ... 252.73372647 234.32462065
+ 233.86255201]
+
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/50255446/tmpxt6hrta2.pyomo.lp
+Reading time = 2.18 seconds
+x1: 417600 rows, 834801 columns, 2083271 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 417600 rows, 834801 columns and 2083271 nonzeros
+Model fingerprint: 0xae2e0542
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 9e+02]
+  Objective range  [9e-04, 5e+02]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-06, 1e+00]
+  RHS range        [9e-11, 4e-01]
+Presolve removed 208947 rows and 209294 columns
+Presolve time: 0.90s
+Presolved: 208653 rows, 625507 columns, 1249571 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 1.14s
+
+Barrier statistics:
+ AA' NZ     : 6.241e+05
+ Factor NZ  : 6.773e+07 (roughly 900 MB of memory)
+ Factor Ops : 2.543e+10 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -2.12151713e+10  1.08047320e+08  1.04e+06 1.14e-13  1.01e+06     6s
+   1  -5.68680583e+08  3.36501829e+07  2.66e+04 1.02e-12  2.75e+04     7s
+   2  -7.02772942e+06  5.24008833e+06  9.25e+01 1.70e-12  1.08e+02    10s
+   3  -8.52709971e+05  9.11744360e+05  1.10e+00 2.32e-12  3.22e+00    12s
+   4  -1.50021939e+05  2.11293637e+05  3.85e-02 1.66e-12  4.63e-01    14s
+   5  -2.80981280e+04  3.55980472e+04  1.61e-03 9.95e-13  7.68e-02    16s
+   6  -6.01240068e+03  7.87258391e+03  1.02e-04 1.19e-12  1.67e-02    18s
+   7  -1.63086608e+03  2.31980873e+03  1.59e-05 2.19e-12  4.74e-03    20s
+   8  -4.46002246e+02  7.92822700e+02  3.07e-06 5.05e-13  1.49e-03    22s
+   9  -3.44910108e+02  6.94126545e+02  2.33e-06 4.49e-13  1.25e-03    24s
+  10  -2.56067829e+01  2.80527665e+02  2.19e-07 1.98e-13  3.67e-04    26s
+  11   5.58549641e+01  1.82289695e+02  5.81e-08 1.35e-13  1.52e-04    28s
+  12   9.63235468e+01  1.35793779e+02  7.73e-09 2.27e-13  4.73e-05    30s
+  13   1.06374652e+02  1.23743542e+02  1.20e-09 2.27e-13  2.08e-05    32s
+  14   1.11580545e+02  1.19288672e+02  3.94e-10 2.27e-13  9.24e-06    34s
+  15   1.12842933e+02  1.18321056e+02  2.25e-10 1.72e-13  6.57e-06    36s
+  16   1.14222290e+02  1.17344664e+02  6.09e-11 2.27e-13  3.74e-06    37s
+  17   1.15276057e+02  1.16688998e+02  2.31e-11 2.27e-13  1.69e-06    39s
+  18   1.15813486e+02  1.16374060e+02  3.85e-12 3.41e-13  6.72e-07    42s
+  19   1.15968324e+02  1.16293969e+02  1.71e-12 2.27e-13  3.90e-07    44s
+  20   1.16038990e+02  1.16258622e+02  9.91e-13 2.27e-13  2.63e-07    45s
+  21   1.16089226e+02  1.16234031e+02  5.59e-13 2.27e-13  1.74e-07    47s
+  22   1.16107656e+02  1.16225088e+02  3.97e-13 2.27e-13  1.41e-07    49s
+  23   1.16120836e+02  1.16218752e+02  2.93e-13 2.27e-13  1.17e-07    51s
+  24   1.16155944e+02  1.16202277e+02  1.08e-13 2.27e-13  5.55e-08    53s
+  25   1.16174478e+02  1.16193831e+02  3.10e-14 3.41e-13  2.32e-08    55s
+  26   1.16180001e+02  1.16191397e+02  1.32e-14 2.27e-13  1.37e-08    56s
+  27   1.16185260e+02  1.16189082e+02  2.13e-15 2.84e-13  4.58e-09    58s
+  28   1.16187004e+02  1.16188335e+02  6.33e-16 3.41e-13  1.60e-09    61s
+  29   1.16187619e+02  1.16188074e+02  2.72e-15 3.41e-13  5.46e-10    63s
+  30   1.16187797e+02  1.16187999e+02  8.10e-16 3.41e-13  2.42e-10    65s
+  31   1.16187890e+02  1.16187959e+02  1.70e-15 3.41e-13  8.23e-11    67s
+  32   1.16187928e+02  1.16187943e+02  7.03e-16 4.55e-13  1.78e-11    69s
+  33   1.16187937e+02  1.16187940e+02  1.16e-15 3.41e-13  3.00e-12    70s
+  34   1.16187939e+02  1.16187939e+02  1.32e-15 3.41e-13  3.11e-13    72s
+
+Barrier solved model in 34 iterations and 72.50 seconds (15.45 work units)
+Optimal objective 1.16187939e+02
+
+Done! Time elapsed: 107.37291884422302 seconds.
+Starting HMC sampling...
+
+                                                                                                                                                                                                                                                                                                                                
+Finished sampling! Elapsed Time: 1109.50510597229 seconds
+
+Checking sampler transitions treedepth.
+34 of 16000 (0.21%) transitions hit the maximum treedepth limit of 10, or 2^10 leapfrog steps.
+Trajectories that are prematurely terminated due to this limit will result in slow exploration.
+For optimal performance, increase this limit.
+
+Checking sampler transitions for divergences.
+No divergent transitions found.
+
+Checking E-BFMI - sampler transitions HMC potential energy.
+E-BFMI satisfactory.
+
+The following parameters had fewer than 0.001 effective draws per transition:
+  log_precision_v_theta
+Such low values indicate that the effective sample size estimators may be biased high and actual performance may be substantially lower than quoted.
+
+The following parameters had rank-normalized split R-hat greater than 1.01:
+  log_precision_v_theta
+Such high values indicate incomplete mixing and biased estimation.
+You should consider regularizing your model with additional prior information or a more effective parameterization.
+
+Processing complete.
+
+Parameters from last iteration: [  0.32510485   0.34837609   0.34850752 ... 252.73372647 234.32462065
+ 233.86255201]
+
+Parameters from current iteration:
+            [  0.31630419   0.33776215   0.33788335 ... 252.67998298 234.26629199
+ 233.79303767]
+
+Updated uncertain values: [  0.32290469   0.34572261   0.34585148 ... 252.7202906  234.31003849
+ 233.84517343]
+
+
+            Iteration [  15]: Absolute Error = 0.1813135073621197,
+            Percentage Error = 0.008508175016027986
+            
+Optimization Iteration[16/100]
+
+Theta: [0.32290469 0.34572261 0.34585148 ... 1.11796784 1.1513386  1.15857175]
+
+Gamma: [606.63020378 587.7397125  532.06059517 ... 252.7202906  234.31003849
+ 233.84517343]
+
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/50255446/tmpb3tplpza.pyomo.lp
+Reading time = 2.16 seconds
+x1: 417600 rows, 834801 columns, 2083271 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 417600 rows, 834801 columns and 2083271 nonzeros
+Model fingerprint: 0x8eb1c4b5
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 9e+02]
+  Objective range  [9e-04, 5e+02]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-06, 1e+00]
+  RHS range        [9e-11, 4e-01]
+Presolve removed 208947 rows and 209294 columns
+Presolve time: 0.85s
+Presolved: 208653 rows, 625507 columns, 1249571 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 1.32s
+
+Barrier statistics:
+ AA' NZ     : 6.241e+05
+ Factor NZ  : 6.773e+07 (roughly 900 MB of memory)
+ Factor Ops : 2.543e+10 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -1.31665269e+11  1.10640369e+11  1.04e+06 1.13e-13  1.00e+06     6s
+   1  -6.41765272e+10  6.33689701e+10  4.43e+04 3.08e+01  4.67e+04     8s
+   2  -3.05759239e+10  3.06549085e+10  4.48e+02 1.24e-01  5.43e+02    10s
+   3  -1.08846593e+10  1.09732413e+10  3.21e+00 1.41e-12  2.86e+01    12s
+   4  -2.40157916e+09  2.49962701e+09  2.67e-01 1.47e-12  5.95e+00    17s
+   5  -5.82478557e+08  6.48719093e+08  3.65e-02 5.56e-12  1.46e+00    22s
+   6  -9.62909460e+07  1.09596757e+08  2.74e-03 1.37e-12  2.41e-01    27s
+   7  -1.40995412e+07  1.68814710e+07  2.74e-09 1.11e-12  3.63e-02    32s
+   8  -2.06392910e+06  2.46232108e+06  2.76e-13 1.20e-12  5.30e-03    34s
+   9  -3.06106106e+05  3.78314119e+05  4.05e-14 3.25e-13  8.01e-04    37s
+  10  -4.55801677e+04  5.47808485e+04  2.51e-14 4.89e-14  1.18e-04    39s
+  11  -6.92229572e+03  8.33529675e+03  9.43e-15 9.42e-15  1.79e-05    40s
+  12  -1.04766295e+03  1.34908580e+03  1.84e-14 1.08e-15  2.81e-06    42s
+  13  -1.73602289e+02  5.99145234e+02  9.08e-16 4.44e-16  9.05e-07    45s
+  14   1.62087162e+01  2.28053041e+02  4.45e-16 3.33e-16  2.48e-07    48s
+  15   8.26743544e+01  1.49207191e+02  1.75e-16 3.33e-16  7.79e-08    51s
+  16   9.66163978e+01  1.31725833e+02  8.72e-17 3.33e-16  4.11e-08    53s
+  17   1.07763484e+02  1.21422691e+02  9.48e-17 3.33e-16  1.60e-08    55s
+  18   1.12239548e+02  1.18036709e+02  7.72e-17 2.22e-16  6.79e-09    58s
+  19   1.13450339e+02  1.17280479e+02  1.34e-16 2.78e-16  4.48e-09    59s
+  20   1.14625877e+02  1.16590309e+02  6.51e-17 2.22e-16  2.30e-09    61s
+  21   1.15057918e+02  1.16354429e+02  6.40e-17 2.22e-16  1.52e-09    63s
+  22   1.15397333e+02  1.16175933e+02  6.79e-17 2.22e-16  9.12e-10    65s
+  23   1.15591465e+02  1.16077784e+02  3.69e-17 2.22e-16  5.69e-10    66s
+  24   1.15685200e+02  1.16031628e+02  4.36e-17 2.22e-16  4.06e-10    68s
+  25   1.15781439e+02  1.15985048e+02  1.05e-16 2.22e-16  2.38e-10    70s
+  26   1.15814160e+02  1.15969648e+02  8.72e-17 2.22e-16  1.82e-10    72s
+  27   1.15840019e+02  1.15957567e+02  1.22e-16 2.22e-16  1.38e-10    74s
+  28   1.15851204e+02  1.15952372e+02  1.03e-16 2.22e-16  1.18e-10    76s
+  29   1.15885955e+02  1.15936403e+02  1.18e-16 3.33e-16  5.91e-11    78s
+  30   1.15905976e+02  1.15927396e+02  3.07e-16 3.33e-16  2.51e-11    80s
+  31   1.15912394e+02  1.15924610e+02  2.32e-16 2.22e-16  1.43e-11    81s
+  32   1.15916729e+02  1.15922720e+02  4.51e-16 3.33e-16  7.01e-12    83s
+  33   1.15919747e+02  1.15921419e+02  3.01e-15 2.22e-16  1.96e-12    85s
+  34   1.15920416e+02  1.15921133e+02  2.10e-15 3.33e-16  8.39e-13    87s
+  35   1.15920614e+02  1.15921048e+02  9.30e-16 2.78e-16  5.07e-13    88s
+  36   1.15920859e+02  1.15920944e+02  2.74e-15 3.33e-16  9.96e-14    90s
+  37   1.15920903e+02  1.15920926e+02  1.90e-15 2.22e-16  2.66e-14    92s
+  38   1.15920918e+02  1.15920919e+02  6.35e-16 3.33e-16  8.99e-16    94s
+
+Barrier solved model in 38 iterations and 94.29 seconds (17.26 work units)
+Optimal objective 1.15920918e+02
+
+Done! Time elapsed: 126.43477296829224 seconds.
+Starting HMC sampling...
+
+                                                                                                                                                                                                                                                                                                                                
+Finished sampling! Elapsed Time: 1106.4701826572418 seconds
+
+Checking sampler transitions treedepth.
+80 of 16000 (0.50%) transitions hit the maximum treedepth limit of 10, or 2^10 leapfrog steps.
+Trajectories that are prematurely terminated due to this limit will result in slow exploration.
+For optimal performance, increase this limit.
+
+Checking sampler transitions for divergences.
+No divergent transitions found.
+
+Checking E-BFMI - sampler transitions HMC potential energy.
+E-BFMI satisfactory.
+
+The following parameters had fewer than 0.001 effective draws per transition:
+  log_precision_v_theta
+Such low values indicate that the effective sample size estimators may be biased high and actual performance may be substantially lower than quoted.
+
+The following parameters had rank-normalized split R-hat greater than 1.01:
+  log_precision_v_theta
+Such high values indicate incomplete mixing and biased estimation.
+You should consider regularizing your model with additional prior information or a more effective parameterization.
+
+Processing complete.
+
+Parameters from last iteration: [  0.32290469   0.34572261   0.34585148 ... 252.7202906  234.31003849
+ 233.84517343]
+
+Parameters from current iteration:
+            [  0.316212     0.33862988   0.3387565  ... 252.67516847 234.26801141
+ 233.8016006 ]
+
+Updated uncertain values: [  0.32123151   0.34394943   0.34407773 ... 252.70901007 234.29953172
+ 233.83428022]
+
+
+            Iteration [  16]: Absolute Error = 0.2097632924339905,
+            Percentage Error = 0.006350462785667726
+            
+Optimization Iteration[17/100]
+
+Theta: [0.32123151 0.34394943 0.34407773 ... 1.11613613 1.15155552 1.15916615]
+
+Gamma: [606.63671995 587.73809249 532.05245189 ... 252.70901007 234.29953172
+ 233.83428022]
+
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/50255446/tmpt5_lsw05.pyomo.lp
+Reading time = 2.15 seconds
+x1: 417600 rows, 834801 columns, 2083271 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 417600 rows, 834801 columns and 2083271 nonzeros
+Model fingerprint: 0x6c8f5227
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 9e+02]
+  Objective range  [9e-04, 5e+02]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-06, 1e+00]
+  RHS range        [9e-11, 4e-01]
+Presolve removed 208947 rows and 209294 columns
+Presolve time: 0.82s
+Presolved: 208653 rows, 625507 columns, 1249571 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 1.16s
+
+Barrier statistics:
+ AA' NZ     : 6.241e+05
+ Factor NZ  : 6.773e+07 (roughly 900 MB of memory)
+ Factor Ops : 2.543e+10 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -2.12144283e+10  1.08047320e+08  1.04e+06 1.14e-13  1.01e+06     5s
+   1  -5.68653479e+08  3.36501652e+07  2.66e+04 1.05e-12  2.75e+04     7s
+   2  -7.02764885e+06  5.24008239e+06  9.25e+01 1.80e-12  1.08e+02     9s
+   3  -8.52707628e+05  9.11743456e+05  1.10e+00 2.15e-12  3.22e+00    11s
+   4  -1.50021585e+05  2.11293441e+05  3.85e-02 1.56e-12  4.63e-01    13s
+   5  -2.80997640e+04  3.56012176e+04  1.61e-03 1.01e-12  7.68e-02    15s
+   6  -6.02896843e+03  7.89883447e+03  1.04e-04 1.92e-12  1.67e-02    17s
+   7  -1.62282977e+03  2.30755455e+03  1.58e-05 1.69e-12  4.71e-03    19s
+   8  -4.44425779e+02  7.90635631e+02  3.06e-06 7.28e-13  1.48e-03    20s
+   9  -3.41321799e+02  6.89827984e+02  2.30e-06 5.58e-13  1.24e-03    22s
+  10  -2.41079811e+01  2.76692395e+02  2.20e-07 2.27e-13  3.61e-04    24s
+  11   5.71949495e+01  1.73940377e+02  5.77e-08 1.35e-13  1.40e-04    26s
+  12   9.55144707e+01  1.33132462e+02  9.46e-09 1.24e-13  4.51e-05    28s
+  13   1.03820607e+02  1.25229876e+02  3.25e-09 1.31e-13  2.57e-05    30s
+  14   1.10196632e+02  1.19786410e+02  1.17e-09 1.33e-13  1.15e-05    32s
+  15   1.12699904e+02  1.17801059e+02  4.27e-10 1.49e-13  6.12e-06    34s
+  16   1.14237879e+02  1.16699302e+02  1.29e-10 2.27e-13  2.95e-06    35s
+  17   1.14965870e+02  1.16239419e+02  4.53e-11 2.84e-13  1.53e-06    37s
+  18   1.15310551e+02  1.16039035e+02  1.66e-11 2.27e-13  8.73e-07    40s
+  19   1.15541618e+02  1.15916228e+02  7.17e-12 2.27e-13  4.49e-07    41s
+  20   1.15637698e+02  1.15866050e+02  3.37e-12 3.41e-13  2.74e-07    43s
+  21   1.15672161e+02  1.15848750e+02  2.34e-12 2.27e-13  2.12e-07    45s
+  22   1.15704159e+02  1.15832809e+02  1.41e-12 2.27e-13  1.54e-07    47s
+  23   1.15737936e+02  1.15816319e+02  6.58e-13 2.27e-13  9.40e-08    49s
+  24   1.15757589e+02  1.15807042e+02  3.03e-13 2.27e-13  5.93e-08    50s
+  25   1.15781404e+02  1.15796169e+02  4.69e-14 4.55e-13  1.77e-08    52s
+  26   1.15784001e+02  1.15795035e+02  7.56e-15 3.41e-13  1.32e-08    54s
+  27   1.15789384e+02  1.15792693e+02  1.52e-15 3.41e-13  3.97e-09    56s
+  28   1.15791054e+02  1.15791972e+02  1.19e-14 3.41e-13  1.10e-09    58s
+  29   1.15791347e+02  1.15791848e+02  1.59e-14 2.27e-13  6.01e-10    60s
+  30   1.15791598e+02  1.15791742e+02  6.78e-15 3.41e-13  1.72e-10    62s
+  31   1.15791675e+02  1.15791709e+02  1.48e-15 2.84e-13  4.17e-11    64s
+  32   1.15791695e+02  1.15791701e+02  8.33e-16 3.41e-13  7.62e-12    65s
+  33   1.15791699e+02  1.15791699e+02  1.71e-15 4.55e-13  5.52e-13    67s
+
+Barrier solved model in 33 iterations and 67.28 seconds (14.99 work units)
+Optimal objective 1.15791699e+02
+
+Done! Time elapsed: 99.62080526351929 seconds.
+Starting HMC sampling...
+
+                                                                                                                                                                                                                                                                                                                                
+Finished sampling! Elapsed Time: 969.2229537963867 seconds
+
+Checking sampler transitions treedepth.
+54 of 16000 (0.34%) transitions hit the maximum treedepth limit of 10, or 2^10 leapfrog steps.
+Trajectories that are prematurely terminated due to this limit will result in slow exploration.
+For optimal performance, increase this limit.
+
+Checking sampler transitions for divergences.
+No divergent transitions found.
+
+Checking E-BFMI - sampler transitions HMC potential energy.
+E-BFMI satisfactory.
+
+The following parameters had fewer than 0.001 effective draws per transition:
+  log_precision_v_theta
+Such low values indicate that the effective sample size estimators may be biased high and actual performance may be substantially lower than quoted.
+
+The following parameters had rank-normalized split R-hat greater than 1.01:
+  log_precision_v_theta
+Such high values indicate incomplete mixing and biased estimation.
+You should consider regularizing your model with additional prior information or a more effective parameterization.
+
+Processing complete.
+
+Parameters from last iteration: [  0.32123151   0.34394943   0.34407773 ... 252.70901007 234.29953172
+ 233.83428022]
+
+Parameters from current iteration:
+            [  0.3157172    0.34170391   0.34185068 ... 252.76240927 234.35021472
+ 233.87972961]
+
+Updated uncertain values: [  0.31985294   0.34338805   0.34352097 ... 252.72235987 234.31220247
+ 233.84564257]
+
+
+            Iteration [  17]: Absolute Error = 0.15217036461058342,
+            Percentage Error = 0.005929535536115114
+            
+Optimization Iteration[18/100]
+
+Theta: [0.31985294 0.34338805 0.34352097 ... 1.11429703 1.15079629 1.15861119]
+
+Gamma: [606.64420855 587.74294503 532.05769578 ... 252.72235987 234.31220247
+ 233.84564257]
+
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/50255446/tmp30eaxf8y.pyomo.lp
+Reading time = 2.17 seconds
+x1: 417600 rows, 834801 columns, 2083271 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 417600 rows, 834801 columns and 2083271 nonzeros
+Model fingerprint: 0x84d0c2d7
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 9e+02]
+  Objective range  [9e-04, 5e+02]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-06, 1e+00]
+  RHS range        [9e-11, 4e-01]
+Presolve removed 208947 rows and 209294 columns
+Presolve time: 0.83s
+Presolved: 208653 rows, 625507 columns, 1249571 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 1.47s
+
+Barrier statistics:
+ AA' NZ     : 6.241e+05
+ Factor NZ  : 6.773e+07 (roughly 900 MB of memory)
+ Factor Ops : 2.543e+10 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -1.31663617e+11  1.10640369e+11  1.04e+06 1.13e-13  1.00e+06     6s
+   1  -6.41764575e+10  6.33689699e+10  4.43e+04 3.08e+01  4.67e+04     7s
+   2  -3.05759230e+10  3.06549084e+10  4.48e+02 1.24e-01  5.43e+02     9s
+   3  -1.08846593e+10  1.09732412e+10  3.21e+00 1.53e-12  2.86e+01    12s
+   4  -2.40157912e+09  2.49962698e+09  2.67e-01 1.36e-12  5.95e+00    17s
+   5  -5.82478557e+08  6.48719096e+08  3.65e-02 3.61e-12  1.46e+00    21s
+   6  -9.62909454e+07  1.09596759e+08  2.74e-03 1.38e-12  2.41e-01    26s
+   7  -1.40995406e+07  1.68814708e+07  2.74e-09 1.61e-12  3.63e-02    31s
+   8  -2.06392880e+06  2.46232216e+06  2.71e-13 8.86e-13  5.30e-03    34s
+   9  -3.06105302e+05  3.78311461e+05  4.82e-14 3.23e-13  8.01e-04    36s
+  10  -4.55796588e+04  5.47800665e+04  1.97e-14 6.57e-14  1.17e-04    38s
+  11  -6.92202952e+03  8.33516093e+03  1.06e-14 8.89e-15  1.79e-05    40s
+  12  -1.04779501e+03  1.35007276e+03  1.89e-14 1.28e-15  2.81e-06    42s
+  13  -1.75259886e+02  6.04718437e+02  7.84e-16 6.66e-16  9.13e-07    45s
+  14   1.82110498e+01  2.21969638e+02  3.38e-16 3.33e-16  2.39e-07    48s
+  15   8.00329812e+01  1.54107399e+02  1.72e-16 2.22e-16  8.67e-08    51s
+  16   1.01848595e+02  1.25116530e+02  8.50e-17 3.33e-16  2.72e-08    54s
+  17   1.08562274e+02  1.20018583e+02  4.51e-17 2.78e-16  1.34e-08    56s
+  18   1.12976464e+02  1.17253699e+02  1.57e-16 2.78e-16  5.01e-09    58s
+  19   1.13650655e+02  1.16884751e+02  1.03e-16 2.22e-16  3.79e-09    60s
+  20   1.14587392e+02  1.16378409e+02  5.05e-17 2.22e-16  2.10e-09    62s
+  21   1.14956231e+02  1.16191476e+02  7.11e-17 2.22e-16  1.45e-09    64s
+  22   1.15260017e+02  1.16040272e+02  3.73e-17 2.22e-16  9.14e-10    66s
+  23   1.15470489e+02  1.15937902e+02  5.40e-17 2.22e-16  5.47e-10    67s
+  24   1.15565276e+02  1.15892755e+02  4.40e-17 2.22e-16  3.83e-10    69s
+  25   1.15641481e+02  1.15856807e+02  6.87e-17 2.22e-16  2.52e-10    71s
+  26   1.15679945e+02  1.15838939e+02  8.20e-17 2.22e-16  1.86e-10    73s
+  27   1.15713841e+02  1.15823305e+02  6.53e-17 2.22e-16  1.28e-10    74s
+  28   1.15721829e+02  1.15819654e+02  8.57e-17 2.22e-16  1.15e-10    76s
+  29   1.15748895e+02  1.15807345e+02  1.85e-16 2.22e-16  6.84e-11    78s
+  30   1.15763842e+02  1.15800628e+02  1.67e-16 2.22e-16  4.31e-11    80s
+  31   1.15778579e+02  1.15794097e+02  2.50e-16 2.22e-16  1.82e-11    82s
+  32   1.15783610e+02  1.15791932e+02  3.59e-16 2.78e-16  9.74e-12    84s
+  33   1.15786941e+02  1.15790487e+02  6.10e-16 3.33e-16  4.15e-12    86s
+  34   1.15788712e+02  1.15789727e+02  3.64e-15 3.33e-16  1.19e-12    87s
+  35   1.15789108e+02  1.15789558e+02  2.52e-15 3.33e-16  5.26e-13    89s
+  36   1.15789266e+02  1.15789491e+02  2.50e-15 3.33e-16  2.63e-13    91s
+  37   1.15789386e+02  1.15789440e+02  2.59e-15 3.33e-16  6.31e-14    93s
+  38   1.15789419e+02  1.15789426e+02  1.58e-15 4.44e-16  8.28e-15    95s
+
+Barrier solved model in 38 iterations and 94.61 seconds (17.30 work units)
+Optimal objective 1.15789419e+02
+
+Done! Time elapsed: 126.6567850112915 seconds.
+Starting HMC sampling...
+
+                                                                                                                                                                                                                                                                                                                                
+Finished sampling! Elapsed Time: 751.92360496521 seconds
+
+Checking sampler transitions treedepth.
+34 of 16000 (0.21%) transitions hit the maximum treedepth limit of 10, or 2^10 leapfrog steps.
+Trajectories that are prematurely terminated due to this limit will result in slow exploration.
+For optimal performance, increase this limit.
+
+Checking sampler transitions for divergences.
+No divergent transitions found.
+
+Checking E-BFMI - sampler transitions HMC potential energy.
+E-BFMI satisfactory.
+
+The following parameters had fewer than 0.001 effective draws per transition:
+  log_precision_v_theta
+Such low values indicate that the effective sample size estimators may be biased high and actual performance may be substantially lower than quoted.
+
+The following parameters had rank-normalized split R-hat greater than 1.01:
+  log_precision_v_theta
+Such high values indicate incomplete mixing and biased estimation.
+You should consider regularizing your model with additional prior information or a more effective parameterization.
+
+Processing complete.
+
+Parameters from last iteration: [  0.31985294   0.34338805   0.34352097 ... 252.72235987 234.31220247
+ 233.84564257]
+
+Parameters from current iteration:
+            [  0.31639005   0.34147471   0.34161639 ... 252.79569252 234.36247833
+ 233.86430401]
+
+Updated uncertain values: [  0.31898722   0.34290971   0.34304482 ... 252.74069303 234.32477143
+ 233.85030793]
+
+
+            Iteration [  18]: Absolute Error = 0.14567007819721312,
+            Percentage Error = 0.0033879455958399783
+            
+Terminated. Sampling the final distribution...
+
+                                                                                                                                                                                                                                                                                                                                
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/50255446/tmpwvs6hh78.pyomo.lp
+Reading time = 2.18 seconds
+x1: 417600 rows, 834801 columns, 2083271 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 417600 rows, 834801 columns and 2083271 nonzeros
+Model fingerprint: 0x5f1d29eb
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 9e+02]
+  Objective range  [9e-04, 5e+02]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [2e-06, 1e+00]
+  RHS range        [6e-10, 4e-01]
+Presolve removed 209011 rows and 209422 columns
+Presolve time: 0.84s
+Presolved: 208589 rows, 625379 columns, 1249315 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 1.25s
+
+Barrier statistics:
+ AA' NZ     : 6.239e+05
+ Factor NZ  : 6.769e+07 (roughly 900 MB of memory)
+ Factor Ops : 2.541e+10 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -1.31659361e+11  1.10640510e+11  1.04e+06 1.13e-13  1.00e+06     6s
+   1  -6.37297459e+10  6.29246856e+10  4.42e+04 3.07e+01  4.64e+04     8s
+   2  -3.03766153e+10  3.04555106e+10  4.47e+02 1.24e-01  5.40e+02    10s
+   3  -1.08295571e+10  1.09180106e+10  3.61e+00 1.42e-12  2.88e+01    12s
+   4  -2.46858862e+09  2.56687417e+09  2.90e-01 1.25e-12  6.13e+00    17s
+   5  -5.87247759e+08  6.54812377e+08  3.72e-02 4.70e-12  1.47e+00    22s
+   6  -9.80694582e+07  1.11756175e+08  2.91e-03 1.45e-12  2.46e-01    27s
+   7  -1.44675557e+07  1.73429105e+07  6.44e-06 1.19e-12  3.72e-02    31s
+   8  -2.11938395e+06  2.53519258e+06  6.58e-12 9.68e-13  5.45e-03    34s
+   9  -3.14690167e+05  3.90094025e+05  5.94e-14 3.24e-13  8.25e-04    36s
+  10  -4.69440448e+04  5.64824282e+04  2.48e-14 7.80e-14  1.21e-04    38s
+  11  -7.16788379e+03  8.55648011e+03  1.12e-14 9.32e-15  1.84e-05    40s
+  12  -1.12525581e+03  1.38186209e+03  2.15e-14 1.31e-15  2.94e-06    41s
+  13  -2.64929907e+02  6.14840090e+02  8.18e-16 4.65e-16  1.03e-06    44s
+  14  -3.56450901e+01  2.41921330e+02  4.68e-16 4.44e-16  3.25e-07    47s
+  15   4.79233893e+01  1.04111238e+02  1.96e-16 2.78e-16  6.58e-08    51s
+  16   6.36272259e+01  9.26220054e+01  9.84e-17 3.89e-16  3.40e-08    54s
+  17   7.46441724e+01  8.28753951e+01  1.42e-16 3.33e-16  9.64e-09    58s
+  18   7.78733160e+01  8.05029200e+01  1.08e-16 3.33e-16  3.08e-09    62s
+  19   7.89211631e+01  7.99805745e+01  1.76e-16 3.89e-16  1.24e-09    65s
+  20   7.92917814e+01  7.98110942e+01  1.61e-16 2.78e-16  6.08e-10    67s
+  21   7.94318198e+01  7.97480395e+01  1.80e-16 2.22e-16  3.70e-10    70s
+  22   7.95218147e+01  7.97080911e+01  1.26e-16 3.33e-16  2.18e-10    72s
+  23   7.95460279e+01  7.96974069e+01  1.79e-16 3.33e-16  1.77e-10    74s
+  24   7.95865579e+01  7.96795620e+01  2.53e-16 3.33e-16  1.09e-10    76s
+  25   7.95923883e+01  7.96770130e+01  2.24e-16 2.22e-16  9.91e-11    78s
+  26   7.96003959e+01  7.96735312e+01  2.16e-16 3.33e-16  8.56e-11    79s
+  27   7.96261746e+01  7.96623531e+01  1.42e-16 3.33e-16  4.24e-11    81s
+  28   7.96365242e+01  7.96579462e+01  1.97e-16 3.33e-16  2.51e-11    83s
+  29   7.96383896e+01  7.96571597e+01  1.37e-16 3.33e-16  2.20e-11    85s
+  30   7.96455491e+01  7.96541623e+01  1.80e-16 3.33e-16  1.01e-11    87s
+  31   7.96489315e+01  7.96527404e+01  1.85e-16 3.33e-16  4.46e-12    88s
+  32   7.96505016e+01  7.96520910e+01  3.31e-15 3.33e-16  1.86e-12    90s
+  33   7.96511066e+01  7.96518423e+01  4.06e-15 3.33e-16  8.61e-13    92s
+  34   7.96514353e+01  7.96517075e+01  5.69e-15 2.78e-16  3.19e-13    94s
+  35   7.96515422e+01  7.96516637e+01  3.49e-15 2.22e-16  1.42e-13    96s
+  36   7.96516084e+01  7.96516365e+01  3.55e-15 3.33e-16  3.29e-14    97s
+  37   7.96516239e+01  7.96516302e+01  1.89e-15 3.33e-16  7.46e-15    99s
+
+Barrier solved model in 37 iterations and 98.97 seconds (20.01 work units)
+Optimal objective 7.96516239e+01
+
+Done! Time elapsed: 131.21222138404846 seconds.
+min_result 0.049665000483399 min_pe 2.4
+
+Program ends Sat May 30 01:36:58 CDT 2026
+Exit code: 0
+Elapsed time: 27751 seconds

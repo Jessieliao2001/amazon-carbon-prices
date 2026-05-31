@@ -1,0 +1,512 @@
+Command: /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/.venv/bin/python pysrc/mpc/mpc_compute_sp.py
+Working directory: /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices
+Program starts Wed May 27 14:04:14 CDT 2026
+
+xi 0.5 pe 5.0 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.19820600869653898
+------------------------------
+xi 0.5 pe 5.1 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.18063930014338941
+------------------------------
+xi 0.5 pe 5.2 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.15939266210136438
+------------------------------
+xi 0.5 pe 5.3 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.13928641496783864
+------------------------------
+xi 0.5 pe 5.4 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.1234204878541289
+------------------------------
+xi 0.5 pe 5.5 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.10403322987893446
+------------------------------
+xi 0.5 pe 5.6 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.08248453180807665
+------------------------------
+xi 0.5 pe 5.7 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.06348313113051357
+------------------------------
+xi 0.5 pe 5.8 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.04735345753111678
+------------------------------
+xi 0.5 pe 5.9 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.033807236359788155
+------------------------------
+xi 0.5 pe 6.0 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.015302146575258321
+------------------------------
+xi 0.5 pe 6.1 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.001492278307344841
+------------------------------
+xi 0.5 pe 6.2 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.012896665746784768
+------------------------------
+xi 0.5 pe 6.3 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.023816728253806235
+------------------------------
+xi 0.5 pe 6.4 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.03491227442338022
+------------------------------
+xi 0.5 pe 6.5 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.04743749605049462
+------------------------------
+xi 0.5 pe 6.6 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.05806263540998896
+------------------------------
+xi 0.5 pe 6.7 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.0726231015080153
+------------------------------
+xi 0.5 pe 6.8 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.08707511268967934
+------------------------------
+xi 0.5 pe 6.9 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.10135741385647137
+------------------------------
+xi 0.5 pe 7.0 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.11826706397743732
+------------------------------
+xi 1.0 pe 5.0 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.23604044341240238
+------------------------------
+xi 1.0 pe 5.1 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.2167174028390635
+------------------------------
+xi 1.0 pe 5.2 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.19816623558916263
+------------------------------
+xi 1.0 pe 5.3 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.18158591451431003
+------------------------------
+xi 1.0 pe 5.4 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.16721421608350256
+------------------------------
+xi 1.0 pe 5.5 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.15150659547681977
+------------------------------
+xi 1.0 pe 5.6 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.13448598029960937
+------------------------------
+xi 1.0 pe 5.7 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.118087373773555
+------------------------------
+xi 1.0 pe 5.8 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.10103119331096842
+------------------------------
+xi 1.0 pe 5.9 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.082599065328713
+------------------------------
+xi 1.0 pe 6.0 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.060001964222339076
+------------------------------
+xi 1.0 pe 6.1 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.04049882298910561
+------------------------------
+xi 1.0 pe 6.2 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.030154910373257977
+------------------------------
+xi 1.0 pe 6.3 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.019466662298886866
+------------------------------
+xi 1.0 pe 6.4 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.007462531969158802
+------------------------------
+xi 1.0 pe 6.5 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.007285059706555346
+------------------------------
+xi 1.0 pe 6.6 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.020126687565360662
+------------------------------
+xi 1.0 pe 6.7 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.03321057024489799
+------------------------------
+xi 1.0 pe 6.8 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.043685766016637394
+------------------------------
+xi 1.0 pe 6.9 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.05661083876429457
+------------------------------
+xi 1.0 pe 7.0 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.0735638931356033
+------------------------------
+xi 10000.0 pe 5.0 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.3305250069806086
+------------------------------
+xi 10000.0 pe 5.1 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.3107755835847322
+------------------------------
+xi 10000.0 pe 5.2 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.2857895544627765
+------------------------------
+xi 10000.0 pe 5.3 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.26722107662309424
+------------------------------
+xi 10000.0 pe 5.4 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.24981477816036984
+------------------------------
+xi 10000.0 pe 5.5 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.23369977838125003
+------------------------------
+xi 10000.0 pe 5.6 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.21493792115331917
+------------------------------
+xi 10000.0 pe 5.7 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.198155591801002
+------------------------------
+xi 10000.0 pe 5.8 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.18013374837042215
+------------------------------
+xi 10000.0 pe 5.9 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.16587227599161056
+------------------------------
+xi 10000.0 pe 6.0 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.14508815877157125
+------------------------------
+xi 10000.0 pe 6.1 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.12570228664089597
+------------------------------
+xi 10000.0 pe 6.2 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.09845028636296675
+------------------------------
+xi 10000.0 pe 6.3 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.08585393368596031
+------------------------------
+xi 10000.0 pe 6.4 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.07254091898498659
+------------------------------
+xi 10000.0 pe 6.5 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.05757342727813401
+------------------------------
+xi 10000.0 pe 6.6 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.043613347376044824
+------------------------------
+xi 10000.0 pe 6.7 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.026610945069191205
+------------------------------
+xi 10000.0 pe 6.8 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.01070447659620622
+------------------------------
+xi 10000.0 pe 6.9 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.006491441451721289
+------------------------------
+xi 10000.0 pe 7.0 model unconstrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.023560194329799458
+------------------------------
+xi 0.5 pe 5.0 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.1049682421922053
+------------------------------
+xi 0.5 pe 5.1 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.08432048035828325
+------------------------------
+xi 0.5 pe 5.2 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.0673032534209924
+------------------------------
+xi 0.5 pe 5.3 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.05130856374619983
+------------------------------
+xi 0.5 pe 5.4 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.03453358089437158
+------------------------------
+xi 0.5 pe 5.5 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.017692556015578634
+------------------------------
+xi 0.5 pe 5.6 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.0038893784677485606
+------------------------------
+xi 0.5 pe 5.7 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.007722703817293326
+------------------------------
+xi 0.5 pe 5.8 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.019827244922826795
+------------------------------
+xi 0.5 pe 5.9 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.03212471285082235
+------------------------------
+xi 0.5 pe 6.0 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.042855652799309626
+------------------------------
+xi 0.5 pe 6.1 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.057104269605300156
+------------------------------
+xi 0.5 pe 6.2 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.07121130052871699
+------------------------------
+xi 0.5 pe 6.3 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.08764946671324333
+------------------------------
+xi 0.5 pe 6.4 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.10137461701905269
+------------------------------
+xi 0.5 pe 6.5 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.1119592181885039
+------------------------------
+xi 0.5 pe 6.6 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.12364710197951018
+------------------------------
+xi 0.5 pe 6.7 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.13706876690610895
+------------------------------
+xi 0.5 pe 6.8 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.15079059584126459
+------------------------------
+xi 0.5 pe 6.9 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.16393974443585574
+------------------------------
+xi 0.5 pe 7.0 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.17805251617371107
+------------------------------
+xi 1.0 pe 5.0 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.192235205440886
+------------------------------
+xi 1.0 pe 5.1 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.17458681461992262
+------------------------------
+xi 1.0 pe 5.2 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.1601715600299772
+------------------------------
+xi 1.0 pe 5.3 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.14489329751994426
+------------------------------
+xi 1.0 pe 5.4 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.12862889048095671
+------------------------------
+xi 1.0 pe 5.5 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.11008642991163566
+------------------------------
+xi 1.0 pe 5.6 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.09153253322595602
+------------------------------
+xi 1.0 pe 5.7 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.07816065145501103
+------------------------------
+xi 1.0 pe 5.8 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.06364111092586218
+------------------------------
+xi 1.0 pe 5.9 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.05098312228534312
+------------------------------
+xi 1.0 pe 6.0 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.03910222693942651
+------------------------------
+xi 1.0 pe 6.1 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.022778045994008306
+------------------------------
+xi 1.0 pe 6.2 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.005061040073617833
+------------------------------
+xi 1.0 pe 6.3 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.011923516713326688
+------------------------------
+xi 1.0 pe 6.4 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.027216993703619137
+------------------------------
+xi 1.0 pe 6.5 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.03774809865659236
+------------------------------
+xi 1.0 pe 6.6 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.048007865334852566
+------------------------------
+xi 1.0 pe 6.7 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.060933647563406204
+------------------------------
+xi 1.0 pe 6.8 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.07329953965457225
+------------------------------
+xi 1.0 pe 6.9 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.08418360391993998
+------------------------------
+xi 1.0 pe 7.0 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.09688285799760861
+------------------------------
+xi 10000.0 pe 5.0 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.3010242145564589
+------------------------------
+xi 10000.0 pe 5.1 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.2790499223257831
+------------------------------
+xi 10000.0 pe 5.2 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.2633286182051521
+------------------------------
+xi 10000.0 pe 5.3 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.24396858840295788
+------------------------------
+xi 10000.0 pe 5.4 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.22682075769984458
+------------------------------
+xi 10000.0 pe 5.5 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.20657112462543312
+------------------------------
+xi 10000.0 pe 5.6 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.18544990216818535
+------------------------------
+xi 10000.0 pe 5.7 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.17273454906926097
+------------------------------
+xi 10000.0 pe 5.8 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.15322017133172644
+------------------------------
+xi 10000.0 pe 5.9 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.13538189267073275
+------------------------------
+xi 10000.0 pe 6.0 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.11430347534742803
+------------------------------
+xi 10000.0 pe 6.1 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.09886179914024938
+------------------------------
+xi 10000.0 pe 6.2 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.08339323764401031
+------------------------------
+xi 10000.0 pe 6.3 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.06754060971387461
+------------------------------
+xi 10000.0 pe 6.4 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.043864771168216674
+------------------------------
+xi 10000.0 pe 6.5 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.02157386755148771
+------------------------------
+xi 10000.0 pe 6.6 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio 0.004475773496438788
+------------------------------
+xi 10000.0 pe 6.7 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.0040289671602400596
+------------------------------
+xi 10000.0 pe 6.8 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.013553011548270323
+------------------------------
+xi 10000.0 pe 6.9 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.023593484823404055
+------------------------------
+xi 10000.0 pe 7.0 model constrained
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+ratio -0.03658456827800763
+------------------------------
+
+Program ends Wed May 27 14:04:42 CDT 2026
+Exit code: 0
+Elapsed time: 28 seconds
