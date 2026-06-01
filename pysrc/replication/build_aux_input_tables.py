@@ -567,7 +567,6 @@ def render_transition_probabilities(
     probabilities: pd.DataFrame,
     *,
     b: int,
-    include_half: bool,
 ) -> str:
     lines = [
         r"\begin{tabular}{ccc}",
@@ -585,9 +584,8 @@ def render_transition_probabilities(
         if row.empty:
             raise ValueError(f"Missing transition probability for b={b}, xi={xi}")
         record = row.iloc[0]
-        prefix = "% " if xi == "0.5" and not include_half else ""
         lines.append(
-            f"{prefix}{XI_LABELS[xi]} &  {_fmt_prob(record['prob_from_low_to_low'])} "
+            f"{XI_LABELS[xi]} &  {_fmt_prob(record['prob_from_low_to_low'])} "
             f"& {_fmt_prob(record['prob_from_high_to_high'])} \\\\"
         )
     lines.extend(["", "", r"\hline", r"\end{tabular}"])
@@ -776,7 +774,7 @@ def build_tables(
         write(
             f"transition_prob_b{b}_y5.tex",
             render_transition_probabilities(
-                probabilities, b=b, include_half=b in {0, 15}
+                probabilities, b=b
             ),
             [MPC_PROBABILITY_FILE],
         )
