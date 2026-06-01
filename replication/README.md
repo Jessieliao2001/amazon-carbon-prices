@@ -31,10 +31,17 @@ The MPC stage includes the MPC shadow-price optimization grid before
 `mpc-prices`, because `pysrc/mpc/mpc_compute_sp.py` parses those grid outputs.
 Grid jobs recompute and overwrite existing output folders by default, matching
 the original scripts and avoiding mixed old/new shadow-price outputs.
-Large MPC Slurm steps are grouped five commands at a time; each MPC-HMC group
-corresponds to one `(model, xi, id, trig)` case and its five transfer levels.
-Within `stage-mpc`, the unconstrained MPC-HMC/pre/day-0/table/figure outputs are
-run before the constrained MPC-HMC/pre/day-0/table outputs. Figure 14 is
+The completed MPC Slurm outputs were generated with one replication command per
+Slurm job, so each MPC output and numbered log is isolated. On clusters with
+strict job-submission limits, one feasible adjustment is to group the five
+transfer commands for each `(model, xi, id, trig)` case by increasing
+`MPC_COMMANDS_PER_GROUP` in `pysrc/scripts/run_replication.py` and checking the
+result with `--dry-run`.
+Within `stage-mpc`, the unconstrained MPC-HMC pre/day-0/table/figure outputs
+run before the constrained day-0/table outputs. The constrained MPC-HMC pre and
+constrained probability steps are not part of the current replication workflow.
+The workflow uses the explicit unconstrained step names for MPC-HMC pre,
+MPC probabilities, Figure 14 simulations, and MPC figures. Figure 14 is
 unconstrained-only.
 `stage-postprocess` is separate from `stage-mpc`; it refreshes transition
 probabilities, manifests, aux-input tables, and aux-input figures. Carbon

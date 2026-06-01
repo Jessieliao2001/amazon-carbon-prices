@@ -21,9 +21,6 @@ job-outs/**
 !job-outs/stage_mpc/mpc_hmc_pre_unconstrained/
 !job-outs/stage_mpc/mpc_hmc_pre_unconstrained/*_run.out
 !job-outs/stage_mpc/mpc_hmc_pre_unconstrained/*_run.err
-!job-outs/stage_mpc/mpc_hmc_pre_constrained/
-!job-outs/stage_mpc/mpc_hmc_pre_constrained/*_run.out
-!job-outs/stage_mpc/mpc_hmc_pre_constrained/*_run.err
 test/
 
 # Data

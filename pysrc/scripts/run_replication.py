@@ -26,15 +26,11 @@ DEFAULT_PARALLEL_STEPS = {
     "hmc-sampling",
     "mpc-prepare",
     "mpc-sp-grid",
-    "mpc-hmc-pre",
     "mpc-hmc-pre-unconstrained",
-    "mpc-hmc-pre-constrained",
-    "mpc-hmc-figure14",
     "mpc-hmc-figure14-unconstrained",
     "mpc-day0",
     "mpc-day0-unconstrained",
     "mpc-day0-constrained",
-    "mpc-converge-paths",
     "mpc-tables",
     "mpc-tables-unconstrained",
     "mpc-tables-constrained",
@@ -48,10 +44,7 @@ DEFAULT_PARALLEL_STEPS = {
 }
 MPC_GROUP_STEPS = {
     "mpc-sp-grid",
-    "mpc-hmc-pre",
     "mpc-hmc-pre-unconstrained",
-    "mpc-hmc-pre-constrained",
-    "mpc-hmc-figure14",
     "mpc-hmc-figure14-unconstrained",
     "mpc-day0",
     "mpc-day0-unconstrained",
@@ -89,12 +82,11 @@ STAGE_ALIASES = {
         "mpc-hmc-figure14-unconstrained",
         "mpc-simulation-tables-unconstrained",
         "mpc-figures-unconstrained",
-        "mpc-hmc-pre-constrained",
         "mpc-day0-constrained",
         "mpc-tables-constrained",
     ],
     "stage-postprocess": [
-        "mpc-probabilities",
+        "mpc-probabilities-unconstrained",
         "postprocess-final",
         "aux-figures",
     ],
@@ -173,29 +165,19 @@ def base_steps() -> dict[str, list[list[str]]]:
             [PY, "pysrc/mpc/mpc_simulating.py", "--type", "constrained"],
             [PY, "pysrc/mpc/mpc_simulating.py", "--type", "shadow_price"],
         ],
-        "mpc-converge-paths": [
-            [PY, "pysrc/mpc/mpc_simulating.py", "--type", "converge_uncon"],
-            [PY, "pysrc/mpc/mpc_simulating.py", "--type", "converge_con"],
-        ],
         "mpc-sp-grid": mpc_sp_grid_commands(),
         "mpc-prices": [[PY, "pysrc/mpc/mpc_compute_sp.py"]],
-        "mpc-hmc-pre": mpc_hmc_pre_commands(),
         "mpc-hmc-pre-unconstrained": mpc_hmc_pre_commands("unconstrained"),
-        "mpc-hmc-pre-constrained": mpc_hmc_pre_commands("constrained"),
-        "mpc-hmc-figure14": mpc_hmc_figure14_commands("unconstrained"),
         "mpc-hmc-figure14-unconstrained": mpc_hmc_figure14_commands("unconstrained"),
         "mpc-tables": mpc_table_commands(),
         "mpc-tables-unconstrained": mpc_table_commands("unconstrained"),
         "mpc-tables-constrained": mpc_table_commands("constrained"),
         "mpc-simulation-tables-unconstrained": mpc_simulation_table_commands("unconstrained"),
-        "mpc-figures": mpc_figure_commands("unconstrained"),
         "mpc-figures-unconstrained": mpc_figure_commands("unconstrained"),
         "aux-figures": [
             [PY, "pysrc/replication/build_aux_input_tables.py", "--figures-only"]
         ],
-        "mpc-probabilities": mpc_probability_commands(),
         "mpc-probabilities-unconstrained": mpc_probability_commands("unconstrained"),
-        "mpc-probabilities-constrained": mpc_probability_commands("constrained"),
         "price-estimation": [[PY, "pysrc/scripts/price_estimation.py"]],
         "bayesian-r2": [[PY, "pysrc/scripts/bayesian_R2.py"]],
         "maps": [
@@ -209,10 +191,7 @@ def base_steps() -> dict[str, list[list[str]]]:
             ["Rscript", "rsrc/analysis/map_1043_hmc_xi05.R"],
             ["Rscript", "rsrc/analysis/map_kl.R"],
         ],
-        "postprocess": postprocess_commands(),
-        "postprocess-unconstrained": postprocess_commands("unconstrained"),
-        "postprocess-constrained": postprocess_commands("constrained"),
-        "postprocess-final": postprocess_commands("final"),
+        "postprocess-final": postprocess_commands(),
     }
 
 
@@ -338,9 +317,7 @@ def mpc_models(model: str | None = None) -> tuple[str, ...]:
     return (model,)
 
 
-def mpc_probability_commands(model: str | None = None) -> list[list[str]]:
-    if model is None:
-        return [[PY, "pysrc/replication/derive_mpc_transition_probabilities.py"]]
+def mpc_probability_commands(model: str) -> list[list[str]]:
     mpc_models(model)
     return [
         [
@@ -352,27 +329,10 @@ def mpc_probability_commands(model: str | None = None) -> list[list[str]]:
     ]
 
 
-def postprocess_commands(model: str | None = None) -> list[list[str]]:
-    if model is None or model == "final":
-        return [
-            [PY, "pysrc/replication/build_paper_numbers.py"],
-            [PY, "pysrc/replication/build_aux_input_tables.py"],
-        ]
-
-    mpc_models(model)
+def postprocess_commands() -> list[list[str]]:
     return [
-        [
-            PY,
-            "-c",
-            (
-                "print('postprocess-"
-                + model
-                + " no longer regenerates MPC tables; use "
-                + "mpc-tables-"
-                + model
-                + " for table generation and postprocess-final for manifests.')"
-            ),
-        ]
+        [PY, "pysrc/replication/build_paper_numbers.py"],
+        [PY, "pysrc/replication/build_aux_input_tables.py"],
     ]
 
 
@@ -1287,13 +1247,13 @@ def main() -> int:
         type=int,
         default=int(os.environ.get("REPLICATION_SLURM_COMMANDS_PER_JOB", "10")),
         help=(
-            "For parallel-safe Slurm steps, group this many replication commands "
-            "inside one sbatch job when the step has at least "
-            "--slurm-group-min-commands commands. This keeps large MPC stages "
-            "under server job submission limits while leaving small steps unchanged. "
-            "The MPC-HMC steps are grouped in fixed batches of 5 transfer commands. "
-            "Set to 1 to submit one sbatch job per command. "
-            "Default: REPLICATION_SLURM_COMMANDS_PER_JOB or 10."
+            "For parallel-safe non-MPC Slurm steps, group this many replication "
+            "commands inside one sbatch job when the step has at least "
+            "--slurm-group-min-commands commands. MPC special-case steps currently "
+            "use MPC_COMMANDS_PER_GROUP=1 so their completed outputs are one "
+            "replication command per Slurm job. Set to 1 to submit one sbatch job "
+            "per command for grouped non-MPC steps. Default: "
+            "REPLICATION_SLURM_COMMANDS_PER_JOB or 10."
         ),
     )
     parser.add_argument(
