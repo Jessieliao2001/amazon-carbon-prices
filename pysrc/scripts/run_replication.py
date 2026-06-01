@@ -90,7 +90,6 @@ STAGE_ALIASES = {
         "mpc-simulation-tables-unconstrained",
         "mpc-figures-unconstrained",
         "mpc-hmc-pre-constrained",
-        "mpc-probabilities-constrained",
         "mpc-day0-constrained",
         "mpc-tables-constrained",
     ],
@@ -479,7 +478,8 @@ def mpc_hmc_pre_commands(model: str | None = None) -> list[list[str]]:
         specs=[
             (model_name, ["10000", "1", "0.5"], range(997, 999), 0)
             for model_name in mpc_models(model)
-        ]
+        ],
+        stop_after_year=2,
     )
 
 
@@ -497,6 +497,7 @@ def mpc_hmc_commands(
     *,
     specs: list[tuple[str, list[str], range, int]],
     b_values: list[str] | None = None,
+    stop_after_year: int | None = None,
 ) -> list[list[str]]:
     commands: list[list[str]] = []
     b_values = b_values or ["0", "10", "15", "20", "25"]
@@ -520,6 +521,8 @@ def mpc_hmc_commands(
                             model,
                         ]
                     )
+                    if stop_after_year is not None:
+                        commands[-1].extend(["--stop-after-year", str(stop_after_year)])
     return commands
 
 

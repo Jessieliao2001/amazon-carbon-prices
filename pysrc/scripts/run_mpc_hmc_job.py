@@ -55,6 +55,7 @@ def main() -> int:
     parser.add_argument("--pe", type=float)
     parser.add_argument("--trig", type=int, required=True)
     parser.add_argument("--type", choices=["unconstrained", "constrained"], required=True)
+    parser.add_argument("--stop-after-year", type=int)
     parser.add_argument("--python", default=sys.executable)
     args = parser.parse_args()
 
@@ -78,6 +79,8 @@ def main() -> int:
         "--type",
         args.type,
     ]
+    if args.stop_after_year is not None:
+        command.extend(["--stop-after-year", str(args.stop_after_year)])
 
     print(
         "Running MPC-HMC job: "

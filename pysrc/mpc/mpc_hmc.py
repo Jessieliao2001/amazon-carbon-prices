@@ -16,6 +16,7 @@ parser.add_argument("--b",type=float,default=0)
 parser.add_argument("--xi",type=float,default=10000)
 parser.add_argument("--trig",type=int,default=0)
 parser.add_argument("--type",type=str,default="unconstrained")
+parser.add_argument("--stop-after-year", type=int, default=None)
 args = parser.parse_args()
 
 id = args.id
@@ -93,6 +94,7 @@ results = mpc_solve_planner_problem(
     prob_ll=prob_ll,
     prob_hh=prob_hh,
     type=type,
+    stop_after_year=args.stop_after_year,
 )
 print("Results for pe = ", pe)
 

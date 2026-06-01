@@ -93,7 +93,7 @@ amazon_biome <- amazon_biome %>%
 
 
 relative_entropy <- read.csv(here::here("output/figures/entropy/site_1043/xi1.0", "kl_divergences_theta_gamma.csv"))%>%
-  mutate(id = row_number())
+  mutate(id = as.numeric(id))
 
 
 calib_df <- calib_df %>%
@@ -138,9 +138,28 @@ amazon_biome <- sf::st_transform(amazon_biome, sf::st_crs(prediction.1043SitesMo
 
 # GENERATE MAPS
 
+relative_entropy_log <- here::here("job-outs/stage_hmc/relative_entropy/0001_run.out")
+
+read_density_sites_from_relative_entropy_log <- function(label) {
+  log_lines <- readLines(relative_entropy_log, warn = FALSE)
+  prefix <- paste0(label, " density sites selected from KL output:")
+  line <- grep(paste0("^", prefix), log_lines, value = TRUE)
+  if (length(line) == 0) {
+    stop(paste("Missing relative entropy density-site line:", prefix))
+  }
+  site_text <- sub(".*\\[([^]]+)\\].*", "\\1", line[1])
+  sites <- as.integer(trimws(strsplit(site_text, ",")[[1]]))
+  if (length(sites) < 2 || any(is.na(sites))) {
+    stop(paste("Could not parse relative entropy density sites from:", line[1]))
+  }
+  sites
+}
+
+gamma_density_sites <- read_density_sites_from_relative_entropy_log("Gamma")
+theta_density_sites <- read_density_sites_from_relative_entropy_log("Theta")
 
 circle_theta_b0 <- prediction.1043SitesModel %>%
-  dplyr::filter(id %in% c(986)) %>%
+  dplyr::filter(id %in% c(theta_density_sites[1])) %>%
   sf::st_centroid() %>%
   dplyr::mutate(
     x = sf::st_coordinates(.)[,1],  # Extract x coordinate
@@ -148,7 +167,7 @@ circle_theta_b0 <- prediction.1043SitesModel %>%
   )
 
 circle_theta_b15 <- prediction.1043SitesModel %>%
-  dplyr::filter(id %in% c(1040)) %>%
+  dplyr::filter(id %in% c(theta_density_sites[2])) %>%
   sf::st_centroid() %>%
   dplyr::mutate(
     x = sf::st_coordinates(.)[,1],  # Extract x coordinate
@@ -156,7 +175,7 @@ circle_theta_b15 <- prediction.1043SitesModel %>%
   )
 
 circle_gamma_b0 <- prediction.1043SitesModel %>%
-  dplyr::filter(id %in% c(691)) %>%
+  dplyr::filter(id %in% c(gamma_density_sites[1])) %>%
   sf::st_centroid() %>%
   dplyr::mutate(
     x = sf::st_coordinates(.)[,1],  # Extract x coordinate
@@ -164,7 +183,7 @@ circle_gamma_b0 <- prediction.1043SitesModel %>%
   )
 
 circle_gamma_b15 <- prediction.1043SitesModel %>%
-  dplyr::filter(id %in% c(904)) %>%
+  dplyr::filter(id %in% c(gamma_density_sites[2])) %>%
   sf::st_centroid() %>%
   dplyr::mutate(
     x = sf::st_coordinates(.)[,1],  # Extract x coordinate
@@ -176,7 +195,7 @@ circle_gamma_b15 <- prediction.1043SitesModel %>%
 # relative entropy b0
 plot_theta_b0 <- prediction.1043SitesModel %>%
   filter(time == 0, p_e == aux.prices[3]) %>%
-  arrange(theta_b0) %>%
+  arrange(theta_b0, id) %>%
   mutate(
     rank = row_number(),
     bin = ntile(rank, 6)
@@ -214,7 +233,7 @@ plot_theta_b0 <- prediction.1043SitesModel %>%
 
 plot_theta_b15 <- prediction.1043SitesModel %>%
   filter(time == 0, p_e == aux.prices[3]) %>%
-  arrange(theta_b15) %>%
+  arrange(theta_b15, id) %>%
   mutate(
     rank = row_number(),
     bin = ntile(rank, 6)
@@ -253,7 +272,7 @@ plot_theta_b15 <- prediction.1043SitesModel %>%
 
 plot_gamma_b0 <- prediction.1043SitesModel %>%
   filter(time == 0, p_e == aux.prices[3]) %>%
-  arrange(gamma_b0) %>%
+  arrange(gamma_b0, id) %>%
   mutate(
     rank = row_number(),
     bin = ntile(rank, 6)
@@ -289,7 +308,7 @@ plot_gamma_b0 <- prediction.1043SitesModel %>%
 
 plot_gamma_b15 <- prediction.1043SitesModel %>%
   filter(time == 0, p_e == aux.prices[3]) %>%
-  arrange(gamma_b15) %>%
+  arrange(gamma_b15, id) %>%
   mutate(
     rank = row_number(),
     bin = ntile(rank, 6)

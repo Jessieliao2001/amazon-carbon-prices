@@ -60,22 +60,8 @@ def mpc_solve_planner_problem(
     high_smart_guess=None,
     mode=None,
     type=None,
+    stop_after_year=None,
 ):
-
-    
-    output_base_path = os.path.join(
-        str(get_path("output")),
-        "sampling",
-        solver,
-        f"78sites",
-        f"mpc",
-        f"xi_{xi}",
-        f"id_{id}",
-        f"pe_{price_emissions}",
-    )
-    if not os.path.exists(output_base_path):
-        os.makedirs(output_base_path)
-    
     model = ConcreteModel()
 
     # Indexing sets for time and sites
@@ -252,6 +238,12 @@ def mpc_solve_planner_problem(
 
     if mode=="day0":
         iteration_period=1    
+
+    if stop_after_year is not None:
+        if stop_after_year < 1:
+            raise ValueError("stop_after_year must be at least 1.")
+        iteration_period = min(iteration_period, stop_after_year)
+        print(f"Stopping MPC loop after year done: {iteration_period}")
         
     distorted_prob_records = []
         
