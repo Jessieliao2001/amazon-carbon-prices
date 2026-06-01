@@ -88,7 +88,7 @@ STAGE_ALIASES = {
     "stage-postprocess": [
         "mpc-probabilities-unconstrained",
         "postprocess-final",
-        "aux-figures",
+        "results-in-paper-figures",
     ],
 }
 FULL_STAGE_SEQUENCE = [
@@ -174,8 +174,8 @@ def base_steps() -> dict[str, list[list[str]]]:
         "mpc-tables-constrained": mpc_table_commands("constrained"),
         "mpc-simulation-tables-unconstrained": mpc_simulation_table_commands("unconstrained"),
         "mpc-figures-unconstrained": mpc_figure_commands("unconstrained"),
-        "aux-figures": [
-            [PY, "pysrc/replication/build_aux_input_tables.py", "--figures-only"]
+        "results-in-paper-figures": [
+            [PY, "pysrc/replication/build_results_in_paper.py", "--figures-only"]
         ],
         "mpc-probabilities-unconstrained": mpc_probability_commands("unconstrained"),
         "price-estimation": [[PY, "pysrc/scripts/price_estimation.py"]],
@@ -332,7 +332,7 @@ def mpc_probability_commands(model: str) -> list[list[str]]:
 def postprocess_commands() -> list[list[str]]:
     return [
         [PY, "pysrc/replication/build_paper_numbers.py"],
-        [PY, "pysrc/replication/build_aux_input_tables.py"],
+        [PY, "pysrc/replication/build_results_in_paper.py"],
     ]
 
 

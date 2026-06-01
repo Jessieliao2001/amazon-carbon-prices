@@ -3,7 +3,7 @@
 .DS_Store
 
 
-# aux_input/
+# Keep selected audit logs that are used to regenerate paper results.
 job-outs/**
 !job-outs/
 !job-outs/stage_deterministic/

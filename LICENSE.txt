@@ -1,0 +1,40 @@
+Amazon Carbon Prices Replication Package
+License and Rights Statement
+
+Code license
+
+Copyright (c) 2026 The authors of the Amazon Carbon Prices replication package.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of the software code in this replication package and associated documentation
+files (the "Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish, distribute,
+sublicense, and/or sell copies of the Software, and to permit persons to whom
+the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+Data and output rights statement
+
+Author-created derived data, tables, figures, manifests, and documentation in
+this replication package may be used, copied, and redistributed for academic
+research and replication with attribution to the paper and authors.
+
+The raw data under data/raw/ were obtained from third-party public data
+providers listed in README.md and data/codebook.csv. These raw files are included in the journal
+replication archive solely to permit exact replication of the reported results.
+They remain subject to the licenses, terms of use, and citation requirements of
+the original providers. Users who reuse those raw files outside replication are
+responsible for complying with the original providers' terms.
+
+To the best of the authors' knowledge, the replication archive contains no
+confidential human-subject microdata and no data that require individual-level
+privacy protections.

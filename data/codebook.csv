@@ -1,0 +1,23 @@
+section,path,provider_or_script,description,format,notes
+raw,data/raw/esa/above_ground_biomass,European Space Agency,Above-ground biomass raster inputs,raster,ESA Biomass CCI v3; manuscript Appendix A.2 uses 2017 data; retain access date when known
+raw,data/raw/fgv/deflator_ipa,FGV IBRE,Deflator series for real price preparation,tabular,Provider terms remain with original source
+raw,data/raw/ibge,IBGE,Municipal boundaries Amazon biome agricultural census and cattle inputs,shapefile/csv/other,Cite IBGE datasets and years
+raw,data/raw/ipea,IPEA,Farm-gate price and distance-to-capital inputs,tabular,Cite IPEA source tables
+raw,data/raw/mapbiomas,MapBiomas,Land-use/cover pasture quality basins and secondary vegetation age,raster/vector,MapBiomas Collection 5 in manuscript; retain access date when known
+raw,data/raw/seabpr/commodity_prices,SEAB PR DERAL,Commodity price inputs,tabular,SEAB-PR 2021 via IPEA; manuscript reports access date February 22, 2021
+raw,data/raw/seeg/emission,SEEG,Emissions inputs,tabular,SEEG emissions; raw filename includes 2020.11.05 extract; retain access date when known
+raw,data/raw/worldbank,World Bank,Carbon-price emissions and GDP inputs,tabular,Metadata for Figure 1 is in replication/figure1/documentation
+raw,data/raw/worldclim,WorldClim,Temperature and precipitation rasters,raster,WorldClim 2.1, 2.5-minute rasters; cite Fick and Hijmans 2017
+processed,data/processed,rsrc/processing/_masterfile.R,Intermediate municipal pixel biomass land-use emissions and raster summaries,mixed,Generated from raw inputs
+clean,data/clean,rsrc/cleaning/_masterfile.R,Cleaned source-specific R and raster objects,mixed,Generated from raw inputs
+calibration,data/calibration/calibration_1043_sites.csv,rsrc/calibration/_masterfile.R,Main 1043-site calibration panel,csv,Open-format companion to calibration_1043_sites.Rdata
+calibration,data/calibration/calibration_78_sites.csv,rsrc/calibration/_masterfile.R,Main 78-site calibration panel,csv,Open-format companion to calibration_78_sites.Rdata
+calibration,data/calibration/grid_1043_sites.geojson,rsrc/calibration/_masterfile.R,1043-site spatial grid,geojson,Open spatial companion
+calibration,data/calibration/grid_78_sites.geojson,rsrc/calibration/_masterfile.R,78-site spatial grid,geojson,Open spatial companion
+calibration,data/calibration/productivity_params_1043.csv,rsrc/calibration/_masterfile.R,Fitted gamma_fit and theta_fit values for 1043 sites,csv,Model input
+calibration,data/calibration/productivity_params_78.csv,rsrc/calibration/_masterfile.R,Fitted gamma_fit and theta_fit values for 78 sites,csv,Model input
+calibration,data/calibration/distribution_parameters_all_1043.csv,rsrc/calibration/_masterfile.R,Distribution parameter summaries for 1043 sites,csv,Model input
+calibration,data/calibration/distribution_parameters_all_78.csv,rsrc/calibration/_masterfile.R,Distribution parameter summaries for 78 sites,csv,Model input
+derived,replication/derived,pysrc/replication,Output-derived paper-number and price CSVs,csv,Generated during post-processing
+raw,replication/figure1/reference,Fatos da Amazonia 2021 / Amazonia 2030,Brazilian Amazon point used in Figure 1,script constants/source note,Manuscript Figure 1 cites Fatos da Amazonia 2021 and www.amazonia2030.org
+raw,data/raw/mapbiomas/basin,ANA / PNRH via MapBiomas,National Water Resources Plan basin layers used for basin random effects,shapefile,Manuscript Appendix C.1 cites level-2 ANA 2006 sub-basins available through MapBiomas

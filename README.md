@@ -60,7 +60,7 @@ Before any long run, inspect the exact plan without executing commands:
 | Run Python/Gurobi/CmdStan model jobs | Slurm server | `./run.sh --steps stage-hmm stage-deterministic stage-time-consistency stage-hmc stage-mpc --backend slurm --slurm-account <account>` |
 | Server has no R | Run R stages locally, sync `data/`, then run non-R stages on Slurm | `./run.sh --steps stage-hmm stage-deterministic stage-time-consistency stage-hmc stage-mpc --backend slurm --slurm-account <account>` |
 | Server has R and `renv` restored | Run everything on Slurm | `./run.sh --steps all --backend slurm --slurm-account <account> --run-r-on-slurm` |
-| Heavy outputs already exist | Refresh tables, manifests, and aux inputs locally | `./run.sh --steps postprocess-only --backend local` |
+| Heavy outputs already exist | Refresh tables, manifests, and `results_in_paper/` locally | `./run.sh --steps postprocess-only --backend local` |
 
 ## Workflow Overview And Runtime
 
@@ -78,7 +78,7 @@ heavy MPC stage would take much longer if run strictly serially.
 | `stage-time-consistency` | Python, Gurobi | No | Two independent jobs | About 7.3 hours | Runs `bf=3.75` and `bf=5`. |
 | `stage-hmc` | Python, CmdStan, Gurobi, R maps | R only for maps | Highly parallel | About 16 hours | Finite-`xi` shadow prices and HMC sampling are the bottlenecks. |
 | `stage-mpc` | Python, Gurobi | No | Highly parallel | About 13-14 hours | MPC shadow-price grid and Figure 14 simulation jobs dominate. |
-| `stage-postprocess` | Python | No | Mostly serial | Less than 1 minute | Builds audit CSVs, paper numbers, and `aux_input/`. |
+| `stage-postprocess` | Python | No | Mostly serial | Less than 1 minute | Builds audit CSVs, paper numbers, and `results_in_paper/`. |
 
 With enough Slurm parallelism, the completed logs imply an end-to-end run of
 roughly two days after environment setup and data placement are ready. The same
@@ -94,7 +94,13 @@ The most expensive steps are `stage_hmc/shadow_prices_hmc`,
 grouped Slurm execution. The required ordering is:
 
 ```text
-data -> price/shadow-price stages -> derive price CSVs -> HMC/MPC outputs -> ```
+data
+  -> HMM and baseline sampling
+  -> deterministic and HMC shadow-price searches
+  -> derived carbon-price CSVs
+  -> deterministic/HMC/MPC model outputs, maps, and tables
+  -> postprocess-final and results_in_paper/
+```
 
 More specifically, HMC sampling must finish before `relative-entropy` and HMC
 density/map figures; the MPC shadow-price grid must finish before `mpc-prices`;
@@ -104,15 +110,16 @@ rebuilt. The only named steps that call `Rscript` are `data`, `maps`, and
 
 ## Repository Layout
 
-- `data/raw/`: raw input data, supplied separately.
+- `data/raw/`: raw input data. The final journal archive should include this folder; GitHub mirrors may omit large raw files.
 - `data/processed/`, `data/clean/` and `data/calibration/`: processed, cleaned and calibrated data generated from the raw inputs.
+- `data/codebook.csv`: source-level data inventory, access notes, generated-data descriptions, and open-format companion notes.
 - `rsrc/`: R data-cleaning, calibration, and map/figure scripts.
 - `pysrc/`: Python package code for sampling, optimization, MPC, and shared
   helpers.
 - `pysrc/scripts/`: user-facing Python scripts that run analysis, estimation,
   figures, and workflow orchestration.
 - `pysrc/replication/`: replication post-processing code that turns raw model
-  outputs and logs into derived CSVs, manifests, paper numbers, and `aux_input`
+  outputs and logs into derived CSVs, manifests, paper numbers, and `results_in_paper`
   assets.
   The previous top-level `scripts` layout has been folded into `pysrc/` so
   Python code lives under one importable package tree.
@@ -238,12 +245,47 @@ packages inside every submitted job.
 
 ### Step 2. Prepare The Data Inputs
 
-The raw data used to rebuild the data products from scratch are supplied
-separately and can be downloaded
+The final journal replication archive should include the complete `data/`
+directory: `data/raw/`, `data/processed/`, `data/clean/`, and
+`data/calibration/`. A GitHub mirror may omit large raw and intermediate files;
+if so, use the archived replication package as the authoritative data source.
+During pre-archive review, the same raw-data bundle can be downloaded
 [here](https://www.dropbox.com/scl/fo/n6gsyl7w2mki77eqew8ts/AMUKehiyaTFH2fjO5VotYwE?rlkey=iuk47v413domc1utvoa8x3yfp&st=ie2dyrzx&dl=0). The GitHub replication branch also provides
 `data/calibration/` calibrated inputs as a reference and as a starting point for
 users who want to skip raw-data calibration and reproduce the model, table, and
 figure outputs directly.
+
+Data availability statement: The package is designed to be reproducible from
+public administrative, market, climate, remote-sensing, and carbon-price data.
+The final JPE archive should contain the exact raw extracts used by the authors
+plus the generated processed, cleaned, and calibrated data. No confidential
+human-subject microdata are used. The data-source inventory, access notes,
+provider names, generated-file descriptions, and `.Rdata` open-format
+equivalents are documented below and in `data/codebook.csv`.
+After journal archiving, cite the permanent archive DOI assigned by the journal
+repository as the authoritative source for the complete replication package.
+Because the full `data/`, `output/`, and `plots/` directories can exceed 10GB,
+authors should coordinate with the JPE Data Editor before final upload if the
+accepted archive must be split across multiple files.
+
+Data sources and citations. The manuscript's Appendix A describes the data construction in detail. The table below maps the data sources mentioned in the manuscript and used by the code to the package folders. All source-specific licenses and citation requirements remain with the original providers.
+
+| Source | Package location | Use in paper/code | Citation or access note |
+| --- | --- | --- | --- |
+| World Bank / World Development Indicators and Climate Watch | `data/raw/worldbank/emission_kuznets/`, `replication/figure1/input/` | GDP per capita and CO2 emissions for Figure 1. | Manuscript Figure 1 states World Bank data were downloaded in March 2021. Metadata files are stored under `replication/figure1/documentation/`. |
+| Fatos da Amazonia 2021 / Amazonia 2030 | `replication/figure1/reference/` and generated `replication/derived/figure1_source_data.csv` | Brazilian Amazon point in Figure 1. | Manuscript Figure 1 cites Fatos da Amazonia 2021, www.amazonia2030.org. |
+| MapBiomas Collection 5 and related MapBiomas products | `data/raw/mapbiomas/` | Land-use/cover, total available area, agricultural area, deforestation, secondary vegetation age, pasture quality, and basin inputs. | Manuscript Appendix A and Section 5 cite MapBiomas and Souza et al. (2020); the text identifies Collection 5. |
+| ANA/PNRH water-basin layers distributed through MapBiomas | `data/raw/mapbiomas/basin/` | Basin groups for agricultural-productivity random effects in Appendix C.1. | Manuscript Appendix C.1 notes sub-basins of the National Water Resources Plan, level 2, ANA 2006, available through MapBiomas. |
+| ESA Biomass Climate Change Initiative | `data/raw/esa/above_ground_biomass/` | Above-ground biomass density for carbon absorption/productivity. | Manuscript cites Santoro and Cartus (2021), ESA Biomass CCI global above-ground biomass, v3; Appendix A.2 uses 2017 data. |
+| SEEG | `data/raw/seeg/emission/` | Agricultural net emissions used to calibrate emissions contributed by agriculture. | Manuscript Appendix A.4 cites Sistema de Estimativas de Emissoes e Remocoes de Gases de Efeito Estufa and http://seeg.eco.br/. |
+| IBGE | `data/raw/ibge/` | Municipal boundaries, Amazon biome, agricultural census land-use and cattle outputs. | Manuscript cites IBGE (2017), Censo Agropecuario Tables 6882 and 6911. |
+| SEAB-PR / DERAL via IPEA | `data/raw/seabpr/commodity_prices/`, `data/raw/ipea/farm_gate_price/` | Monthly deflated cattle-price series and farm-gate prices. | Manuscript Appendix A.8 cites SEAB-PR (2021), IPEA distributor, accessed February 22, 2021. |
+| IPEA | `data/raw/ipea/distance_to_capital/` | Distance-to-state-capital regressor in agricultural productivity. | Public IPEA geographic/economic input; retain source table and access date when known. |
+| WorldClim | `data/raw/worldclim/` | Historical precipitation and temperature regressors. | Manuscript Appendix C.1 cites Fick and Hijmans (2017); raw files are WorldClim 2.1, 2.5-minute rasters. |
+| FGV IBRE | `data/raw/fgv/deflator_ipa/` | Deflator used in price preparation. | Public/third-party economic series; retain provider citation and terms. |
+| World Bank Carbon Pricing Dashboard / carbon-price files | `data/raw/worldbank/carbon_price/` | Carbon-pricing source inputs used by data-cleaning scripts and contextual outputs. | Include source files in the final archive; retain provider terms and access date when known. |
+
+Generated data and metadata. The archive includes `data/processed/`, `data/clean/`, and `data/calibration/` as generated analysis inputs. Some R scripts read `.Rdata` files directly. Where practical, the package includes open-format companions: for example, `calibration_1043_sites.Rdata` has `calibration_1043_sites.csv` and `grid_1043_sites.geojson`; `calibration_78_sites.Rdata` has `calibration_78_sites.csv` and `grid_78_sites.geojson`; carbon and productivity calibration objects have `gamma_fit_*.geojson`, `theta_fit_*.geojson`, and related CSV files. The machine-readable source inventory is in `data/codebook.csv`.
 
 1. Create the data folder:
 
@@ -257,16 +299,15 @@ figure outputs directly.
 
    ```text
    data/raw/
-   esa/
-   fgv/
-   global_forest_watch/
-   ibge/
-   ipea/
-   mapbiomas/
-   seabpr/
-   seeg/
-   worldbank/
-   worldclim/
+     esa/
+     fgv/
+     ibge/
+     ipea/
+     mapbiomas/
+     seabpr/
+     seeg/
+     worldbank/
+     worldclim/
    ```
 
    If the download also includes prepared `processed`, `clean`, or `calibration`
@@ -520,7 +561,7 @@ is the intended route for `stage-hmc`, `stage-mpc`, and `stage-time-consistency`
    from the heavy MPC jobs. Carbon prices are derived earlier, immediately
    after the shadow-price and MPC price-search outputs that downstream steps
    need. The final stage refreshes MPC transition probabilities, paper-number
-   manifests, aux-input tables, and aux-input figures.
+   manifests, results-in-paper tables, and results-in-paper figures.
 
    The computational dependencies are intentionally one-way: downstream scripts
    read `replication/derived/carbon_prices.csv`,
@@ -553,7 +594,7 @@ This expands to:
 ```text
 mpc-probabilities-unconstrained
 postprocess-final
-aux-figures
+results-in-paper-figures
 ```
 
 Those steps do the following:
@@ -566,10 +607,10 @@ Those steps do the following:
 - `pysrc/replication/build_paper_numbers.py` writes
   `replication/exhibit_manifest.csv`, `replication/paper_numbers.csv`, and
   `replication/paper_numbers_missing_summary.csv`.
-- `pysrc/replication/build_aux_input_tables.py` refreshes
-  `aux_input/Table<number>_*.tex`, `aux_input/Figure<number>_*`,
-  `replication/aux_input_table_manifest.csv`, and
-  `replication/aux_input_figure_manifest.csv`.
+- `pysrc/replication/build_results_in_paper.py` refreshes
+  `results_in_paper/Table<number>_*.tex`, `results_in_paper/Figure<number>_*`,
+  `replication/results_in_paper_table_manifest.csv`, and
+  `replication/results_in_paper_figure_manifest.csv`.
 
 The post-processing scripts do not read values from the manuscript PDF. Reported
 numbers are extracted from generated outputs and logs.
@@ -583,9 +624,9 @@ After the command finishes, check these generated files:
 replication/exhibit_manifest.csv
 replication/paper_numbers.csv
 replication/paper_numbers_missing_summary.csv
-replication/aux_input_table_manifest.csv
-replication/aux_input_figure_manifest.csv
-aux_input/
+replication/results_in_paper_table_manifest.csv
+replication/results_in_paper_figure_manifest.csv
+results_in_paper/
 ```
 
 If `paper_numbers_missing_summary.csv` reports missing outputs, generate the
@@ -710,7 +751,7 @@ mpc-tables-constrained
 mpc-simulation-tables-unconstrained
 mpc-hmc-figure14-unconstrained
 mpc-figures-unconstrained
-aux-figures
+results-in-paper-figures
 bayesian-r2
 maps
 postprocess-final
@@ -749,3 +790,20 @@ local and Slurm runs.
   `year done: 1` in each MPC log, reads the immediately preceding
   `Parameters from current iteration` vector, uses the second-to-last entry as
   `low -> low`, and uses one minus the last entry as `high -> high`.
+
+### Rights And License
+
+The code written for this replication package is released under the MIT License;
+see `LICENSE.txt`. Author-created derived data, tables, figures, manifests, and
+documentation are released for academic replication under the terms stated in
+`LICENSE.txt`. Third-party raw data in `data/raw/` remain subject to the terms of
+the original providers listed above and in `data/codebook.csv`; they are included
+in the journal archive only to allow exact replication of the reported results.
+Users who reuse the raw sources outside replication should consult and follow the
+original providers' licenses and citation requirements.
+
+I certify that the authors of the manuscript have legitimate access to and
+permission to use the data used in this manuscript. I certify that the authors
+have documented permission to redistribute or publish the data contained within
+this replication package to the extent stated in `LICENSE.txt`; third-party raw
+data remain subject to their original provider terms.

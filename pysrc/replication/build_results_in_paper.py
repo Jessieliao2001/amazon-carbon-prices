@@ -26,7 +26,7 @@ from pysrc.services.file_service import get_path
 MPC_PROBABILITY_FILE = get_path(
     "replication", "derived", "mpc_transition_probabilities.csv"
 )
-AUX_TABLE_REFERENCE_DIR = get_path("replication", "aux_input_table_templates")
+RESULTS_IN_PAPER_TABLE_REFERENCE_DIR = get_path("replication", "results_in_paper_table_templates")
 NUMBER_RE = re.compile(r"[-+]?(?:\d*\.\d+|\d+)(?:[eE][-+]?\d+)?")
 VALUE_COLUMNS = [
     "agricultural output value",
@@ -212,7 +212,7 @@ def _numeric_diff_note(reference: Path, generated: Path) -> str:
 
 def _ensure_table_reference(
     root: Path,
-    aux_dir: Path,
+    results_dir: Path,
     reference_dir: Path,
     name: str,
     generated: Path,
@@ -220,16 +220,16 @@ def _ensure_table_reference(
     update_reference: bool = False,
 ) -> tuple[Path, bool, str]:
     reference = reference_dir / name
-    unprefixed_aux = aux_dir / name
+    unprefixed_result = results_dir / name
 
     if reference.exists():
         return reference, True, "cached_reference"
 
     if update_reference:
-        if unprefixed_aux.exists():
+        if unprefixed_result.exists():
             reference.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(unprefixed_aux, reference)
-            return reference, True, "unprefixed_aux_input"
+            shutil.copy2(unprefixed_result, reference)
+            return reference, True, "unprefixed_results_in_paper"
 
         if generated.exists():
             reference.parent.mkdir(parents=True, exist_ok=True)
@@ -239,9 +239,9 @@ def _ensure_table_reference(
     return reference, False, "missing_reference"
 
 
-def _copy_aux_figures(
+def _copy_results_in_paper_figures(
     root: Path,
-    aux_dir: Path,
+    results_dir: Path,
     paper_tex: Path,
     figure_inputs_out: Path,
 ) -> pd.DataFrame:
@@ -251,7 +251,7 @@ def _copy_aux_figures(
     for record in figure_inputs.to_dict("records"):
         source = resolve_generated_figure(root, str(record["source_basename"]))
         exhibit = str(record["exhibit"])
-        target = aux_dir / _generated_figure_name(
+        target = results_dir / _generated_figure_name(
             exhibit,
             source if source is not None else Path(str(record["source_basename"])),
         )
@@ -275,12 +275,12 @@ def _copy_aux_figures(
     return pd.DataFrame(rows)
 
 
-def _clean_aux_dir(aux_dir: Path, keep: set[Path]) -> list[Path]:
+def _clean_results_dir(results_dir: Path, keep: set[Path]) -> list[Path]:
     removed: list[Path] = []
-    if not aux_dir.exists():
+    if not results_dir.exists():
         return removed
     resolved_keep = {path.resolve() for path in keep}
-    for path in sorted(aux_dir.iterdir()):
+    for path in sorted(results_dir.iterdir()):
         if path.resolve() in resolved_keep:
             continue
         if path.is_file() or path.is_symlink():
@@ -678,7 +678,7 @@ def render_sigma_table(path: Path) -> str:
 
 def build_tables(
     root: Path,
-    aux_dir: Path,
+    results_dir: Path,
     reference_dir: Path,
     *,
     update_table_references: bool = False,
@@ -692,11 +692,11 @@ def build_tables(
 
     def write(name: str, text: str, sources: list[Path] | None = None) -> None:
         table_number = TABLE_NUMBERS[name]
-        out = aux_dir / _generated_table_name(name)
+        out = results_dir / _generated_table_name(name)
         _write(out, text)
         reference, reference_exists, reference_source = _ensure_table_reference(
             root,
-            aux_dir,
+            results_dir,
             reference_dir,
             name,
             out,
@@ -705,7 +705,7 @@ def build_tables(
         numeric_note = (
             _numeric_diff_note(reference, out)
             if reference_exists
-            else "no aux_input table reference available"
+            else "no results_in_paper table reference available"
         )
         used_reference_format = reference_exists and numeric_note == ""
         if used_reference_format:
@@ -811,21 +811,21 @@ def build_tables(
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Build paper-formatted aux_input Table[number]_*.tex files and "
+            "Build paper-formatted results_in_paper Table[number]_*.tex files and "
             "Figure[number]_* files from generated code outputs. "
             "This script never reads numeric values from the manuscript PDF."
         )
     )
     parser.add_argument("--root", type=Path, default=get_path())
-    parser.add_argument("--aux-dir", type=Path, default=get_path("aux_input"))
+    parser.add_argument("--results-dir", type=Path, default=get_path("results_in_paper"))
     parser.add_argument(
         "--table-reference-dir",
         type=Path,
-        default=AUX_TABLE_REFERENCE_DIR,
+        default=RESULTS_IN_PAPER_TABLE_REFERENCE_DIR,
         help=(
             "Stable paper-format table templates used read-only by default. "
             "This prevents the manifest from depending on unprefixed files "
-            "that are cleaned from aux_input."
+            "that are cleaned from results_in_paper."
         ),
     )
     parser.add_argument(
@@ -833,14 +833,14 @@ def main() -> int:
         action="store_true",
         help=(
             "Maintenance mode: create missing files in --table-reference-dir "
-            "from existing aux_input tables or newly generated tables. Normal "
+            "from existing results_in_paper tables or newly generated tables. Normal "
             "replication runs leave the reference directory untouched."
         ),
     )
     parser.add_argument(
         "--manifest-out",
         type=Path,
-        default=get_path("replication", "aux_input_table_manifest.csv"),
+        default=get_path("replication", "results_in_paper_table_manifest.csv"),
     )
     parser.add_argument(
         "--paper-tex",
@@ -859,27 +859,27 @@ def main() -> int:
     parser.add_argument(
         "--figure-manifest-out",
         type=Path,
-        default=get_path("replication", "aux_input_figure_manifest.csv"),
+        default=get_path("replication", "results_in_paper_figure_manifest.csv"),
     )
     parser.add_argument(
         "--keep-stale",
         action="store_true",
-        help="Do not remove old files from aux_input after generating assets.",
+        help="Do not remove old files from results_in_paper after generating assets.",
     )
     parser.add_argument(
         "--figures-only",
         action="store_true",
         help=(
-            "Only copy paper figures into aux_input/Figure[number]_* and write "
-            "the figure manifest. Existing aux_input tables are left untouched."
+            "Only copy paper figures into results_in_paper/Figure[number]_* and write "
+            "the figure manifest. Existing results_in_paper tables are left untouched."
         ),
     )
     args = parser.parse_args()
 
     if args.figures_only:
-        figure_manifest = _copy_aux_figures(
+        figure_manifest = _copy_results_in_paper_figures(
             args.root,
-            args.aux_dir,
+            args.results_dir,
             args.paper_tex,
             args.figure_inputs_out,
         )
@@ -890,19 +890,19 @@ def main() -> int:
             quoting=csv.QUOTE_MINIMAL,
         )
         copied_count = int(figure_manifest["copied"].sum()) if not figure_manifest.empty else 0
-        print(f"Copied {copied_count} aux_input figure files")
-        print(f"Wrote aux figure manifest: {args.figure_manifest_out}")
+        print(f"Copied {copied_count} results_in_paper figure files")
+        print(f"Wrote results-in-paper figure manifest: {args.figure_manifest_out}")
         return 0
 
     manifest = build_tables(
         args.root,
-        args.aux_dir,
+        args.results_dir,
         args.table_reference_dir,
         update_table_references=args.update_table_references,
     )
-    figure_manifest = _copy_aux_figures(
+    figure_manifest = _copy_results_in_paper_figures(
         args.root,
-        args.aux_dir,
+        args.results_dir,
         args.paper_tex,
         args.figure_inputs_out,
     )
@@ -913,7 +913,7 @@ def main() -> int:
             for path in manifest["generated_file"].tolist()
             + figure_manifest["generated_file"].tolist()
         }
-        removed = _clean_aux_dir(args.aux_dir, keep_paths)
+        removed = _clean_results_dir(args.results_dir, keep_paths)
     else:
         removed = []
 
@@ -921,11 +921,11 @@ def main() -> int:
     manifest.to_csv(args.manifest_out, index=False, quoting=csv.QUOTE_MINIMAL)
     args.figure_manifest_out.parent.mkdir(parents=True, exist_ok=True)
     figure_manifest.to_csv(args.figure_manifest_out, index=False, quoting=csv.QUOTE_MINIMAL)
-    print(f"Wrote {len(manifest)} aux_input table-numbered tables")
-    print(f"Copied {int(figure_manifest['copied'].sum()) if not figure_manifest.empty else 0} aux_input figure files")
-    print(f"Removed {len(removed)} stale aux_input files")
-    print(f"Wrote aux table manifest: {args.manifest_out}")
-    print(f"Wrote aux figure manifest: {args.figure_manifest_out}")
+    print(f"Wrote {len(manifest)} results_in_paper table-numbered tables")
+    print(f"Copied {int(figure_manifest['copied'].sum()) if not figure_manifest.empty else 0} results_in_paper figure files")
+    print(f"Removed {len(removed)} stale results_in_paper files")
+    print(f"Wrote results-in-paper table manifest: {args.manifest_out}")
+    print(f"Wrote results-in-paper figure manifest: {args.figure_manifest_out}")
     return 0
 
 
