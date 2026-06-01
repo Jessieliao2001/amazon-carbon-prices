@@ -27,7 +27,7 @@ run the heavy non-R stages:
 
 ```bash
 source ./setup_env.sh server
-./run.sh --steps stage-hmm stage-deterministic stage-time-consistency stage-hmc stage-mpc --backend slurm --slurm-account pi-lhansen
+./run.sh --steps stage-hmm stage-deterministic stage-time-consistency stage-hmc stage-mpc --backend slurm --slurm-account pi-<pi_account_name>
 ```
 
 When those server jobs finish, sync `job-outs/`, `output/`, `plots/`, and
@@ -43,13 +43,13 @@ If the server has R and the R environment has been restored there, submit the
 complete workflow, including R data and map steps, in one command:
 
 ```bash
-./run.sh --steps all --backend slurm --slurm-account pi-lhansen --run-r-on-slurm
+./run.sh --steps all --backend slurm --slurm-account pi-<pi_account_name> --run-r-on-slurm
 ```
 
 Before any long run, inspect the exact plan without executing commands:
 
 ```bash
-./run.sh --steps all --backend slurm --slurm-account pi-lhansen --run-r-on-slurm --dry-run
+./run.sh --steps all --backend slurm --slurm-account pi-<pi_account_name> --run-r-on-slurm --dry-run
 ```
 
 ## Choosing Local Or Server Runs
@@ -285,7 +285,7 @@ figure outputs directly.
    with:
 
    ```bash
-   ./run.sh --steps stage-data --backend slurm --slurm-account pi-lhansen --run-r-on-slurm
+   ./run.sh --steps stage-data --backend slurm --slurm-account pi-<pi_account_name> --run-r-on-slurm
    ```
 
    If the server does not have R, run the R data-processing part locally and sync
@@ -362,13 +362,13 @@ is the intended route for `stage-hmc`, `stage-mpc`, and `stage-time-consistency`
 
    ```bash
    sacctmgr show assoc user=$USER format=Account,Partition,QOS%30
-   export REPLICATION_SLURM_ACCOUNT="pi-lhansen"
+   export REPLICATION_SLURM_ACCOUNT="pi-<pi_account_name>"
    ```
 
    The same setting can be supplied inline:
 
    ```bash
-   ./run.sh --steps stage-hmm --backend slurm --slurm-account pi-lhansen
+   ./run.sh --steps stage-hmm --backend slurm --slurm-account pi-<pi_account_name>
    ```
 
    If your allocation uses a specific partition, also set
@@ -392,7 +392,7 @@ is the intended route for `stage-hmc`, `stage-mpc`, and `stage-time-consistency`
    To group non-MPC large steps, use for example:
 
    ```bash
-   ./run.sh --steps stage-hmc --backend slurm --slurm-account pi-lhansen --slurm-commands-per-job 25
+   ./run.sh --steps stage-hmc --backend slurm --slurm-account pi-<pi_account_name> --slurm-commands-per-job 25
    ```
 
    Use a smaller value if grouped jobs are close to the Slurm time limit, or
@@ -404,7 +404,7 @@ is the intended route for `stage-hmc`, `stage-mpc`, and `stage-time-consistency`
    Submit the non-R computation stages on the server with:
 
    ```bash
-   ./run.sh --steps stage-hmm stage-deterministic stage-time-consistency stage-hmc stage-mpc --backend slurm --slurm-account pi-lhansen
+   ./run.sh --steps stage-hmm stage-deterministic stage-time-consistency stage-hmc stage-mpc --backend slurm --slurm-account pi-<pi_account_name>
    ```
 
    This submits the non-R computation jobs at once, but step order is preserved
@@ -419,21 +419,21 @@ is the intended route for `stage-hmc`, `stage-mpc`, and `stage-time-consistency`
    parts:
 
    ```bash
-   ./run.sh --steps all --backend slurm --slurm-account pi-lhansen
+   ./run.sh --steps all --backend slurm --slurm-account pi-<pi_account_name>
    ```
 
 6. If the server has R and the R environment has been restored there, submit the
    complete workflow including R data and plot steps with:
 
    ```bash
-   ./run.sh --steps all --backend slurm --slurm-account pi-lhansen --run-r-on-slurm
+   ./run.sh --steps all --backend slurm --slurm-account pi-<pi_account_name> --run-r-on-slurm
    ```
 
 7. Before submitting a long server run, inspect the exact Slurm plan:
 
    ```bash
-   ./run.sh --steps stage-hmm stage-deterministic stage-time-consistency stage-hmc stage-mpc --backend slurm --slurm-account pi-lhansen --dry-run
-   ./run.sh --steps all --backend slurm --slurm-account pi-lhansen --run-r-on-slurm --dry-run
+   ./run.sh --steps stage-hmm stage-deterministic stage-time-consistency stage-hmc stage-mpc --backend slurm --slurm-account pi-<pi_account_name> --dry-run
+   ./run.sh --steps all --backend slurm --slurm-account pi-<pi_account_name> --run-r-on-slurm --dry-run
    ```
 
 8. Monitor submitted jobs with:
@@ -728,7 +728,7 @@ all
 Server module defaults can be tuned without editing code:
 
 ```bash
-REPLICATION_SLURM_ACCOUNT="pi-lhansen"
+REPLICATION_SLURM_ACCOUNT="pi-<pi_account_name>"
 REPLICATION_MODULES="python/anaconda-2022.05 gurobi/11.0 gcc/12.2.0"
 REPLICATION_SLURM_TIME="1-11:00:00"
 REPLICATION_SLURM_CPUS="8"
