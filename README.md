@@ -113,6 +113,7 @@ rebuilt. The only named steps that call `Rscript` are `data`, `maps`, and
 - `data/raw/`: raw input data. The final journal archive should include this folder; GitHub mirrors may omit large raw files.
 - `data/processed/`, `data/clean/` and `data/calibration/`: processed, cleaned and calibrated data generated from the raw inputs.
 - `data/codebook.csv`: source-level data inventory, access notes, generated-data descriptions, and open-format companion notes.
+- `data/source_permissions.csv`: source-by-source audit record for access, license or terms, redistribution status, and final-review notes.
 - `rsrc/`: R data-cleaning, calibration, and map/figure scripts.
 - `pysrc/`: Python package code for sampling, optimization, MPC, and shared
   helpers.
@@ -123,14 +124,15 @@ rebuilt. The only named steps that call `Rscript` are `data`, `maps`, and
   assets.
   The previous top-level `scripts` layout has been folded into `pysrc/` so
   Python code lives under one importable package tree.
-- `replication/figure1/`: repo-internal World Bank inputs and documentation for
-  reproducing Figure 1 through `pysrc/scripts/figure1.py`.
+- `replication/figure1/`: repo-internal World Bank inputs and
+  `FIGURE1_DOCUMENTATION.md` notes for reproducing Figure 1 through
+  `pysrc/scripts/figure1.py`.
 - `job-outs/`: generated local or Slurm logs. The audit logs used to derive
   paper numbers are version controlled; routine run logs remain ignored.
 - `output/` and `plots/`: generated tables, figures, and model outputs, not
   version controlled.
-- `replication/`: static replication inputs plus generated manifests and
-  output-derived manuscript numbers.
+- `replication/`: static replication inputs, package manifests, generated
+  manifests, and output-derived manuscript numbers.
 
 ## Requirements
 
@@ -294,7 +296,73 @@ Data sources and citations. The manuscript's Appendix A describes the data const
 | FGV IBRE | `data/raw/fgv/deflator_ipa/` | Deflator used in price preparation. | Public/third-party economic series; retain provider citation and terms. |
 | World Bank Carbon Pricing Dashboard / carbon-price files | `data/raw/worldbank/carbon_price/` | Carbon-pricing source inputs used by data-cleaning scripts and contextual outputs. | Include source files in the final archive; retain provider terms and access date when known. |
 
-Generated data and metadata. The archive includes `data/processed/`, `data/clean/`, and `data/calibration/` as generated analysis inputs. Some R scripts read `.Rdata` files directly. Where practical, the package includes open-format companions: for example, `calibration_1043_sites.Rdata` has `calibration_1043_sites.csv` and `grid_1043_sites.geojson`; `calibration_78_sites.Rdata` has `calibration_78_sites.csv` and `grid_78_sites.geojson`; carbon and productivity calibration objects have `gamma_fit_*.geojson`, `theta_fit_*.geojson`, and related CSV files. The machine-readable source inventory is in `data/codebook.csv`.
+### Data References
+
+The following data references are included here to make the replication package
+self-contained. Provider-specific license and terms information should be
+reviewed before the final JPE Dataverse deposit; the audit trail is maintained
+in `data/source_permissions.csv`.
+
+- Amazonia 2030. 2021. *Fatos da Amazonia 2021*. Amazonia 2030. URL:
+  https://amazonia2030.org.br/. Used for the Brazilian Amazon point in Figure
+  1. Access note: cited in the manuscript Figure 1 source note; retain the
+  downloaded reference files under `replication/figure1/reference/`.
+- Agencia Nacional de Aguas e Saneamento Basico (ANA). 2006. *National Water
+  Resources Plan basin layers, level 2*. Distributed through MapBiomas basin
+  inputs. URL: https://www.gov.br/ana/. Used for basin groups in Appendix C.1.
+- European Space Agency Climate Change Initiative Biomass Project. 2021. *ESA
+  Biomass Climate Change Initiative (Biomass_cci): Global Datasets of Forest
+  Above-Ground Biomass for the Years 2010, 2017 and 2018, v3*. NERC EDS
+  Centre for Environmental Data Analysis. DOI: 10.5285/5f331c418e9f4935b8eb1b836f8a91b8.
+  URL: https://climate.esa.int/en/projects/biomass/. Used for 2017
+  above-ground biomass inputs.
+- Fick, Stephen E., and Robert J. Hijmans. 2017. "WorldClim 2: New 1-km
+  Spatial Resolution Climate Surfaces for Global Land Areas." *International
+  Journal of Climatology* 37 (12): 4302-4315. DOI: 10.1002/joc.5086.
+  Project URL: https://www.worldclim.org/. The package uses WorldClim 2.1,
+  2.5-minute historical temperature and precipitation rasters.
+- Fundacao Getulio Vargas, Instituto Brasileiro de Economia (FGV IBRE).
+  Deflator series used for price preparation. URL: https://portalibre.fgv.br/.
+  Access note: retain exact raw files and access metadata in the final archive.
+- Instituto Brasileiro de Geografia e Estatistica (IBGE). 2017. *Censo
+  Agropecuario 2017*, including Tables 6882 and 6911, and associated municipal
+  and biome geographies. URL: https://www.ibge.gov.br/. Used for agricultural
+  census, cattle, municipal boundary, and Amazon biome inputs.
+- Instituto de Pesquisa Economica Aplicada (IPEA). Ipeadata tables for
+  distance-to-capital and farm-gate or commodity-price inputs. URL:
+  https://www.ipeadata.gov.br/. Access notes: the manuscript reports SEAB-PR
+  price data distributed through IPEA were accessed on February 22, 2021; the
+  distance raw filename records an August 21, 2023 extract.
+- MapBiomas Project. *Collection 5 Annual Land Cover and Land Use Maps of
+  Brazil* and related MapBiomas products. URL: https://mapbiomas.org/. Used for
+  land-use/cover, total available area, agricultural area, deforestation,
+  secondary vegetation age, pasture quality, and basin inputs. See also Souza
+  Jr. et al. (2020), cited in the manuscript.
+- Secretaria da Agricultura e do Abastecimento do Parana, Departamento de
+  Economia Rural (SEAB-PR/DERAL). 2021. Commodity price series distributed
+  through IPEA. URL: https://www.agricultura.pr.gov.br/. Used for monthly
+  cattle-price inputs; manuscript Appendix A.8 reports access through IPEA on
+  February 22, 2021.
+- Sistema de Estimativas de Emissoes e Remocoes de Gases de Efeito Estufa
+  (SEEG). Greenhouse-gas emissions and removals data. URL: https://seeg.eco.br/.
+  Used for agricultural net emissions and emissions calibration; raw filenames
+  record a 2020.11.05 extract.
+- Souza Jr., Carlos M., Julia Z. Shimbo, Marcos R. Rosa, Leandro L. Parente,
+  Ane A. Alencar, Bernardo F. T. Rudorff, Heinrich Hasenack, et al. 2020.
+  "Reconstructing Three Decades of Land Use and Land Cover Changes in Brazilian
+  Biomes with Landsat Archive and Earth Engine." *Remote Sensing* 12 (17):
+  2735. DOI: 10.3390/rs12172735. Cited by the manuscript for MapBiomas.
+- World Bank. World Development Indicators and World Bank source files used for
+  Figure 1, GDP per capita, emissions, and carbon-pricing inputs. URLs:
+  https://data.worldbank.org/, https://databank.worldbank.org/source/world-development-indicators,
+  and https://carbonpricingdashboard.worldbank.org/. Access note: manuscript
+  Figure 1 reports World Bank data were downloaded in March 2021.
+- World Resources Institute. Climate Watch data used with World Bank inputs for
+  Figure 1 emissions context. URL: https://www.climatewatchdata.org/. Access
+  note: retain exact downloaded extracts and metadata under `replication/figure1/`
+  and `data/raw/worldbank/`.
+
+Generated data and metadata. The archive includes `data/processed/`, `data/clean/`, and `data/calibration/` as generated analysis inputs. Some R scripts read `.Rdata` files directly. Where practical, the package includes open-format companions: for example, `calibration_1043_sites.Rdata` has `calibration_1043_sites.csv` and `grid_1043_sites.geojson`; `calibration_78_sites.Rdata` has `calibration_78_sites.csv` and `grid_78_sites.geojson`; carbon and productivity calibration objects have `gamma_fit_*.geojson`, `theta_fit_*.geojson`, and related CSV files. The machine-readable source inventory is in `data/codebook.csv`; source access and redistribution-review notes are in `data/source_permissions.csv`; and final archive inclusion/exclusion decisions are summarized in `replication/package_manifest.csv`.
 
 1. Create the data folder:
 

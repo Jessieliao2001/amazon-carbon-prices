@@ -17,7 +17,9 @@ human-subject microdata are used.
 After journal archiving, cite the archive DOI assigned by the journal
 repository in the root `README.md`. Source-specific version numbers and access
 dates should be retained when they are available from the original downloads or
-embedded metadata.
+embedded metadata. Source access and redistribution-review notes are tracked in
+`data/source_permissions.csv`; final archive inclusion and exclusion decisions
+are summarized in `replication/package_manifest.csv`.
 
 Several third-party source files are archived in their original `.xls` or
 `.xlsx` formats under `data/raw/` to preserve the exact raw extracts used by the
