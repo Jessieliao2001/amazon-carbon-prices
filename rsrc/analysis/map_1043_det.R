@@ -173,7 +173,7 @@ dir.create(here::here("plots/1043-det"), recursive = TRUE, showWarnings = FALSE)
 # z_2017_1043Sites
 z_2017_1043Sites <-
   ggplot2::ggplot(data = prediction.1043SitesModel %>%
-    dplyr::filter(time == 0, p_e == 21.6) %>%
+    dplyr::filter(time == 0, p_e == pee+15) %>%
     dplyr::mutate(z_t = cut(z_t,
       breaks = c(0, 0.000001, 20, 40, 60, 80, 105),
       include.lowest = T,
