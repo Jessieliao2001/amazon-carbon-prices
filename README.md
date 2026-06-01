@@ -268,6 +268,15 @@ Because the full `data/`, `output/`, and `plots/` directories can exceed 10GB,
 authors should coordinate with the JPE Data Editor before final upload if the
 accepted archive must be split across multiple files.
 
+Raw Excel files. Several third-party source files are archived in their
+original `.xls` or `.xlsx` formats under `data/raw/` to preserve the exact raw
+extracts used by the authors. These Excel files are raw archived sources, not
+the final analysis data used in the paper tables and figures. The
+data-processing scripts read the archived raw files and write generated CSV,
+Rdata, GeoJSON, and raster products under `data/processed/`, `data/clean/`,
+`data/calibration/`, and `replication/derived/`; those generated files are the
+analysis inputs used by the model, table, figure, and post-processing scripts.
+
 Data sources and citations. The manuscript's Appendix A describes the data construction in detail. The table below maps the data sources mentioned in the manuscript and used by the code to the package folders. All source-specific licenses and citation requirements remain with the original providers.
 
 | Source | Package location | Use in paper/code | Citation or access note |
