@@ -31,6 +31,7 @@ from pysrc.services.file_service import get_path
 class TrajectoryMetrics:
     z_share_pct: np.ndarray
     capture_gt: np.ndarray
+    net_transfer: np.ndarray
 
 
 def delta_slug(delta: float) -> str:
@@ -125,13 +126,29 @@ def solve_deterministic_trajectory(
     )
 
 
-def trajectory_metrics(solution: PlannerSolution, zbar: np.ndarray, years: int) -> TrajectoryMetrics:
+def trajectory_metrics(
+    solution: PlannerSolution,
+    zbar: np.ndarray,
+    years: int,
+    transfer: float = 0.0,
+    kappa: float = 2.094215255,
+) -> TrajectoryMetrics:
     last_index = min(years, len(solution.Z) - 1)
     z = solution.Z[: last_index + 1]
     x = solution.X[: last_index + 1]
     z_share_pct = np.sum(z, axis=1) / np.sum(zbar) * 100
     capture_gt = np.sum(x, axis=1) - np.sum(x[0])
-    return TrajectoryMetrics(z_share_pct=z_share_pct, capture_gt=capture_gt)
+    if last_index > 0:
+        x_dot = np.diff(solution.X[: last_index + 1], axis=0)
+        net_transfer = -transfer * (kappa * solution.Z[1 : last_index + 1] - x_dot).sum(axis=1)
+        net_transfer = np.concatenate([net_transfer, [np.nan]])
+    else:
+        net_transfer = np.array([np.nan])
+    return TrajectoryMetrics(
+        z_share_pct=z_share_pct,
+        capture_gt=capture_gt,
+        net_transfer=net_transfer,
+    )
 
 
 def plot_land_allocation_figures(
@@ -154,7 +171,7 @@ def plot_land_allocation_figures(
     colors = {0.0: "red", 15.0: "green", 25.0: "blue"}
     labels = {transfer: format_number(transfer) for transfer in plot_transfers}
     metrics = {
-        transfer: trajectory_metrics(solution, zbar, years)
+        transfer: trajectory_metrics(solution, zbar, years, transfer)
         for transfer, solution in sensitivity_solutions.items()
     }
 
@@ -276,10 +293,15 @@ def summarize_difference(
 ) -> dict[str, float]:
     z_diff = sensitivity.z_share_pct - base.z_share_pct
     capture_diff = sensitivity.capture_gt - base.capture_gt
+    net_transfer_diff = sensitivity.net_transfer - base.net_transfer
     final_capture_base = base.capture_gt[-1]
     relative_capture_diff_pct = np.nan
     if final_capture_base != 0:
         relative_capture_diff_pct = capture_diff[-1] / final_capture_base * 100
+    valid_net_transfer_diff = net_transfer_diff[np.isfinite(net_transfer_diff)]
+    max_abs_net_transfer_diff = np.nan
+    if valid_net_transfer_diff.size:
+        max_abs_net_transfer_diff = float(np.max(np.abs(valid_net_transfer_diff)))
     return {
         "sites": sites,
         "transfer": transfer,
@@ -300,6 +322,7 @@ def summarize_difference(
         "final_capture_diff_gt": capture_diff[-1],
         "max_abs_capture_diff_gt": float(np.max(np.abs(capture_diff))),
         "relative_final_capture_diff_pct": relative_capture_diff_pct,
+        "max_abs_net_transfer_diff": max_abs_net_transfer_diff,
     }
 
 
@@ -316,6 +339,7 @@ def trajectory_rows(
 ) -> list[dict[str, float]]:
     z_diff = sensitivity.z_share_pct - base.z_share_pct
     capture_diff = sensitivity.capture_gt - base.capture_gt
+    net_transfer_diff = sensitivity.net_transfer - base.net_transfer
     return [
         {
             "sites": sites,
@@ -333,9 +357,103 @@ def trajectory_rows(
             "base_capture_gt": base.capture_gt[year],
             "sensitivity_capture_gt": sensitivity.capture_gt[year],
             "diff_capture_gt": capture_diff[year],
+            "base_net_transfer": base.net_transfer[year],
+            "sensitivity_net_transfer": sensitivity.net_transfer[year],
+            "diff_net_transfer": net_transfer_diff[year],
         }
         for year in range(len(base.z_share_pct))
     ]
+
+
+def max_abs_percent_change(group: pd.DataFrame, base_col: str, sensitivity_col: str) -> float:
+    base = pd.to_numeric(group[base_col], errors="coerce")
+    sensitivity = pd.to_numeric(group[sensitivity_col], errors="coerce")
+    valid = base.notna() & sensitivity.notna() & (base.abs() > 1e-12)
+    if not valid.any():
+        return np.nan
+    percent_change = (sensitivity[valid] - base[valid]) / base[valid] * 100
+    return float(percent_change.abs().max())
+
+
+def latex_percent(value: float) -> str:
+    if pd.isna(value):
+        return ""
+    return f"{value:.2f}\\%"
+
+
+def latex_number(value: float, digits: int = 1) -> str:
+    if pd.isna(value):
+        return ""
+    return f"{value:.{digits}f}"
+
+
+def write_latex_comparison_table(
+    *,
+    summary_path: Path,
+    trajectories_path: Path,
+    table_path: Path,
+) -> None:
+    summary = pd.read_csv(summary_path)
+    trajectories = pd.read_csv(trajectories_path)
+    rows = []
+
+    group_cols = [
+        "sites",
+        "transfer",
+        "base_delta",
+        "sensitivity_delta",
+        "base_pee",
+        "sensitivity_pee",
+    ]
+    trajectory_groups = {
+        key: group
+        for key, group in trajectories.groupby(group_cols, dropna=False)
+    }
+
+    for _, row in summary.sort_values(["sites", "transfer"]).iterrows():
+        key = tuple(row[col] for col in group_cols)
+        group = trajectory_groups.get(key)
+        if group is None:
+            continue
+        rows.append(
+            {
+                r"$\delta$": (
+                    f"${latex_number(row['base_delta'], 2)}"
+                    rf"\to {latex_number(row['sensitivity_delta'], 2)}$"
+                ),
+                r"$b$": latex_number(row["transfer"], 0),
+                r"$P^{ee}$": (
+                    f"${latex_number(row['base_pee'], 1)}"
+                    rf"\to {latex_number(row['sensitivity_pee'], 1)}$"
+                ),
+                r"max \% change in $Z_t$": latex_percent(
+                    max_abs_percent_change(
+                        group,
+                        "base_z_share_pct",
+                        "sensitivity_z_share_pct",
+                    )
+                ),
+                r"max \% change in capture $X_t$": latex_percent(
+                    max_abs_percent_change(
+                        group,
+                        "base_capture_gt",
+                        "sensitivity_capture_gt",
+                    )
+                ),
+                r"max \% change in net transfers": latex_percent(
+                    max_abs_percent_change(
+                        group,
+                        "base_net_transfer",
+                        "sensitivity_net_transfer",
+                    )
+                ),
+            }
+        )
+
+    table_path.parent.mkdir(parents=True, exist_ok=True)
+    table = pd.DataFrame(rows)
+    latex = table.to_latex(index=False, escape=False)
+    table_path.write_text(latex)
 
 
 def main() -> int:
@@ -377,6 +495,11 @@ def main() -> int:
             "derived",
             "deterministic_delta_sensitivity_trajectories.csv",
         ),
+    )
+    parser.add_argument(
+        "--table-out",
+        type=Path,
+        default=get_path("replication", "derived", "deterministic_delta_sensitivity_table.tex"),
     )
     parser.add_argument(
         "--sensitivity-prices",
@@ -454,8 +577,8 @@ def main() -> int:
             solutions_for_figures.setdefault(sites, (sensitivity_pee, zbar, {}))[2][float(transfer)] = (
                 sensitivity_solution
             )
-            base = trajectory_metrics(base_solution, zbar, args.years)
-            sensitivity = trajectory_metrics(sensitivity_solution, zbar, args.years)
+            sensitivity = trajectory_metrics(sensitivity_solution, zbar, args.years, transfer)
+            base = trajectory_metrics(base_solution, zbar, args.years, transfer)
             summary_rows.append(
                 summarize_difference(
                     sites=sites,
@@ -505,9 +628,15 @@ def main() -> int:
     args.trajectories_out.parent.mkdir(parents=True, exist_ok=True)
     pd.DataFrame(summary_rows).to_csv(args.out, index=False)
     pd.DataFrame(all_trajectory_rows).to_csv(args.trajectories_out, index=False)
+    write_latex_comparison_table(
+        summary_path=args.out,
+        trajectories_path=args.trajectories_out,
+        table_path=args.table_out,
+    )
 
     print(f"Wrote {len(summary_rows)} summary rows to {args.out}")
     print(f"Wrote {len(all_trajectory_rows)} trajectory rows to {args.trajectories_out}")
+    print(f"Wrote sensitivity comparison table to {args.table_out}")
     return 0
 
 
