@@ -59,6 +59,7 @@ STAGE_ALIASES = {
         "shadow-prices-det",
         "derive-prices-det",
         "deterministic",
+        "deterministic-delta-sensitivity",
         "maps",
     ],
     "stage-time-consistency": ["time-consistency"],
@@ -131,6 +132,9 @@ def base_steps() -> dict[str, list[list[str]]]:
         "derive-prices-hmc": [[PY, "pysrc/replication/derive_carbon_prices.py"]],
         "derive-prices-mpc": [[PY, "pysrc/replication/derive_carbon_prices.py"]],
         "deterministic": [[PY, "pysrc/scripts/conduction_det.py"]],
+        "deterministic-delta-sensitivity": [
+            [PY, "pysrc/scripts/deterministic_delta_sensitivity.py"]
+        ],
         "time-consistency": [
             [PY, "pysrc/scripts/time_consistency.py", "--bf", "3.75", "--sites", "1043"],
             [PY, "pysrc/scripts/time_consistency.py", "--bf", "5", "--sites", "1043"],
@@ -1178,7 +1182,7 @@ def main() -> int:
         help=(
             "all, postprocess-only, stage-data, stage-hmm, stage-deterministic, "
             "stage-time-consistency, stage-hmc, stage-mpc, stage-postprocess, "
-            "or an explicit list of step names"
+            "deterministic-delta-sensitivity, or an explicit list of step names"
         ),
     )
     parser.add_argument("--backend", choices=["local", "slurm"], default="local")

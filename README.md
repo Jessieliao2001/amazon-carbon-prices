@@ -1,4 +1,4 @@
-# Amazon Carbon Prices Replication Package
+# Data and Code for: Carbon Prices, Forest Conservation and Reforestation in the Brazilian Amazon
 
 This repository contains the data-cleaning, estimation, optimization, and
 post-processing code for the Amazon carbon-prices manuscript. The replication
@@ -8,6 +8,25 @@ files in `replication/`.
 The package is structured to be usable both on a local machine and on a server
 or cluster. Local runs execute commands directly. Server runs can submit the
 same steps through Slurm.
+
+## Status Of JPE Reproducibility Check
+
+This table summarizes the JPE Data Editor report dated June 30, 2026. All
+feasible exhibits reproduced by the JPE team were acceptable; components not
+run by JPE were limited by computational constraints for the JPE Data Editor.
+
+| Component | Status in JPE check | Reason or notes |
+| --- | --- | --- |
+| Environment setup | Completed after Linux dependency fixes | See the Linux setup notes below for the support libraries and compiler settings used by the replicator. |
+| Full end-to-end pipeline | Not run by JPE Data Editor | Computational constraints for the JPE Data Editor. |
+| Data cleaning: `rsrc/cleaning/_masterfile.R` | Not run by JPE Data Editor | Computational constraints for the JPE Data Editor. |
+| Data processing: `rsrc/processing/_masterfile.R` | Not run by JPE Data Editor | Computational constraints for the JPE Data Editor. |
+| Calibration: `rsrc/calibration/_masterfile.R` | Not run by JPE Data Editor | Computational constraints for the JPE Data Editor. |
+| Post-processing-only run | Completed | `./run.sh --steps postprocess-only --backend local`. |
+| Figures 1-21 | Reproduced | All feasible figures looked similar to the paper version. |
+| Tables 1-25 | Reproduced | All feasible tables were reproduced. |
+| Figure 11 | Reproduced with minor visual difference | The JPE report notes a y-axis scale difference; the plot and numbers match. |
+| In-text numbers not tied to tables or figures | Partly mapped below | The README now lists each item from the report and the current audit status. |
 
 ## Quick Start
 
@@ -136,17 +155,204 @@ rebuilt. The only named steps that call `Rscript` are `data`, `maps`, and
 
 ## Requirements
 
-- Python >= 3.9 and < 3.12.
-- R with `renv` for local data processing and plot steps. Slurm server runs can
-  skip R.
-- Gurobi >= 10.0.3 for the optimization steps.
-- CmdStan through `cmdstanpy` for the Stan sampling steps.
+### Software Requirements
+
+- Python >= 3.9 and < 3.12. The author-tested local `.venv` has Python
+  3.9.25 (`.venv/pyvenv.cfg`). The project dependencies are pinned in
+  `pyproject.toml`.
+- Core Python packages pinned by the project: `numpy==1.25.2`,
+  `pandas==2.1.0`, `geopandas==0.14.4`, `pyomo==6.6.2`,
+  `cmdstanpy==1.2.0`, `scipy==1.11.1`, `matplotlib==3.7.3`,
+  `seaborn==0.13.2`, `jinja2==3.1.6`, and `hmmlearn==0.3.3`.
+- Additional installed Python packages used in the author local/server
+  snapshots include `gurobipy==11.0.3`, `fiona==1.10.1`,
+  `pyproj==3.6.1`, `shapely==2.0.7`, and `scikit-learn==1.6.1`.
+- R 4.4.1 with packages restored from `renv.lock`. Key R packages pinned in
+  the lockfile include `sf==1.0-16`, `terra==1.7-78`, `magick==2.8.3`,
+  `units==0.8-5`, `nloptr==2.0.3`, `systemfonts==1.0.6`,
+  `ragg==1.3.0`, `tidyverse==2.0.0`, and `renv==1.0.7`.
+- GDAL, GEOS, PROJ, UDUNITS2, ImageMagick/Magick++, NLopt, CMake,
+  `pkg-config`, and a working C/C++ toolchain are required to restore the R
+  spatial and graphics stack on Linux.
+- Gurobi is required for optimization. The author local Python environment
+  uses `gurobipy==11.0.3`; `gurobi_cl --version` on the local machine reports
+  Gurobi Optimizer 12.0.2. The setup script installs `gurobipy==11.0.*`, so
+  keep the command-line Gurobi installation and the Python package compatible
+  with the available license.
+- CmdStan is required through `cmdstanpy`. The author local environment uses
+  `cmdstanpy==1.2.0` and CmdStan 2.38.0 at
+  `/Users/jessieliao/.cmdstan/cmdstan-2.38.0`. The Linux replicator report
+  used a rebuilt CmdStan 2.39.0.
 - Slurm is optional and only needed for `--backend slurm`.
 
-On the Midway server, a typical module setup is:
+### Author-Tested Local Environment
+
+The local environment inspected for this README was:
+
+| Item | Value |
+| --- | --- |
+| Machine | MacBook Pro |
+| Model identifier | Mac16,6 |
+| Model number | MX2K3LL/A |
+| Chip | Apple M4 Max |
+| CPU cores | 14 total: 10 performance and 4 efficiency |
+| Memory | 36 GB |
+| Architecture | arm64 |
+| Operating system | macOS 26.5.2, build 25F84 |
+| Kernel | Darwin 25.5.0 |
+| Repository disk state at inspection | 91 GB total working tree; `data/` 28 GB, `output/` 52 GB, `job-outs/` 703 MB, `.venv` 606 MB, `.venv_server` 736 MB |
+| Free disk space on repository volume | About 315 GiB free |
+| Python | 3.9.25 in `.venv` |
+| R | 4.4.1, with packages pinned by `renv.lock` |
+| Gurobi | `gurobipy==11.0.3`; local `gurobi_cl` reports 12.0.2 |
+| CmdStan | CmdStan 2.38.0 through `cmdstanpy==1.2.0` |
+
+The local `.venv` is a complete virtual environment. The `.venv_server`
+directory in this working copy contains a `lib/python3.9/site-packages`
+snapshot with the core packages above, including `gurobipy==11.0.3`, but it
+does not contain a `bin/python` executable or `pyvenv.cfg`. Treat
+`.venv_server` as a package snapshot, not as a portable environment. Server
+users should recreate `.venv` with `source ./setup_env.sh server`.
+
+### Author Slurm Configuration
+
+The completed heavy-stage outputs were produced with the Slurm backend driven
+by `pysrc/scripts/run_replication.py`. Slurm batch scripts are submitted
+inline by `sbatch` rather than written as separate `.sh` files. The exact
+requested resources are visible in `slurm_batch_command()` and are equivalent
+to:
+
+```bash
+#SBATCH --time=1-11:00:00
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=32G
+```
+
+The account and partition are intentionally supplied by the user or environment:
+
+```bash
+REPLICATION_SLURM_ACCOUNT="pi-<pi_account_name>"
+REPLICATION_SLURM_PARTITION="<partition-name>"
+```
+
+On the Midway server, the module setup used by `setup_env.sh server` is:
 
 ```bash
 module load python/anaconda-2022.05 gurobi/11.0 gcc/12.2.0
+```
+
+The default Slurm grouping settings are:
+
+| Setting | Default |
+| --- | --- |
+| Nodes per job | 1 |
+| CPUs per task | 8 |
+| Memory per job | 32G |
+| Wall time per job | 1 day and 11 hours |
+| Commands per grouped Slurm job | 10 |
+| Minimum commands before grouping | 100 |
+| MPC special-case grouping | One replication command per Slurm job for the large MPC steps |
+
+Use `--dry-run` before submission to print the planned local or Slurm commands.
+Use `--slurm-time`, `--slurm-cpus`, `--slurm-mem`, `--slurm-account`, and
+`--slurm-partition` to override the defaults without editing source files.
+
+### Runtime, Memory, And Storage
+
+With enough Slurm parallelism, the observed end-to-end runtime is roughly two
+days after data and environments are ready. A one-worker local run is not
+recommended for the heavy HMC/MPC stages. The completed logs imply more than
+2,400 accumulated job-hours for the MPC Figure 14 simulation jobs alone.
+
+Plan for at least 100 GB of working storage if the full `data/`, `output/`,
+`plots/`, `job-outs/`, local virtual environments, and generated results are
+kept together. The final JPE archive should exclude `.venv/`, `.venv_server/`,
+`renv/library/`, and CmdStan build caches because they are platform-specific
+and regenerated by the setup scripts.
+
+## Notes For Linux Users
+
+The JPE replicator used a Nuvolos Ubuntu 24.04.1 LTS server with AMD EPYC
+9354P, 32 cores, and 64 GB RAM, using Python 3.11 and R 4.5.3 during the
+environment-rebuild attempts. The package ultimately ran after installing a
+consistent Linux geospatial and compiler stack. These notes are not required
+on macOS, but they are useful when `renv::restore()` fails on Linux.
+
+Set the Gurobi license before setup:
+
+```bash
+export GRB_LICENSE_FILE=/path/to/gurobi.lic
+```
+
+If the virtual environment has stale symlinks or permission problems:
+
+```bash
+rm -rf .venv
+chmod +x ./setup_env.sh
+./setup_env.sh local
+```
+
+A conda-forge environment that provides the support libraries can be created
+with:
+
+```bash
+conda create -n amazon-carbon -c conda-forge python=3.11 "r-base=4.4.*" r-essentials imagemagick pkg-config
+conda activate amazon-carbon
+conda install -c conda-forge nlopt cmake pkg-config -y
+conda install -c conda-forge udunits2 expat -y
+conda install -c conda-forge "gdal=3.8.5" "libgdal=3.8.5" geos proj proj-data sqlite libspatialite -y
+conda install -c conda-forge compilers libstdcxx-ng libgcc-ng sysroot_linux-64 make -y
+```
+
+Export GDAL and PROJ data paths if `sf` cannot find coordinate-transform data:
+
+```bash
+export PROJ_LIB=$CONDA_PREFIX/share/proj
+export PROJ_DATA=$CONDA_PREFIX/share/proj
+export GDAL_DATA=$CONDA_PREFIX/share/gdal
+```
+
+If `systemfonts` or `ragg` fail to compile because of missing `uint32_t` or
+strict C++ conversions, create `~/.R/Makevars` with:
+
+```bash
+mkdir -p ~/.R
+cat > ~/.R/Makevars <<'EOF'
+CXXFLAGS += -include cstdint -fpermissive
+CXX11FLAGS += -include cstdint -fpermissive
+CXX14FLAGS += -include cstdint -fpermissive
+CXX17FLAGS += -include cstdint -fpermissive
+CXX20FLAGS += -include cstdint -fpermissive
+EOF
+```
+
+If cached `stringi` packages point to missing ICU libraries, remove the stale
+renv cache entry and rerun `renv::restore()`:
+
+```bash
+rm -rf /tmp/R/renv/cache/v5/linux-ubuntu-noble/R-4.4/x86_64-conda-linux-gnu/stringi
+```
+
+If `terra` or `sf` links against an inconsistent GDAL stack, remove
+conda-installed `r-terra`, reinstall a single conda-forge GDAL stack, and then
+rerun the R restore:
+
+```bash
+conda remove r-terra -y
+conda install -c conda-forge "gdal=3.8.5" "libgdal=3.8.5" geos proj proj-data sqlite libspatialite -y
+```
+
+If CmdStan fails to build under conda because TBB cannot identify the compiler,
+build it with explicit conda paths:
+
+```bash
+cd /path/to/.cmdstan/cmdstan-2.39.0
+export CONDA_PREFIX=/path/to/conda/env
+export PATH=$CONDA_PREFIX/bin:$PATH
+export MAKE=$CONDA_PREFIX/bin/make
+export TBB_CXX_TYPE=gcc
+make build -j1
 ```
 
 ## Replication Workflow
@@ -263,7 +469,9 @@ The final JPE archive should contain the exact raw extracts used by the authors
 plus the generated processed, cleaned, and calibrated data. No confidential
 human-subject microdata are used. The data-source inventory, access notes,
 provider names, generated-file descriptions, and `.Rdata` open-format
-equivalents are documented below and in `data/codebook.csv`.
+equivalents are documented below. `data/codebook.csv` mirrors the same
+inventory in machine-readable form, but this README is the authoritative
+documentation entry point.
 After journal archiving, cite the permanent archive DOI assigned by the journal
 repository as the authoritative source for the complete replication package.
 Because the full `data/`, `output/`, and `plots/` directories can exceed 10GB,
@@ -295,6 +503,56 @@ Data sources and citations. The manuscript's Appendix A describes the data const
 | WorldClim | `data/raw/worldclim/` | Historical precipitation and temperature regressors. | Manuscript Appendix C.1 cites Fick and Hijmans (2017); raw files are WorldClim 2.1, 2.5-minute rasters. |
 | FGV IBRE | `data/raw/fgv/deflator_ipa/` | Deflator used in price preparation. | Public/third-party economic series; retain provider citation and terms. |
 | World Bank Carbon Pricing Dashboard / carbon-price files | `data/raw/worldbank/carbon_price/` | Carbon-pricing source inputs used by data-cleaning scripts and contextual outputs. | Include source files in the final archive; retain provider terms and access date when known. |
+
+### Data Documentation And Codebook
+
+This section reproduces the contents of `data/codebook.csv` so that the README
+contains the full source and generated-data inventory.
+
+| Section | Path | Provider or script | Description | Format | Notes |
+| --- | --- | --- | --- | --- | --- |
+| raw | `data/raw/esa/above_ground_biomass` | European Space Agency | Above-ground biomass raster inputs | raster | ESA Biomass CCI v3; manuscript Appendix A.2 uses 2017 data; retain access date when known |
+| raw | `data/raw/fgv/deflator_ipa` | FGV IBRE | Deflator series for real price preparation | tabular | Provider terms remain with original source |
+| raw | `data/raw/ibge` | IBGE | Municipal boundaries, Amazon biome, agricultural census, and cattle inputs | shapefile/csv/other | Cite IBGE datasets and years |
+| raw | `data/raw/ipea` | IPEA | Farm-gate price and distance-to-capital inputs | tabular | Cite IPEA source tables |
+| raw | `data/raw/mapbiomas` | MapBiomas | Land-use/cover, pasture quality, basins, and secondary vegetation age | raster/vector | MapBiomas Collection 5 in manuscript; retain access date when known |
+| raw | `data/raw/seabpr/commodity_prices` | SEAB PR DERAL | Commodity price inputs | tabular | SEAB-PR 2021 via IPEA; manuscript reports access date February 22, 2021 |
+| raw | `data/raw/seeg/emission` | SEEG | Emissions inputs | tabular | SEEG emissions; raw filename includes 2020.11.05 extract; retain access date when known |
+| raw | `data/raw/worldbank` | World Bank | Carbon-price, emissions, and GDP inputs | tabular | Metadata for Figure 1 is in `replication/figure1/documentation` |
+| raw | `data/raw/worldclim` | WorldClim | Temperature and precipitation rasters | raster | WorldClim 2.1, 2.5-minute rasters; cite Fick and Hijmans 2017 |
+| processed | `data/processed` | `rsrc/processing/_masterfile.R` | Intermediate municipal, pixel, biomass, land-use, emissions, and raster summaries | mixed | Generated from raw inputs |
+| clean | `data/clean` | `rsrc/cleaning/_masterfile.R` | Cleaned source-specific R and raster objects | mixed | Generated from raw inputs |
+| calibration | `data/calibration/calibration_1043_sites.csv` | `rsrc/calibration/_masterfile.R` | Main 1043-site calibration panel | csv | Open-format companion to `calibration_1043_sites.Rdata` |
+| calibration | `data/calibration/calibration_78_sites.csv` | `rsrc/calibration/_masterfile.R` | Main 78-site calibration panel | csv | Open-format companion to `calibration_78_sites.Rdata` |
+| calibration | `data/calibration/grid_1043_sites.geojson` | `rsrc/calibration/_masterfile.R` | 1043-site spatial grid | geojson | Open spatial companion |
+| calibration | `data/calibration/grid_78_sites.geojson` | `rsrc/calibration/_masterfile.R` | 78-site spatial grid | geojson | Open spatial companion |
+| calibration | `data/calibration/productivity_params_1043.csv` | `rsrc/calibration/_masterfile.R` | Fitted `gamma_fit` and `theta_fit` values for 1043 sites | csv | Model input |
+| calibration | `data/calibration/productivity_params_78.csv` | `rsrc/calibration/_masterfile.R` | Fitted `gamma_fit` and `theta_fit` values for 78 sites | csv | Model input |
+| calibration | `data/calibration/distribution_parameters_all_1043.csv` | `rsrc/calibration/_masterfile.R` | Distribution parameter summaries for 1043 sites | csv | Model input |
+| calibration | `data/calibration/distribution_parameters_all_78.csv` | `rsrc/calibration/_masterfile.R` | Distribution parameter summaries for 78 sites | csv | Model input |
+| derived | `replication/derived` | `pysrc/replication` | Output-derived paper-number and price CSVs | csv | Generated during post-processing |
+| raw | `replication/figure1/reference` | Fatos da Amazonia 2021 / Amazonia 2030 | Brazilian Amazon point used in Figure 1 | script constants/source note | Manuscript Figure 1 cites Fatos da Amazonia 2021 and www.amazonia2030.org |
+| raw | `data/raw/mapbiomas/basin` | ANA / PNRH via MapBiomas | National Water Resources Plan basin layers used for basin random effects | shapefile | Manuscript Appendix C.1 cites level-2 ANA 2006 sub-basins available through MapBiomas |
+
+### Source Access Conditions
+
+This table reproduces the source-level access and redistribution notes tracked
+in `data/source_permissions.csv`.
+
+| Source | Package locations | Access date or version | Redistribution status and notes |
+| --- | --- | --- | --- |
+| World Bank World Development Indicators and Carbon Pricing Dashboard | `data/raw/worldbank/`; `replication/figure1/input/` | Figure 1 World Bank data downloaded March 2021; retain exact raw-file metadata for other extracts | Public source; include exact archived extract in JPE package subject to World Bank terms. Used for GDP, emissions, and carbon-price contextual inputs. |
+| Climate Watch / World Resources Institute | `replication/figure1/input/`; `data/raw/worldbank/emission_kuznets/` | Retain exact downloaded extract and metadata in final archive | Public source; final deposit should confirm current provider terms before publication. Used with World Bank inputs for Figure 1 emissions context. |
+| Amazonia 2030 / Fatos da Amazonia 2021 | `replication/figure1/reference/` | 2021 report cited in manuscript | Public source; final deposit should confirm redistribution permission or cite source files as archived reference material. |
+| MapBiomas Collection 5 and related products | `data/raw/mapbiomas/` | Collection 5 identified in manuscript; retain raw-file metadata in final archive | Public source; final deposit should verify MapBiomas terms and cite Collection 5. |
+| ANA PNRH basin layers distributed through MapBiomas | `data/raw/mapbiomas/basin/` | ANA 2006 level-2 sub-basins noted in manuscript Appendix C.1 | Public administrative/geographic source; final deposit should verify provider terms. |
+| ESA Biomass Climate Change Initiative | `data/raw/esa/above_ground_biomass/` | Biomass_cci v3; 2017 data used in manuscript Appendix A.2 | Public scientific data; include exact archived extract subject to ESA CCI data policy. Cite DOI 10.5285/5f331c418e9f4935b8eb1b836f8a91b8. |
+| SEEG emissions and removals data | `data/raw/seeg/emission/` | Raw filename records 2020.11.05 extract | Public source; final deposit should verify SEEG terms and citation requirements. |
+| IBGE 2017 Agricultural Census and geographies | `data/raw/ibge/` | 2017 Agricultural Census; Tables 6882 and 6911 cited in manuscript | Public Brazilian statistical/geographic data; final deposit should verify provider terms. |
+| SEAB-PR / DERAL commodity prices via IPEA | `data/raw/seabpr/commodity_prices/`; `data/raw/ipea/farm_gate_price/` | Manuscript reports IPEA access date February 22, 2021 | Public source; final deposit should verify IPEA and SEAB-PR terms. |
+| IPEA distance-to-capital table | `data/raw/ipea/distance_to_capital/` | Raw filename records 2023-08-21 extract | Public source; final deposit should verify IPEA terms. |
+| WorldClim 2.1 | `data/raw/worldclim/` | WorldClim 2.1; 2.5-minute historical rasters | Public climate data; final deposit should verify WorldClim terms. Cite Fick and Hijmans 2017. |
+| FGV IBRE deflator series | `data/raw/fgv/deflator_ipa/` | Retain exact raw-file metadata in final archive | Public/third-party economic series; final deposit should verify provider terms. |
 
 ### Data References
 
@@ -362,7 +620,33 @@ in `data/source_permissions.csv`.
   note: retain exact downloaded extracts and metadata under `replication/figure1/`
   and `data/raw/worldbank/`.
 
-Generated data and metadata. The archive includes `data/processed/`, `data/clean/`, and `data/calibration/` as generated analysis inputs. Some R scripts read `.Rdata` files directly. Where practical, the package includes open-format companions: for example, `calibration_1043_sites.Rdata` has `calibration_1043_sites.csv` and `grid_1043_sites.geojson`; `calibration_78_sites.Rdata` has `calibration_78_sites.csv` and `grid_78_sites.geojson`; carbon and productivity calibration objects have `gamma_fit_*.geojson`, `theta_fit_*.geojson`, and related CSV files. The machine-readable source inventory is in `data/codebook.csv`; source access and redistribution-review notes are in `data/source_permissions.csv`; and final archive inclusion/exclusion decisions are summarized in `replication/package_manifest.csv`.
+Generated data and metadata. The archive includes `data/processed/`, `data/clean/`, and `data/calibration/` as generated analysis inputs. Some R scripts read `.Rdata` files directly. Where practical, the package includes open-format companions: for example, `calibration_1043_sites.Rdata` has `calibration_1043_sites.csv` and `grid_1043_sites.geojson`; `calibration_78_sites.Rdata` has `calibration_78_sites.csv` and `grid_78_sites.geojson`; carbon and productivity calibration objects have `gamma_fit_*.geojson`, `theta_fit_*.geojson`, and related CSV files. Machine-readable mirrors are in `data/codebook.csv` and `data/source_permissions.csv`; final archive inclusion/exclusion decisions are summarized in `replication/package_manifest.csv`.
+
+Main calibration variables. `data/calibration/calibration_1043_sites.csv` and
+`data/calibration/calibration_78_sites.csv` contain the site-level analysis
+variables used by the model and post-processing scripts.
+
+| Variable or pattern | Meaning |
+| --- | --- |
+| `id` | Site identifier. |
+| `share_agricultural_use_*`, `share_forest_*`, `share_other_*` | Land-cover shares by year. |
+| `site_area_ha` | Site area in hectares. |
+| `share_amazon_biome`, `area_amazon_biome` | Amazon biome share and area. |
+| `z_1995`, `z_2008`, `z_2017` | Calibrated state variables derived from agricultural-use area. |
+| `zbar_1995`, `zbar_2008`, `zbar_2017` | Site-level benchmark land/carbon-stock quantities. |
+| `gamma`, `gamma_fit` | Carbon recovery or sequestration response parameters and fitted values. |
+| `theta`, `theta_fit` | Agricultural productivity parameters and fitted values. |
+| `x_1995`, `x_2008`, `x_2017` | Forest carbon-stock allocation variables. |
+| `alpha` | Carbon accumulation speed parameter. |
+| `delta` | Discount rate used in the calibration and value calculations; default is 0.02. |
+| `kappa` | Net emissions conversion factor. |
+| `zeta`, `zeta_alt` | Adjustment-cost calibration values. |
+| `mean_pa_2017` | Agricultural price input used in calibration. |
+| `pasture_area_2017` | Pasture area input. |
+
+The analysis scripts are the authoritative source for transformations from raw
+variables to model variables. Run `./run.sh --steps stage-data --backend local`
+to rebuild generated data products from raw inputs.
 
 1. Create the data folder:
 
@@ -718,6 +1002,97 @@ outside the repository. The optional `--paper-tex` argument in the build scripts
 is only for maintainers who intentionally want to refresh
 `replication/paper_figure_inputs.csv`.
 
+## Output Manifest: Tables And Figures
+
+The JPE report noted that the README should identify which programs generate
+the paper tables and figures. The generated audit CSVs
+`replication/results_in_paper_figure_manifest.csv`,
+`replication/results_in_paper_table_manifest.csv`, and
+`replication/paper_numbers_missing_summary.csv` contain file-level manifests;
+the table below records the program and line-number mapping checked by JPE.
+
+| Exhibit | Program | Line number(s) | JPE check |
+| --- | --- | --- | --- |
+| Figure 1 | `pysrc/scripts/figure1.py` | 166 | Reproduced |
+| Figure 2 | `rsrc/analysis/carbon_capture_curves/02_analysis.R` | 68 | Reproduced |
+| Figure 3a | `rsrc/analysis/calibration_maps_1043_sites.R` | 104 | Reproduced |
+| Figure 3b | `rsrc/analysis/calibration_maps_1043_sites.R` | 195 | Reproduced |
+| Figure 4a | `rsrc/analysis/calibration_maps_1043_sites.R` | 225 | Reproduced |
+| Figure 4b | `rsrc/analysis/calibration_maps_1043_sites.R` | 246 | Reproduced |
+| Figure 5a | `pysrc/analysis/figures.py` | 116 | Reproduced |
+| Figure 5b | `pysrc/analysis/figures.py` | 161 | Reproduced |
+| Figure 6 | `pysrc/analysis/figures.py` | 557 | Reproduced |
+| Figure 7 | `rsrc/analysis/map_1043_det.R` | 305 | Reproduced |
+| Figure 8 | `rsrc/analysis/map_1043_det.R` | 353 | Reproduced |
+| Figure 9a | `pysrc/analysis/figures.py` | 374 | Reproduced |
+| Figure 9b | `pysrc/analysis/figures.py` | 313 | Reproduced |
+| Figure 9c | `pysrc/analysis/figures.py` | 404 | Reproduced |
+| Figure 9d | `pysrc/analysis/figures.py` | 344 | Reproduced |
+| Figure 10 | `pysrc/analysis/map.py` | 114 | Reproduced |
+| Figure 11 | `pysrc/analysis/figures.py` | 482 | Reproduced; minor y-axis scale difference noted by JPE |
+| Figure 12a | `pysrc/analysis/map.py` | 114 | Reproduced |
+| Figure 12b | `pysrc/analysis/map.py` | 114 | Reproduced |
+| Figure 13a | `pysrc/analysis/figures.py` | 483 | Reproduced |
+| Figure 13b | `pysrc/analysis/figures.py` | 483 | Reproduced |
+| Figure 14a | `pysrc/scripts/mpc_trajectory.py` | 117 | Reproduced |
+| Figure 14b | `pysrc/scripts/mpc_trajectory.py` | 117 | Reproduced |
+| Figure 15a | `pysrc/scripts/price_estimation.py` | 130 | Reproduced |
+| Figure 15b | `pysrc/scripts/price_estimation.py` | 130 | Reproduced |
+| Figure 16a | `rsrc/analysis/map_kl.R` | 352 | Reproduced |
+| Figure 16b | `rsrc/analysis/map_kl.R` | 366 | Reproduced |
+| Figure 16c | `rsrc/analysis/map_kl.R` | 359 | Reproduced |
+| Figure 16d | `rsrc/analysis/map_kl.R` | 373 | Reproduced |
+| Figure 17a | `pysrc/analysis/figures.py` | 374 | Reproduced |
+| Figure 17b | `pysrc/analysis/figures.py` | 313 | Reproduced |
+| Figure 17c | `pysrc/analysis/figures.py` | 404 | Reproduced |
+| Figure 17d | `pysrc/analysis/figures.py` | 344 | Reproduced |
+| Figure 18a | `pysrc/analysis/figures.py` | 374 | Reproduced |
+| Figure 18b | `pysrc/analysis/figures.py` | 313 | Reproduced |
+| Figure 18c | `pysrc/analysis/figures.py` | 404 | Reproduced |
+| Figure 18d | `pysrc/analysis/figures.py` | 344 | Reproduced |
+| Figure 19 | `rsrc/analysis/map_1043_hmc_xi1.R` | 317 | Reproduced |
+| Figure 20 | `rsrc/analysis/map_1043_hmc_xi05.R` | 298 | Reproduced |
+| Figure 21a | `pysrc/scripts/bayesian_R2.py` | 70 | Reproduced |
+| Figure 21b | `pysrc/scripts/bayesian_R2.py` | 108 | Reproduced |
+| Table 1 | `pysrc/replication/derive_carbon_prices.py` | 275 | Reproduced |
+| Table 2 | `pysrc/analysis/tables.py` | 136 | Reproduced |
+| Table 3 | `pysrc/analysis/tables.py` | 253 | Reproduced |
+| Table 4 | `pysrc/analysis/tables.py` | 454 | Reproduced |
+| Table 5 | `pysrc/replication/derive_carbon_prices.py` | 275 | Reproduced |
+| Table 6 | `pysrc/mpc/mpc_compute_day0.py` | 462 | Reproduced |
+| Table 7 | `pysrc/replication/derive_mpc_transition_probabilities.py` | 305 | Reproduced |
+| Table 8 | `pysrc/mpc/mpc_compute_day0.py` | 462 | Reproduced |
+| Table 9 | `pysrc/replication/derive_mpc_transition_probabilities.py` | 305 | Reproduced |
+| Table 10 | `pysrc/scripts/price_estimation.py` | 263 | Reproduced |
+| Table 11 | `pysrc/scripts/price_estimation.py` | 267 | Reproduced |
+| Table 12 | `pysrc/mpc/mpc_compute_day0.py` | 462 | Reproduced |
+| Table 13 | `pysrc/analysis/tables.py` | 136 | Reproduced |
+| Table 14 | `pysrc/analysis/tables.py` | 258 | Reproduced |
+| Table 15 | `pysrc/analysis/tables.py` | 258 | Reproduced |
+| Table 16 | `pysrc/analysis/tables.py` | 454 | Reproduced |
+| Table 17 | `pysrc/analysis/tables.py` | 454 | Reproduced |
+| Table 18 | `pysrc/mpc/mpc_compute_day0.py`; `pysrc/mpc/mpc_compute.py` | 462; 178 | Reproduced |
+| Table 19 | `pysrc/mpc/mpc_compute_day0.py` | 462 | Reproduced |
+| Table 20 | `pysrc/replication/derive_mpc_transition_probabilities.py` | 305 | Reproduced |
+| Table 21 | `pysrc/mpc/mpc_compute_day0.py` | 462 | Reproduced |
+| Table 22 | `pysrc/replication/derive_mpc_transition_probabilities.py` | 305 | Reproduced |
+| Table 23 | `pysrc/sampling/baseline.py` | 127 | Reproduced |
+| Table 24 | `pysrc/sampling/baseline.py` | 116 | Reproduced |
+| Table 25 | `pysrc/sampling/baseline.py` | 149 | Reproduced |
+
+## In-Text Numbers Not Tied To Tables Or Figures
+
+The JPE report identified five in-text items that were not located in the
+existing code description. The current package status is:
+
+| Manuscript location | Number or claim | Current README mapping |
+| --- | --- | --- |
+| Page 17, Footnote 28 | `R-squared = 0.66` | Added by Jose, we don't have the source to this. |
+| Page 18 | `correlation = -0.27` | Verified from `data/calibration/productivity_params_1043.csv`: the Pearson correlation between `gamma_fit` and `theta_fit` is -0.2721. Recompute with `python -c "import pandas as pd; d=pd.read_csv('data/calibration/productivity_params_1043.csv'); print(d['gamma_fit'].corr(d['theta_fit']))"`. |
+| Page 24, Footnote 35 | Future trajectories do not change much when moving from 2 percent to 3 percent | The opt-in deterministic sensitivity step compares the baseline `delta=0.02` trajectory with `delta=0.03` while leaving paper tables and figures unchanged: `./run.sh --steps deterministic-delta-sensitivity --backend local`. It writes `replication/derived/deterministic_delta_sensitivity.csv` and `replication/derived/deterministic_delta_sensitivity_trajectories.csv`. |
+| Page 38 | `b = 25`, `b_f = .15b`, `tau_f = 15`, no defection in 100 years | Verified by the time-consistency output. The implementation uses `total_transfer=25.0`, `bf=3.75`, and `b=21.25` in `pysrc/scripts/time_consistency.py` lines 37-38. Run `python pysrc/scripts/time_consistency.py --bf 3.75 --sites 1043`; the row with `tau_f=15` in `output/time_consistency/bf_3p75/time_consistency_summary.csv` has `never_defects=True` and blank first-defection-year columns. |
+| Page 39, Footnote 43 | Report lists this as "same" | Added by Jose, we don't have the source to this. |
+
 ### Step 5. Logs, Parallelism, And Dry Runs
 
 Local and Slurm driver logs are saved under `job-outs/`, grouped first by
@@ -808,6 +1183,7 @@ derive-prices-det
 derive-prices-hmc
 derive-prices-mpc
 deterministic
+deterministic-delta-sensitivity
 time-consistency
 hmc-sampling
 hmc-neutral-sampling
