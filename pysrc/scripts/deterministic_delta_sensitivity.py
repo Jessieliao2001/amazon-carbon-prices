@@ -365,14 +365,14 @@ def trajectory_rows(
     ]
 
 
-def max_abs_percent_change(group: pd.DataFrame, base_col: str, sensitivity_col: str) -> float:
+def average_abs_percent_change(group: pd.DataFrame, base_col: str, sensitivity_col: str) -> float:
     base = pd.to_numeric(group[base_col], errors="coerce")
     sensitivity = pd.to_numeric(group[sensitivity_col], errors="coerce")
     valid = base.notna() & sensitivity.notna() & (base.abs() > 1e-12)
     if not valid.any():
         return np.nan
     percent_change = (sensitivity[valid] - base[valid]) / base[valid] * 100
-    return float(percent_change.abs().max())
+    return float(percent_change.abs().mean())
 
 
 def latex_percent(value: float) -> str:
@@ -426,22 +426,22 @@ def write_latex_comparison_table(
                     f"${latex_number(row['base_pee'], 1)}"
                     rf"\to {latex_number(row['sensitivity_pee'], 1)}$"
                 ),
-                r"max \% change in $Z_t$": latex_percent(
-                    max_abs_percent_change(
+                r"average \% change in $Z_t$": latex_percent(
+                    average_abs_percent_change(
                         group,
                         "base_z_share_pct",
                         "sensitivity_z_share_pct",
                     )
                 ),
-                r"max \% change in capture $X_t$": latex_percent(
-                    max_abs_percent_change(
+                r"average \% change in capture $X_t$": latex_percent(
+                    average_abs_percent_change(
                         group,
                         "base_capture_gt",
                         "sensitivity_capture_gt",
                     )
                 ),
-                r"max \% change in net transfers": latex_percent(
-                    max_abs_percent_change(
+                r"average \% change in net transfers": latex_percent(
+                    average_abs_percent_change(
                         group,
                         "base_net_transfer",
                         "sensitivity_net_transfer",
