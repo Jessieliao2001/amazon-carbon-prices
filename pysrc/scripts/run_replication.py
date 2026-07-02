@@ -254,7 +254,8 @@ def shadow_price_commands(kind: str = "all") -> list[list[str]]:
 
 def shadow_price_det_delta_sensitivity_commands() -> list[list[str]]:
     commands: list[list[str]] = []
-    for run_id in range(50, 81):
+    # shadow_price.py maps run_id to P^ee by dividing by 10.
+    for run_id in range(45, 61):
         commands.append(
             [
                 PY,
