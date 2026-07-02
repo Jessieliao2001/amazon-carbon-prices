@@ -93,7 +93,7 @@ heavy MPC stage would take much longer if run strictly serially.
 | --- | --- | --- | --- | --- | --- |
 | `stage-data` | R, Python | Yes for raw data processing; Python only for Figure 1 | Mostly serial | About 4 hours | Builds `data/processed/`, `data/clean/`, `data/calibration/`, and Figure 1. |
 | `stage-hmm` | Python, CmdStan | No | Partly parallel | About 1.5 hours | Price estimation, baseline sampling summaries, Bayesian R2. |
-| `stage-deterministic` | Python, Gurobi, R maps | R only for maps | Parallel shadow-price jobs | About 2-3 hours | Deterministic shadow prices, deterministic tables, maps. |
+| `stage-deterministic` | Python, Gurobi, R maps | R only for maps | Parallel shadow-price jobs | About 2-3 hours plus sensitivity jobs | Deterministic shadow prices, deterministic tables, `delta=0.03` sensitivity trajectories, and maps. |
 | `stage-time-consistency` | Python, Gurobi | No | Two independent jobs | About 7.3 hours | Runs `bf=3.75` and `bf=5`. |
 | `stage-hmc` | Python, CmdStan, Gurobi, R maps | R only for maps | Highly parallel | About 16 hours | Finite-`xi` shadow prices and HMC sampling are the bottlenecks. |
 | `stage-mpc` | Python, Gurobi | No | Highly parallel | About 13-14 hours | MPC shadow-price grid and Figure 14 simulation jobs dominate. |
@@ -1089,7 +1089,7 @@ existing code description. The current package status is:
 | --- | --- | --- |
 | Page 17, Footnote 28 | `R-squared = 0.66` | Added by Jose, we don't have the source to this. |
 | Page 18 | `correlation = -0.27` | Verified from `data/calibration/productivity_params_1043.csv`: the Pearson correlation between `gamma_fit` and `theta_fit` is -0.2721. Recompute with `python -c "import pandas as pd; d=pd.read_csv('data/calibration/productivity_params_1043.csv'); print(d['gamma_fit'].corr(d['theta_fit']))"`. |
-| Page 24, Footnote 35 | Future trajectories do not change much when moving from 2 percent to 3 percent | The opt-in deterministic sensitivity step first re-solves deterministic `P^ee` under `delta=0.03`, then compares trajectories using the baseline `P^ee_{0.02}+b` and sensitivity `P^ee_{0.03}+b`: `./run.sh --steps deterministic-delta-sensitivity --backend local`. It writes `replication/derived/deterministic_delta_sensitivity_prices.csv`, `replication/derived/deterministic_delta_sensitivity.csv`, and `replication/derived/deterministic_delta_sensitivity_trajectories.csv`. |
+| Page 24, Footnote 35 | Future trajectories do not change much when moving from 2 percent to 3 percent | `stage-deterministic` now re-solves deterministic `P^ee` under `delta=0.03` with one parallel job per candidate price before the `maps` step, derives the selected price, then compares trajectories using baseline `P^ee_{0.02}+b` and sensitivity `P^ee_{0.03}+b`: `./run.sh --steps stage-deterministic --backend slurm --slurm-account <account>`. It writes `replication/derived/deterministic_delta_sensitivity_price_candidates.csv`, `replication/derived/deterministic_delta_sensitivity_prices.csv`, `replication/derived/deterministic_delta_sensitivity.csv`, and `replication/derived/deterministic_delta_sensitivity_trajectories.csv`. |
 | Page 38 | `b = 25`, `b_f = .15b`, `tau_f = 15`, no defection in 100 years | Verified by the time-consistency output. The implementation uses `total_transfer=25.0`, `bf=3.75`, and `b=21.25` in `pysrc/scripts/time_consistency.py` lines 37-38. Run `python pysrc/scripts/time_consistency.py --bf 3.75 --sites 1043`; the row with `tau_f=15` in `output/time_consistency/bf_3p75/time_consistency_summary.csv` has `never_defects=True` and blank first-defection-year columns. |
 | Page 39, Footnote 43 | Report lists this as "same" | Added by Jose, we don't have the source to this. |
 
@@ -1177,9 +1177,11 @@ price-estimation
 baseline
 shadow-prices
 shadow-prices-det
+shadow-prices-det-delta-sensitivity
 shadow-prices-hmc
 derive-prices
 derive-prices-det
+derive-prices-det-delta-sensitivity
 derive-prices-hmc
 derive-prices-mpc
 deterministic

@@ -9,11 +9,13 @@ parser = argparse.ArgumentParser(description="shadow price calculation")
 parser.add_argument("--id",type=int,default=400)
 parser.add_argument("--xi",type=float,default=5)
 parser.add_argument("--sites",type=int,default=1043)
+parser.add_argument("--delta",type=float,default=0.02)
 args = parser.parse_args()
 seed = args.id
 seed_i = seed/10
 xi=args.xi
 num_sites=args.sites
+delta=args.delta
 
 
 def shadow_price_opt(
@@ -29,6 +31,7 @@ def shadow_price_opt(
     pa=41.11,
     pe=7.1,
     model="det",
+    delta=0.02,
 ):
     
     pa_list = load_price_data()
@@ -48,6 +51,7 @@ def shadow_price_opt(
         z0=z_1995,
         price_emissions=pe,
         price_cattle=price_cattle,
+        delta=delta,
         solver=solver,
     )
     Z = results.Z
@@ -57,7 +61,7 @@ def shadow_price_opt(
     return ratio
 
 
-def shadow_price_cal(sitenum=78, pa=41.11, solver="gurobi", model="det", xi=2, pe_low=5, pe_high=8):
+def shadow_price_cal(sitenum=78, pa=41.11, solver="gurobi", model="det", xi=2, pe_low=5, pe_high=8, delta=0.02):
     if model == "det":
         (
             zbar_1995,
@@ -84,6 +88,7 @@ def shadow_price_cal(sitenum=78, pa=41.11, solver="gurobi", model="det", xi=2, p
                     timehzn=200,
                     pa=pa,
                     pe=pe,
+                    delta=delta,
                 )
                 for pe in pe_values
             ]
@@ -133,6 +138,7 @@ def shadow_price_cal(sitenum=78, pa=41.11, solver="gurobi", model="det", xi=2, p
                 timehzn=200,
                 pa=pa,
                 pe=pe,
+                delta=delta,
             )
             results.append(result)
         results = np.array(results)
@@ -151,11 +157,10 @@ def shadow_price_cal(sitenum=78, pa=41.11, solver="gurobi", model="det", xi=2, p
 
 
 if xi==10000:
-    min_result, hmc_1043_pe = shadow_price_cal(sitenum=num_sites, model="det", xi=xi,solver='gurobi',pe_low=seed_i, pe_high=(seed_i+0.01))
+    min_result, hmc_1043_pe = shadow_price_cal(sitenum=num_sites, model="det", xi=xi,solver='gurobi',pe_low=seed_i, pe_high=(seed_i+0.01), delta=delta)
     print("min_result", min_result, "min_pe", hmc_1043_pe)
 else:
-    min_result, hmc_1043_pe = shadow_price_cal(sitenum=num_sites, model="hmc", xi=xi,solver='gurobi',pe_low=seed_i, pe_high=(seed_i+0.01))
+    min_result, hmc_1043_pe = shadow_price_cal(sitenum=num_sites, model="hmc", xi=xi,solver='gurobi',pe_low=seed_i, pe_high=(seed_i+0.01), delta=delta)
     print("min_result", min_result, "min_pe", hmc_1043_pe)
-
 
 

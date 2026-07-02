@@ -22,13 +22,8 @@ import matplotlib.pyplot as plt
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from pysrc.optimization import PlannerSolution, solve_planner_problem
-from pysrc.replication.parameters import CarbonPriceKey, carbon_price
-from pysrc.services.data_service import (
-    load_price_data,
-    load_productivity_params,
-    load_site_data,
-    load_site_data_1995,
-)
+from pysrc.replication.parameters import CarbonPriceKey, carbon_price, load_carbon_prices, normalize_xi
+from pysrc.services.data_service import load_productivity_params, load_site_data
 from pysrc.services.file_service import get_path
 
 
@@ -36,13 +31,6 @@ from pysrc.services.file_service import get_path
 class TrajectoryMetrics:
     z_share_pct: np.ndarray
     capture_gt: np.ndarray
-
-
-@dataclass(frozen=True)
-class CarbonPriceSearch:
-    pee: float
-    metric: float
-    candidates: pd.DataFrame
 
 
 def delta_slug(delta: float) -> str:
@@ -86,98 +74,29 @@ def save_solution(solution: PlannerSolution, output_dir: Path) -> None:
     np.savetxt(output_dir / "V.txt", solution.V, delimiter=",")
 
 
-def price_grid(low: float, high: float, step: float) -> np.ndarray:
-    if step <= 0:
-        raise ValueError("--price-step must be positive.")
-    if high < low:
-        raise ValueError("--price-high must be greater than or equal to --price-low.")
-    count = int(np.floor((high - low) / step + 0.5)) + 1
-    values = low + step * np.arange(count)
-    return np.round(values, 10)
+def carbon_price_with_metric(key: CarbonPriceKey, path: Path) -> tuple[float, float]:
+    df = load_carbon_prices(path)
+    mask = (df["context"] == key.context) & (df["model"] == key.model)
+    if key.sites is not None and "sites" in df.columns:
+        mask &= df["sites"].fillna(-1).astype(int) == int(key.sites)
+    if "xi" in df.columns:
+        mask &= df["xi"] == normalize_xi(key.xi)
+    if key.price_model is not None and "price_model" in df.columns:
+        mask &= df["price_model"].fillna("") == key.price_model
 
-
-def deterministic_shadow_price_ratio(
-    *,
-    sites: int,
-    pe: float,
-    pa: float,
-    delta: float,
-    solver: str,
-    time_horizon: int,
-) -> float:
-    if time_horizon < 13:
-        raise ValueError("--price-time-horizon must be at least 13.")
-    (
-        zbar_1995,
-        z_1995,
-        forest_area_1995,
-        z_2008,
-        theta,
-        gamma,
-    ) = load_site_data_1995(sites)
-    pa_list = load_price_data()
-    if len(pa_list) >= time_horizon:
-        price_cattle = pa_list[:time_horizon]
-    else:
-        price_cattle = np.concatenate((pa_list, np.full(time_horizon - len(pa_list), pa)))
-    x0_vals_1995 = gamma * forest_area_1995
-    solution = solve_planner_problem(
-        time_horizon=time_horizon,
-        theta=theta,
-        gamma=gamma,
-        x0=x0_vals_1995,
-        zbar=zbar_1995,
-        z0=z_1995,
-        price_emissions=pe,
-        price_cattle=price_cattle,
-        delta=delta,
-        solver=solver,
-    )
-    z_2008_agg = np.sum(z_2008) / 1e9
-    return (np.sum(solution.Z[13]) - z_2008_agg) / z_2008_agg
-
-
-def search_deterministic_carbon_price(
-    *,
-    sites: int,
-    pa: float,
-    delta: float,
-    solver: str,
-    price_low: float,
-    price_high: float,
-    price_step: float,
-    time_horizon: int,
-) -> CarbonPriceSearch:
-    rows = []
-    for pe in price_grid(price_low, price_high, price_step):
-        print(
-            "Solving deterministic shadow price search: "
-            f"sites={sites}, pe={pe:g}, delta={delta:g}"
-        )
-        metric = deterministic_shadow_price_ratio(
-            sites=sites,
-            pe=float(pe),
-            pa=pa,
-            delta=delta,
-            solver=solver,
-            time_horizon=time_horizon,
-        )
-        rows.append(
-            {
-                "sites": sites,
-                "delta": delta,
-                "pee": float(pe),
-                "metric": metric,
-                "abs_metric": abs(metric),
-            }
-        )
-    candidates = pd.DataFrame(rows)
-    best = candidates.sort_values(["abs_metric", "pee"], ascending=[True, True]).iloc[0]
-    return CarbonPriceSearch(
-        pee=float(best["pee"]),
-        metric=float(best["metric"]),
-        candidates=candidates,
-    )
+    matches = df.loc[mask]
+    if matches.empty:
+        available = df[
+            [c for c in ["context", "model", "sites", "xi", "price_model", "pee"] if c in df]
+        ].to_dict("records")
+        raise KeyError(f"No sensitivity carbon price for {key}. Available keys: {available}")
+    if len(matches) > 1:
+        matches = matches.sort_values(["abs_metric", "pee"], na_position="last")
+    row = matches.iloc[0]
+    metric = np.nan
+    if "metric" in row and pd.notna(row["metric"]):
+        metric = float(row["metric"])
+    return float(row["pee"]), metric
 
 
 def solve_deterministic_trajectory(
@@ -434,15 +353,6 @@ def main() -> int:
     parser.add_argument("--solver", default="gurobi")
     parser.add_argument("--time-horizon", type=int, default=200)
     parser.add_argument("--years", type=int, default=50)
-    parser.add_argument("--price-low", type=float, default=5.0)
-    parser.add_argument("--price-high", type=float, default=8.0)
-    parser.add_argument("--price-step", type=float, default=0.1)
-    parser.add_argument(
-        "--price-time-horizon",
-        type=int,
-        default=200,
-        help="Optimization horizon used to re-solve P^ee under the sensitivity delta.",
-    )
     parser.add_argument(
         "--outputs-root",
         type=Path,
@@ -469,9 +379,13 @@ def main() -> int:
         ),
     )
     parser.add_argument(
-        "--prices-out",
+        "--sensitivity-prices",
         type=Path,
         default=get_path("replication", "derived", "deterministic_delta_sensitivity_prices.csv"),
+        help=(
+            "Selected delta-sensitivity carbon prices produced by "
+            "`derive-prices-det-delta-sensitivity`."
+        ),
     )
     args = parser.parse_args()
 
@@ -480,35 +394,26 @@ def main() -> int:
 
     summary_rows: list[dict[str, float]] = []
     all_trajectory_rows: list[dict[str, float]] = []
-    all_price_rows: list[pd.DataFrame] = []
     solutions_for_figures: dict[int, tuple[float, np.ndarray, dict[float, PlannerSolution]]] = {}
 
     for sites in args.sites:
         zbar, _, _ = load_site_data(sites)
-        base_pee = carbon_price(
-            CarbonPriceKey(
-                context="parameter_ambiguity",
-                model="det",
-                sites=sites,
-                xi="inf",
-            )
-        )
-        price_search = search_deterministic_carbon_price(
+        price_key = CarbonPriceKey(
+            context="parameter_ambiguity",
+            model="det",
             sites=sites,
-            pa=args.pa,
-            delta=args.sensitivity_delta,
-            solver=args.solver,
-            price_low=args.price_low,
-            price_high=args.price_high,
-            price_step=args.price_step,
-            time_horizon=args.price_time_horizon,
+            xi="inf",
         )
-        all_price_rows.append(price_search.candidates)
-        sensitivity_pee = price_search.pee
+        base_pee = carbon_price(price_key)
+        sensitivity_pee, sensitivity_price_metric = carbon_price_with_metric(
+            price_key,
+            args.sensitivity_prices,
+        )
         print(
-            "Selected deterministic sensitivity carbon price: "
-            f"sites={sites}, delta={args.sensitivity_delta:g}, "
-            f"pee={sensitivity_pee:g}, metric={price_search.metric:g}"
+            "Loaded deterministic sensitivity carbon price: "
+            f"sites={sites}, base_pee={base_pee:g}, "
+            f"sensitivity_pee={sensitivity_pee:g}, "
+            f"sensitivity_metric={sensitivity_price_metric:g}"
         )
         for transfer in args.transfers:
             base_pe = base_pee + transfer
@@ -556,7 +461,7 @@ def main() -> int:
                     sites=sites,
                     base_pee=base_pee,
                     sensitivity_pee=sensitivity_pee,
-                    sensitivity_price_metric=price_search.metric,
+                    sensitivity_price_metric=sensitivity_price_metric,
                     transfer=transfer,
                     base_delta=args.base_delta,
                     sensitivity_delta=args.sensitivity_delta,
@@ -598,14 +503,11 @@ def main() -> int:
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.trajectories_out.parent.mkdir(parents=True, exist_ok=True)
-    args.prices_out.parent.mkdir(parents=True, exist_ok=True)
     pd.DataFrame(summary_rows).to_csv(args.out, index=False)
     pd.DataFrame(all_trajectory_rows).to_csv(args.trajectories_out, index=False)
-    pd.concat(all_price_rows, ignore_index=True).to_csv(args.prices_out, index=False)
 
     print(f"Wrote {len(summary_rows)} summary rows to {args.out}")
     print(f"Wrote {len(all_trajectory_rows)} trajectory rows to {args.trajectories_out}")
-    print(f"Wrote sensitivity carbon-price candidates to {args.prices_out}")
     return 0
 
 

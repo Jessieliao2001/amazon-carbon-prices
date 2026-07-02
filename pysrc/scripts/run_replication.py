@@ -22,6 +22,7 @@ DEFAULT_PARALLEL_STEPS = {
     "baseline",
     "shadow-prices",
     "shadow-prices-det",
+    "shadow-prices-det-delta-sensitivity",
     "shadow-prices-hmc",
     "hmc-sampling",
     "mpc-prepare",
@@ -59,6 +60,8 @@ STAGE_ALIASES = {
         "shadow-prices-det",
         "derive-prices-det",
         "deterministic",
+        "shadow-prices-det-delta-sensitivity",
+        "derive-prices-det-delta-sensitivity",
         "deterministic-delta-sensitivity",
         "maps",
     ],
@@ -129,6 +132,18 @@ def base_steps() -> dict[str, list[list[str]]]:
         ],
         "derive-prices": [[PY, "pysrc/replication/derive_carbon_prices.py"]],
         "derive-prices-det": [[PY, "pysrc/replication/derive_carbon_prices.py"]],
+        "derive-prices-det-delta-sensitivity": [
+            [
+                PY,
+                "pysrc/replication/derive_carbon_prices.py",
+                "--delta",
+                "0.03",
+                "--out",
+                "replication/derived/deterministic_delta_sensitivity_prices.csv",
+                "--candidates-out",
+                "replication/derived/deterministic_delta_sensitivity_price_candidates.csv",
+            ]
+        ],
         "derive-prices-hmc": [[PY, "pysrc/replication/derive_carbon_prices.py"]],
         "derive-prices-mpc": [[PY, "pysrc/replication/derive_carbon_prices.py"]],
         "deterministic": [[PY, "pysrc/scripts/conduction_det.py"]],
@@ -234,6 +249,26 @@ def shadow_price_commands(kind: str = "all") -> list[list[str]]:
                     str(sites),
                 ]
             )
+    return commands
+
+
+def shadow_price_det_delta_sensitivity_commands() -> list[list[str]]:
+    commands: list[list[str]] = []
+    for run_id in range(50, 81):
+        commands.append(
+            [
+                PY,
+                "pysrc/bash/shadow_price.py",
+                "--id",
+                str(run_id),
+                "--xi",
+                "10000",
+                "--sites",
+                "1043",
+                "--delta",
+                "0.03",
+            ]
+        )
     return commands
 
 
@@ -581,6 +616,8 @@ def commands_for_step(step: str) -> list[list[str]]:
         return shadow_price_commands()
     if step == "shadow-prices-det":
         return shadow_price_commands("det")
+    if step == "shadow-prices-det-delta-sensitivity":
+        return shadow_price_det_delta_sensitivity_commands()
     if step == "shadow-prices-hmc":
         return shadow_price_commands("hmc")
     if step == "mpc-day0":
@@ -593,7 +630,12 @@ def commands_for_step(step: str) -> list[list[str]]:
     if step not in steps:
         available = (
             sorted(steps)
-            + ["shadow-prices", "shadow-prices-det", "shadow-prices-hmc"]
+            + [
+                "shadow-prices",
+                "shadow-prices-det",
+                "shadow-prices-det-delta-sensitivity",
+                "shadow-prices-hmc",
+            ]
             + sorted(STAGE_ALIASES)
         )
         raise KeyError(f"Unknown step `{step}`. Available steps: {available}")
@@ -1182,7 +1224,8 @@ def main() -> int:
         help=(
             "all, postprocess-only, stage-data, stage-hmm, stage-deterministic, "
             "stage-time-consistency, stage-hmc, stage-mpc, stage-postprocess, "
-            "deterministic-delta-sensitivity, or an explicit list of step names"
+            "deterministic-delta-sensitivity, "
+            "or an explicit list of step names"
         ),
     )
     parser.add_argument("--backend", choices=["local", "slurm"], default="local")

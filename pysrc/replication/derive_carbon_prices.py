@@ -20,6 +20,7 @@ MPC_HEADER_RE = re.compile(
     rf"\bxi\s+(?P<xi>{NUMBER})\s+pe\s+(?P<pee>{NUMBER})\s+model\s+(?P<model>[A-Za-z_]+)"
 )
 RATIO_RE = re.compile(rf"\bratio\s+(?P<metric>{NUMBER})")
+DEFAULT_DELTA = 0.02
 
 
 def _part_value(path: Path, prefix: str) -> str | None:
@@ -88,6 +89,13 @@ def _option_value(command: list[str], option: str) -> str | None:
     return command[index + 1]
 
 
+def _option_float(command: list[str], option: str, default: float) -> float:
+    value = _option_value(command, option)
+    if value is None:
+        return default
+    return float(value)
+
+
 def _local_driver_logs(log_root: Path) -> list[Path]:
     candidates = list(log_root.rglob("*_run.out"))
     candidates.extend(
@@ -105,6 +113,7 @@ def _shadow_row(
     text: str,
     xi: str | None,
     sites: int | None,
+    delta: float,
     source_kind: str,
 ) -> dict[str, object] | None:
     match = SHADOW_RE.search(text)
@@ -117,6 +126,7 @@ def _shadow_row(
         "model": "det" if xi == "inf" else "hmc",
         "sites": sites,
         "xi": xi,
+        "delta": delta,
         "price_model": "",
         "pee": float(match.group("pee")),
         "metric": metric,
@@ -136,6 +146,7 @@ def parse_shadow_price_logs(log_root: Path, root: Path) -> list[dict[str, object
             text=text,
             xi=_part_value(path, "xi_"),
             sites=int(_part_value(path, "sites_") or 0),
+            delta=DEFAULT_DELTA,
             source_kind="shadow_price_log",
         )
         if row is not None:
@@ -153,6 +164,7 @@ def parse_shadow_price_logs(log_root: Path, root: Path) -> list[dict[str, object
             text=text,
             xi=_option_value(command, "--xi"),
             sites=int(sites) if sites is not None else None,
+            delta=_option_float(command, "--delta", DEFAULT_DELTA),
             source_kind="shadow_price_local_log",
         )
         if row is not None:
@@ -187,6 +199,7 @@ def _parse_mpc_shadow_price_file(
                     "model": model,
                     "sites": 78,
                     "xi": current["xi"],
+                    "delta": DEFAULT_DELTA,
                     "price_model": (
                         "common_variance"
                         if model == "constrained"
@@ -243,6 +256,15 @@ def select_prices(candidates: pd.DataFrame) -> pd.DataFrame:
     return selected
 
 
+def filter_delta(candidates: pd.DataFrame, delta: float) -> pd.DataFrame:
+    if candidates.empty:
+        return candidates
+    if "delta" not in candidates.columns:
+        candidates = candidates.copy()
+        candidates["delta"] = DEFAULT_DELTA
+    return candidates.loc[candidates["delta"].astype(float).round(10) == round(delta, 10)].copy()
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
@@ -252,6 +274,15 @@ def main() -> int:
     )
     parser.add_argument("--log-root", type=Path, default=get_path("job-outs"))
     parser.add_argument("--root", type=Path, default=get_path())
+    parser.add_argument(
+        "--delta",
+        type=float,
+        default=DEFAULT_DELTA,
+        help=(
+            "Only derive prices from logs run with this discount rate. "
+            "Logs without an explicit --delta are treated as 0.02."
+        ),
+    )
     parser.add_argument("--out", type=Path, default=CARBON_PRICE_FILE)
     parser.add_argument(
         "--candidates-out",
@@ -266,6 +297,7 @@ def main() -> int:
     rows.extend(parse_shadow_price_logs(log_root, root))
     rows.extend(parse_mpc_shadow_price_logs(log_root, root))
     candidates = pd.DataFrame(rows)
+    candidates = filter_delta(candidates, args.delta)
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.candidates_out.parent.mkdir(parents=True, exist_ok=True)
