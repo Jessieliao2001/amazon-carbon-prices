@@ -1,10 +1,23 @@
 import argparse
+import os
 import sys
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
+
+cache_root = Path(tempfile.gettempdir()) / "amazon_carbon_prices_cache"
+(cache_root / "matplotlib").mkdir(parents=True, exist_ok=True)
+(cache_root / "xdg").mkdir(parents=True, exist_ok=True)
+os.environ.setdefault("MPLCONFIGDIR", str(cache_root / "matplotlib"))
+os.environ.setdefault("XDG_CACHE_HOME", str(cache_root / "xdg"))
+
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
@@ -18,6 +31,47 @@ from pysrc.services.file_service import get_path
 class TrajectoryMetrics:
     z_share_pct: np.ndarray
     capture_gt: np.ndarray
+
+
+def delta_slug(delta: float) -> str:
+    return f"delta_{delta:g}".replace("-", "m").replace(".", "p")
+
+
+def format_number(value: float) -> str:
+    return f"{value:g}"
+
+
+def solution_dir(
+    *,
+    outputs_root: Path,
+    delta: float,
+    solver: str,
+    sites: int,
+    pa: float,
+    pe: float,
+) -> Path:
+    return (
+        outputs_root
+        / delta_slug(delta)
+        / "optimization"
+        / "det"
+        / solver
+        / f"{sites}sites"
+        / f"pa_{format_number(pa)}"
+        / f"pe_{format_number(pe)}"
+    )
+
+
+def figures_dir(*, outputs_root: Path, delta: float) -> Path:
+    return outputs_root / delta_slug(delta) / "figures"
+
+
+def save_solution(solution: PlannerSolution, output_dir: Path) -> None:
+    output_dir.mkdir(parents=True, exist_ok=True)
+    np.savetxt(output_dir / "Z.txt", solution.Z, delimiter=",")
+    np.savetxt(output_dir / "X.txt", solution.X, delimiter=",")
+    np.savetxt(output_dir / "U.txt", solution.U, delimiter=",")
+    np.savetxt(output_dir / "V.txt", solution.V, delimiter=",")
 
 
 def solve_deterministic_trajectory(
@@ -53,6 +107,133 @@ def trajectory_metrics(solution: PlannerSolution, zbar: np.ndarray, years: int) 
     z_share_pct = np.sum(z, axis=1) / np.sum(zbar) * 100
     capture_gt = np.sum(x, axis=1) - np.sum(x[0])
     return TrajectoryMetrics(z_share_pct=z_share_pct, capture_gt=capture_gt)
+
+
+def plot_land_allocation_figures(
+    *,
+    sites: int,
+    pee: float,
+    delta: float,
+    outputs_root: Path,
+    zbar: np.ndarray,
+    years: int,
+    sensitivity_solutions: dict[float, PlannerSolution],
+) -> None:
+    output_dir = figures_dir(outputs_root=outputs_root, delta=delta)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    plot_transfers = [transfer for transfer in [0.0, 15.0, 25.0] if transfer in sensitivity_solutions]
+    if not plot_transfers:
+        print(f"No transfer levels available for land-allocation figures at delta={delta:g}.")
+        return
+
+    colors = {0.0: "red", 15.0: "green", 25.0: "blue"}
+    labels = {transfer: format_number(transfer) for transfer in plot_transfers}
+    metrics = {
+        transfer: trajectory_metrics(solution, zbar, years)
+        for transfer, solution in sensitivity_solutions.items()
+    }
+
+    plt.figure(figsize=(10, 6))
+    plt.plot([], [], " ", label=f"$p^{{ee}}$={format_number(pee)}       $b$")
+    for transfer in plot_transfers:
+        time = list(range(len(metrics[transfer].z_share_pct)))
+        plt.plot(
+            time,
+            metrics[transfer].z_share_pct,
+            label=labels[transfer],
+            linewidth=4,
+            color=colors.get(transfer),
+        )
+    plt.xlabel("years", fontsize=16)
+    plt.ylabel("Z(%)", fontsize=16)
+    plt.xlim(0, max(time) + 2)
+    plt.yticks([0, 5, 10, 15, 20], ["0", "5", "10", "15", "20"])
+    plt.legend(
+        loc="upper center",
+        bbox_to_anchor=(0.5, -0.15),
+        ncol=5,
+        frameon=False,
+        fontsize=16,
+    )
+    plt.savefig(
+        output_dir / f"pred_zshare_{sites}_sites_det_{delta_slug(delta)}.png",
+        format="png",
+        bbox_inches="tight",
+    )
+    plt.close()
+
+    plt.figure(figsize=(10, 6))
+    ax = plt.gca()
+    plt.plot([], [], " ", label=f"$p^{{ee}}$={format_number(pee)}       $b$")
+    for transfer in plot_transfers:
+        time = list(range(len(metrics[transfer].capture_gt)))
+        plt.plot(
+            time,
+            metrics[transfer].capture_gt,
+            label=labels[transfer],
+            linewidth=4,
+            color=colors.get(transfer),
+        )
+    ax.spines["bottom"].set_position(("data", 0))
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.xaxis.set_ticks_position("bottom")
+    ax.yaxis.set_ticks_position("left")
+    plt.xlabel("years", fontsize=18)
+    plt.ylabel("Capture (billions CO2e)", fontsize=18)
+    plt.xlim(0, max(time) + 2)
+    ax.set_xticks([10, 20, 30, 40, 50])
+    plt.legend(
+        loc="upper center",
+        bbox_to_anchor=(0.5, -0.15),
+        ncol=5,
+        frameon=False,
+        fontsize=18,
+    )
+    plt.savefig(
+        output_dir / f"plot_pred_x_{sites}_sites_det_{delta_slug(delta)}.png",
+        format="png",
+        bbox_inches="tight",
+    )
+    plt.close()
+
+
+def plot_net_transfers_figure(
+    *,
+    sites: int,
+    delta: float,
+    outputs_root: Path,
+    sensitivity_solutions: dict[float, PlannerSolution],
+    kappa: float = 2.094215255,
+) -> None:
+    output_dir = figures_dir(outputs_root=outputs_root, delta=delta)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    plot_transfers = [transfer for transfer in [15.0, 25.0] if transfer in sensitivity_solutions]
+    if not plot_transfers:
+        print(f"No transfer levels available for net-transfer figure at delta={delta:g}.")
+        return
+
+    colors = {15.0: "blue", 25.0: "red"}
+    plt.figure(figsize=(10, 6))
+    for transfer in plot_transfers:
+        solution = sensitivity_solutions[transfer]
+        x_dot = np.diff(solution.X, axis=0)
+        transfers = -transfer * (kappa * solution.Z[1:] - x_dot).sum(axis=1)
+        plt.plot(
+            transfers[:50],
+            label=f"b=${format_number(transfer)}",
+            linewidth=4,
+            color=colors.get(transfer),
+        )
+    plt.legend()
+    plt.xlabel("years")
+    plt.ylabel("Net Transfers ($ billion)")
+    plt.savefig(
+        output_dir / f"net_transfers_{sites}_sites_det_{delta_slug(delta)}.png",
+        format="png",
+        bbox_inches="tight",
+    )
+    plt.close()
 
 
 def summarize_difference(
@@ -140,6 +321,17 @@ def main() -> int:
     parser.add_argument("--time-horizon", type=int, default=200)
     parser.add_argument("--years", type=int, default=50)
     parser.add_argument(
+        "--outputs-root",
+        type=Path,
+        default=get_path("output", "delta_sensitivity"),
+        help="Root directory for delta-specific optimization outputs and figures.",
+    )
+    parser.add_argument(
+        "--skip-figures",
+        action="store_true",
+        help="Only write the CSV sensitivity summaries.",
+    )
+    parser.add_argument(
         "--out",
         type=Path,
         default=get_path("replication", "derived", "deterministic_delta_sensitivity.csv"),
@@ -160,6 +352,7 @@ def main() -> int:
 
     summary_rows: list[dict[str, float]] = []
     all_trajectory_rows: list[dict[str, float]] = []
+    solutions_for_figures: dict[int, tuple[float, np.ndarray, dict[float, PlannerSolution]]] = {}
 
     for sites in args.sites:
         zbar, _, _ = load_site_data(sites)
@@ -194,6 +387,20 @@ def main() -> int:
                 solver=args.solver,
                 time_horizon=args.time_horizon,
             )
+            save_solution(
+                sensitivity_solution,
+                solution_dir(
+                    outputs_root=args.outputs_root,
+                    delta=args.sensitivity_delta,
+                    solver=args.solver,
+                    sites=sites,
+                    pa=args.pa,
+                    pe=pe,
+                ),
+            )
+            solutions_for_figures.setdefault(sites, (pee, zbar, {}))[2][float(transfer)] = (
+                sensitivity_solution
+            )
             base = trajectory_metrics(base_solution, zbar, args.years)
             sensitivity = trajectory_metrics(sensitivity_solution, zbar, args.years)
             summary_rows.append(
@@ -218,6 +425,24 @@ def main() -> int:
                     base=base,
                     sensitivity=sensitivity,
                 )
+            )
+
+    if not args.skip_figures:
+        for sites, (pee, zbar, sensitivity_solutions) in solutions_for_figures.items():
+            plot_land_allocation_figures(
+                sites=sites,
+                pee=pee,
+                delta=args.sensitivity_delta,
+                outputs_root=args.outputs_root,
+                zbar=zbar,
+                years=args.years,
+                sensitivity_solutions=sensitivity_solutions,
+            )
+            plot_net_transfers_figure(
+                sites=sites,
+                delta=args.sensitivity_delta,
+                outputs_root=args.outputs_root,
+                sensitivity_solutions=sensitivity_solutions,
             )
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
