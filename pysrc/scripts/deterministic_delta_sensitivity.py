@@ -17,6 +17,7 @@ os.environ.setdefault("XDG_CACHE_HOME", str(cache_root / "xdg"))
 import matplotlib
 
 matplotlib.use("Agg")
+import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
@@ -65,6 +66,52 @@ def solution_dir(
 
 def figures_dir(*, outputs_root: Path, delta: float) -> Path:
     return outputs_root / delta_slug(delta) / "figures"
+
+
+def match_png_canvas_to_reference(output_path: Path, reference_path: Path) -> None:
+    if not reference_path.exists():
+        print(
+            "Reference figure is missing; leaving sensitivity figure at matplotlib size: "
+            f"{reference_path}"
+        )
+        return
+
+    image = mpimg.imread(output_path)
+    reference = mpimg.imread(reference_path)
+    source_h, source_w = image.shape[:2]
+    target_h, target_w = reference.shape[:2]
+    if (source_w, source_h) == (target_w, target_h):
+        return
+
+    if image.ndim == 2:
+        canvas = np.ones((target_h, target_w), dtype=image.dtype)
+    else:
+        canvas = np.ones((target_h, target_w, image.shape[2]), dtype=image.dtype)
+
+    copy_w = min(source_w, target_w)
+    copy_h = min(source_h, target_h)
+    source_x0 = max((source_w - target_w) // 2, 0)
+    source_y0 = max((source_h - target_h) // 2, 0)
+    target_x0 = max((target_w - source_w) // 2, 0)
+    target_y0 = max((target_h - source_h) // 2, 0)
+
+    canvas[
+        target_y0 : target_y0 + copy_h,
+        target_x0 : target_x0 + copy_w,
+        ...,
+    ] = image[
+        source_y0 : source_y0 + copy_h,
+        source_x0 : source_x0 + copy_w,
+        ...,
+    ]
+    mpimg.imsave(output_path, canvas, format="png", dpi=100)
+
+
+def save_figure_like_reference(output_path: Path, reference_path: Path, **savefig_kwargs) -> None:
+    savefig_options = {"format": "png", "dpi": 100}
+    savefig_options.update(savefig_kwargs)
+    plt.savefig(output_path, **savefig_options)
+    match_png_canvas_to_reference(output_path, reference_path)
 
 
 def save_solution(solution: PlannerSolution, output_dir: Path) -> None:
@@ -197,9 +244,9 @@ def plot_land_allocation_figures(
         frameon=False,
         fontsize=16,
     )
-    plt.savefig(
+    save_figure_like_reference(
         output_dir / f"pred_zshare_{sites}_sites_det_{delta_slug(delta)}.png",
-        format="png",
+        get_path("output", "figures", f"pred_zshare_{sites}_sites_det.png"),
         bbox_inches="tight",
     )
     plt.close()
@@ -232,9 +279,9 @@ def plot_land_allocation_figures(
         frameon=False,
         fontsize=18,
     )
-    plt.savefig(
+    save_figure_like_reference(
         output_dir / f"plot_pred_x_{sites}_sites_det_{delta_slug(delta)}.png",
-        format="png",
+        get_path("output", "figures", f"plot_pred_x_{sites}_sites_det.png"),
         bbox_inches="tight",
     )
     plt.close()
@@ -256,7 +303,7 @@ def plot_net_transfers_figure(
         return
 
     colors = {15.0: "blue", 25.0: "red"}
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(6.4, 4.8))
     for transfer in plot_transfers:
         solution = sensitivity_solutions[transfer]
         x_dot = np.diff(solution.X, axis=0)
@@ -270,10 +317,9 @@ def plot_net_transfers_figure(
     plt.legend()
     plt.xlabel("years")
     plt.ylabel("Net Transfers ($ billion)")
-    plt.savefig(
+    save_figure_like_reference(
         output_dir / f"net_transfers_{sites}_sites_det_{delta_slug(delta)}.png",
-        format="png",
-        bbox_inches="tight",
+        get_path("output", "figures", "net_transfers.png"),
     )
     plt.close()
 
