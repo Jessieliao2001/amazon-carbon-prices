@@ -287,6 +287,71 @@ def plot_land_allocation_figures(
     plt.close()
 
 
+def plot_zshare_delta_comparison_figure(
+    *,
+    sites: int,
+    base_delta: float,
+    sensitivity_delta: float,
+    outputs_root: Path,
+    zbar: np.ndarray,
+    years: int,
+    base_solutions: dict[float, PlannerSolution],
+    sensitivity_solutions: dict[float, PlannerSolution],
+) -> None:
+    output_dir = figures_dir(outputs_root=outputs_root, delta=sensitivity_delta)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    plot_transfers = [
+        transfer
+        for transfer in [0.0, 25.0]
+        if transfer in base_solutions and transfer in sensitivity_solutions
+    ]
+    if not plot_transfers:
+        print(
+            "No matching transfer levels available for Z-share delta comparison "
+            f"at delta={sensitivity_delta:g}."
+        )
+        return
+
+    colors = {0.0: "red", 25.0: "blue"}
+    delta_specs = [
+        (base_delta, "-", base_solutions),
+        (sensitivity_delta, "--", sensitivity_solutions),
+    ]
+
+    plt.figure(figsize=(10, 6))
+    for transfer in plot_transfers:
+        for delta, linestyle, solutions in delta_specs:
+            metrics = trajectory_metrics(solutions[transfer], zbar, years, transfer)
+            time = list(range(len(metrics.z_share_pct)))
+            plt.plot(
+                time,
+                metrics.z_share_pct,
+                label=rf"$b={format_number(transfer)}, \delta={delta:.2f}$",
+                linewidth=4,
+                linestyle=linestyle,
+                color=colors.get(transfer),
+            )
+
+    plt.xlabel("years", fontsize=16)
+    plt.ylabel("Z(%)", fontsize=16)
+    plt.xlim(0, max(time) + 2)
+    plt.yticks([0, 5, 10, 15, 20], ["0", "5", "10", "15", "20"])
+    plt.legend(
+        loc="upper center",
+        bbox_to_anchor=(0.5, -0.15),
+        ncol=2,
+        frameon=False,
+        fontsize=16,
+    )
+    save_figure_like_reference(
+        output_dir
+        / f"pred_zshare_delta_comparison_{sites}_sites_det_{delta_slug(sensitivity_delta)}.png",
+        get_path("output", "figures", f"pred_zshare_{sites}_sites_det.png"),
+        bbox_inches="tight",
+    )
+    plt.close()
+
+
 def plot_net_transfers_figure(
     *,
     sites: int,
@@ -563,6 +628,7 @@ def main() -> int:
 
     summary_rows: list[dict[str, float]] = []
     all_trajectory_rows: list[dict[str, float]] = []
+    base_solutions_for_figures: dict[int, tuple[float, np.ndarray, dict[float, PlannerSolution]]] = {}
     solutions_for_figures: dict[int, tuple[float, np.ndarray, dict[float, PlannerSolution]]] = {}
 
     for sites in args.sites:
@@ -620,6 +686,9 @@ def main() -> int:
                     pe=sensitivity_pe,
                 ),
             )
+            base_solutions_for_figures.setdefault(sites, (base_pee, zbar, {}))[2][float(transfer)] = (
+                base_solution
+            )
             solutions_for_figures.setdefault(sites, (sensitivity_pee, zbar, {}))[2][float(transfer)] = (
                 sensitivity_solution
             )
@@ -667,6 +736,17 @@ def main() -> int:
                 sites=sites,
                 delta=args.sensitivity_delta,
                 outputs_root=args.outputs_root,
+                sensitivity_solutions=sensitivity_solutions,
+            )
+            base_solutions = base_solutions_for_figures[sites][2]
+            plot_zshare_delta_comparison_figure(
+                sites=sites,
+                base_delta=args.base_delta,
+                sensitivity_delta=args.sensitivity_delta,
+                outputs_root=args.outputs_root,
+                zbar=zbar,
+                years=args.years,
+                base_solutions=base_solutions,
                 sensitivity_solutions=sensitivity_solutions,
             )
 
