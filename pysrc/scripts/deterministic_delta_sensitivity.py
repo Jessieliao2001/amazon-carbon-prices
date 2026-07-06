@@ -64,6 +64,25 @@ def solution_dir(
     )
 
 
+def baseline_solution_dir(
+    *,
+    outputs_root: Path,
+    solver: str,
+    sites: int,
+    pa: float,
+    pe: float,
+) -> Path:
+    return (
+        outputs_root
+        / "optimization"
+        / "det"
+        / solver
+        / f"{sites}sites"
+        / f"pa_{format_number(pa)}"
+        / f"pe_{format_number(pe)}"
+    )
+
+
 def figures_dir(*, outputs_root: Path, delta: float) -> Path:
     return outputs_root / delta_slug(delta) / "figures"
 
@@ -120,6 +139,25 @@ def save_solution(solution: PlannerSolution, output_dir: Path) -> None:
     np.savetxt(output_dir / "X.txt", solution.X, delimiter=",")
     np.savetxt(output_dir / "U.txt", solution.U, delimiter=",")
     np.savetxt(output_dir / "V.txt", solution.V, delimiter=",")
+
+
+def load_solution(output_dir: Path) -> PlannerSolution:
+    missing = [
+        name
+        for name in ["Z.txt", "X.txt", "U.txt", "V.txt"]
+        if not (output_dir / name).exists()
+    ]
+    if missing:
+        raise FileNotFoundError(
+            f"Missing baseline deterministic solution files {missing} in {output_dir}. "
+            "Run the baseline deterministic optimization jobs before the delta sensitivity step."
+        )
+    return PlannerSolution(
+        Z=np.loadtxt(output_dir / "Z.txt", delimiter=","),
+        X=np.loadtxt(output_dir / "X.txt", delimiter=","),
+        U=np.loadtxt(output_dir / "U.txt", delimiter=","),
+        V=np.loadtxt(output_dir / "V.txt", delimiter=","),
+    )
 
 
 def carbon_price_with_metric(key: CarbonPriceKey, path: Path) -> tuple[float, float]:
@@ -589,6 +627,12 @@ def main() -> int:
         help="Root directory for delta-specific optimization outputs and figures.",
     )
     parser.add_argument(
+        "--base-outputs-root",
+        type=Path,
+        default=get_path("output"),
+        help="Root directory containing baseline deterministic optimization outputs.",
+    )
+    parser.add_argument(
         "--skip-figures",
         action="store_true",
         help="Only write the CSV sensitivity summaries.",
@@ -653,20 +697,20 @@ def main() -> int:
         for transfer in args.transfers:
             base_pe = base_pee + transfer
             sensitivity_pe = sensitivity_pee + transfer
+            base_output_dir = baseline_solution_dir(
+                outputs_root=args.base_outputs_root,
+                solver=args.solver,
+                sites=sites,
+                pa=args.pa,
+                pe=base_pe,
+            )
             print(
-                "Solving deterministic delta sensitivity: "
+                "Loading baseline deterministic solution and solving delta sensitivity: "
                 f"sites={sites}, transfer={transfer:g}, "
                 f"base_pe={base_pe:g}, sensitivity_pe={sensitivity_pe:g}, "
-                f"delta={args.base_delta:g} vs {args.sensitivity_delta:g}"
+                f"base_delta={args.base_delta:g}, sensitivity_delta={args.sensitivity_delta:g}"
             )
-            base_solution = solve_deterministic_trajectory(
-                sites=sites,
-                pe=base_pe,
-                pa=args.pa,
-                delta=args.base_delta,
-                solver=args.solver,
-                time_horizon=args.time_horizon,
-            )
+            base_solution = load_solution(base_output_dir)
             sensitivity_solution = solve_deterministic_trajectory(
                 sites=sites,
                 pe=sensitivity_pe,
