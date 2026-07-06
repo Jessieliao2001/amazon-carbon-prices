@@ -356,12 +356,13 @@ def plot_zshare_delta_comparison_figure(
         (sensitivity_delta, "--", sensitivity_solutions),
     ]
 
-    plt.figure(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=(10, 6))
+
     for transfer in plot_transfers:
         for delta, linestyle, solutions in delta_specs:
             metrics = trajectory_metrics(solutions[transfer], zbar, years, transfer)
             time = list(range(len(metrics.z_share_pct)))
-            plt.plot(
+            ax.plot(
                 time,
                 metrics.z_share_pct,
                 label=rf"$b={format_number(transfer)}, \delta={delta:.2f}$",
@@ -370,24 +371,30 @@ def plot_zshare_delta_comparison_figure(
                 color=colors.get(transfer),
             )
 
-    plt.xlabel("years", fontsize=16)
-    plt.ylabel("Z(%)", fontsize=16)
-    plt.xlim(0, max(time) + 2)
-    plt.yticks([0, 5, 10, 15, 20], ["0", "5", "10", "15", "20"])
-    plt.legend(
+    ax.set_xlabel("years", fontsize=16)
+    ax.set_ylabel("Z(%)", fontsize=16)
+    ax.set_xlim(0, max(time) + 2)
+    ax.set_yticks([0, 5, 10, 15, 20])
+    ax.set_yticklabels(["0", "5", "10", "15", "20"])
+
+    for spine in ["top", "right", "bottom", "left"]:
+        ax.spines[spine].set_visible(True)
+
+    ax.legend(
         loc="upper center",
         bbox_to_anchor=(0.5, -0.15),
         ncol=2,
         frameon=False,
         fontsize=16,
     )
+
     save_figure_like_reference(
         output_dir
         / f"pred_zshare_delta_comparison_{sites}_sites_det_{delta_slug(sensitivity_delta)}.png",
         get_path("output", "figures", f"pred_zshare_{sites}_sites_det.png"),
         bbox_inches="tight",
     )
-    plt.close()
+    plt.close(fig)
 
 
 def plot_net_transfers_figure(
