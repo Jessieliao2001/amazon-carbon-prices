@@ -379,8 +379,11 @@ def write_summary_csv(path, results, V, W, defection_map):
                 "V_100": V[100],
                 "W_100": W[100],
                 "B_100": B[100],
-                "B_100_minus_W_100": B[100] - W[100],
-                "V_100_minus_W_100_minus_B_100": V[100] - (W[100] - B[100]),
+                "net_defection_value_100": W[100] - B[100],
+                "terminal_fund_margin_100": B[100] - W[100],
+                "continuation_margin_100": V[100] - (W[100] - B[100]),
+                "terminal_condition_B_gt_W": B[100] > W[100],
+                "continuation_condition": W[100] - B[100] < V[100],
                 "first_defection_year_zero_index": (
                     "" if first_defection_year is None else first_defection_year
                 ),
@@ -425,10 +428,10 @@ print(f"Solution shapes: Z{results.Z.shape}, X{results.X.shape}")
 if make_plots:
     plot_z100_map(results, num_sites, figures_dir)
 
-print(f"z(0) total = {results.Z[0].sum()}")
-print(f"z(100) total = {results.Z[100].sum()}")
-print(f"z(100) max = {results.Z[100].max()}")
-print(f"z(100) mean = {results.Z[100].mean()}")
+# print(f"z(0) total = {results.Z[0].sum()}")
+# print(f"z(100) total = {results.Z[100].sum()}")
+# print(f"z(100) max = {results.Z[100].max()}")
+# print(f"z(100) mean = {results.Z[100].mean()}")
 
 V = compute_or_load_continuation_values(cache_paths, theta, results)
 
