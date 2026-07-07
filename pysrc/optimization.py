@@ -104,8 +104,6 @@ def solve_planner_problem(
 
     # Solve the model
     opt = SolverFactory(solver)
-    if solver == "gurobi":
-        opt.options["FeasibilityTol"] = 1e-9
     print("Solving the optimization problem...")
     start_time = time.time()
     if solver == "gams":

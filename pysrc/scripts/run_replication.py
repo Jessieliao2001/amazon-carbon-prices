@@ -1293,7 +1293,7 @@ def main() -> int:
     parser.add_argument(
         "--slurm-commands-per-job",
         type=int,
-        default=int(os.environ.get("REPLICATION_SLURM_COMMANDS_PER_JOB", "10")),
+        default=int(os.environ.get("REPLICATION_SLURM_COMMANDS_PER_JOB", "1")),
         help=(
             "For parallel-safe non-MPC Slurm steps, group this many replication "
             "commands inside one sbatch job when the step has at least "
