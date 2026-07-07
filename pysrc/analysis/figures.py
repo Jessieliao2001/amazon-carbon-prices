@@ -6,9 +6,8 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
-from pysrc.services.data_service import load_site_data,load_productivity_params
+from pysrc.services.data_service import load_site_data
 from pysrc.services.file_service import get_path
-from pysrc.optimization import PlannerSolution, solve_planner_problem
 
 
 def land_allocation(pee=7.6, num_sites=1043, solver="gurobi", pa=41.11, model="det", xi=1):
@@ -486,56 +485,40 @@ def trajectory_diff(
     return
 
 
-def plot_transfers(num_sites=1043,pee=6.6, pa=41.11,solver="gams",kappa=2.094215255):
-    
-    
-    
-    (
-        zbar_2017,
-        z_2017,
-        forest_area_2017,
-    ) = load_site_data(num_sites)
+def plot_transfers(num_sites=1043, pee=6.6, pa=41.11, solver="gams", kappa=2.094215255):
+    output_folder = get_path("output") / "figures"
+    os.makedirs(output_folder, exist_ok=True)
 
-    (theta_vals, gamma_vals) = load_productivity_params(num_sites)
-
-    x0_vals = gamma_vals * forest_area_2017
-
-        
-
-    results_15=solve_planner_problem(
-            time_horizon=200,
-            theta=theta_vals,
-            gamma=gamma_vals,
-            x0=x0_vals,
-            zbar=zbar_2017,
-            z0=z_2017,
-            price_emissions=pee+15,
-            price_cattle=pa,
-            solver=solver,
-        )
-    
-    results_25=solve_planner_problem(
-            time_horizon=200,
-            theta=theta_vals,
-            gamma=gamma_vals,
-            x0=x0_vals,
-            zbar=zbar_2017,
-            z0=z_2017,
-            price_emissions=pee+25,
-            price_cattle=pa,
-            solver=solver,
-        )
-    
-    for b, results in zip([15, 25], [results_15, results_25]):
+    plt.figure(figsize=(6.4, 4.8))
+    for b in [15, 25]:
         
         if b==15:
             color = "blue"
         elif b==25:
             color = "red"
         
-        kappa = 2.094215255
-        X = results.X
-        Z = results.Z
+        pe = pee + b
+        result_folder = (
+            get_path("output")
+            / "optimization"
+            / "det"
+            / solver
+            / f"{num_sites}sites"
+            / f"pa_{pa}"
+            / f"pe_{pe:g}"
+        )
+        missing = [
+            name
+            for name in ["Z.txt", "X.txt"]
+            if not (result_folder / name).exists()
+        ]
+        if missing:
+            raise FileNotFoundError(
+                f"Missing deterministic optimization files {missing} in {result_folder}. "
+                "Run deterministic optimization before plotting net transfers."
+            )
+        Z = np.loadtxt(result_folder / "Z.txt", delimiter=",")
+        X = np.loadtxt(result_folder / "X.txt", delimiter=",")
 
         # Compute X_dot
         X_dot = np.diff(X, axis=0)
@@ -554,4 +537,5 @@ def plot_transfers(num_sites=1043,pee=6.6, pa=41.11,solver="gams",kappa=2.094215
     plt.ylabel("Net Transfers ($ billion)")
 
     # Save figure
-    plt.savefig(get_path("output") / "figures/net_transfers.png")
+    plt.savefig(output_folder / "net_transfers.png")
+    plt.close()
