@@ -133,9 +133,8 @@ def vectorize_trajectories(traj: PlannerSolution):
 
 
 def _planner_obj(model):
-    delta = float(pyo.value(model.delta))  # fixed scalar
     return pyo.quicksum(
-        (1.0 / ((1.0 + delta) ** (t - 1))) # discrete discounting
+        math.exp(-model.delta * (t * model.dt - model.dt))
         * (
             -model.pe
             * pyo.quicksum(
@@ -143,7 +142,8 @@ def _planner_obj(model):
                 - (model.x[t + 1, s] - model.x[t, s]) / model.dt
                 for s in model.S
             )
-            + model.pa[t] * pyo.quicksum(model.theta[s] * model.z[t + 1, s] for s in model.S)
+            + model.pa[t]
+            * pyo.quicksum(model.theta[s] * model.z[t + 1, s] for s in model.S)
             - (model.zeta_u / 2) * (model.w1[t] ** 2)
             - (model.zeta_v / 2) * (model.w2[t] ** 2)
         )
