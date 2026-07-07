@@ -338,6 +338,7 @@ def plot_zshare_delta_comparison_figure(
 ) -> None:
     output_dir = figures_dir(outputs_root=outputs_root, delta=sensitivity_delta)
     output_dir.mkdir(parents=True, exist_ok=True)
+
     plot_transfers = [
         transfer
         for transfer in [0.0, 25.0]
@@ -377,8 +378,10 @@ def plot_zshare_delta_comparison_figure(
     ax.set_yticks([0, 5, 10, 15, 20])
     ax.set_yticklabels(["0", "5", "10", "15", "20"])
 
-    for spine in ["top", "right", "bottom", "left"]:
-        ax.spines[spine].set_visible(True)
+    # Explicitly keep the full box.
+    for side in ["top", "right", "bottom", "left"]:
+        ax.spines[side].set_visible(True)
+        ax.spines[side].set_linewidth(1.0)
 
     ax.legend(
         loc="upper center",
@@ -388,11 +391,13 @@ def plot_zshare_delta_comparison_figure(
         fontsize=16,
     )
 
-    save_figure_like_reference(
+    fig.savefig(
         output_dir
         / f"pred_zshare_delta_comparison_{sites}_sites_det_{delta_slug(sensitivity_delta)}.png",
-        get_path("output", "figures", f"pred_zshare_{sites}_sites_det.png"),
+        format="png",
+        dpi=100,
         bbox_inches="tight",
+        pad_inches=0.08,
     )
     plt.close(fig)
 
@@ -634,12 +639,6 @@ def main() -> int:
         help="Root directory for delta-specific optimization outputs and figures.",
     )
     parser.add_argument(
-        "--base-outputs-root",
-        type=Path,
-        default=get_path("output"),
-        help="Root directory containing baseline deterministic optimization outputs.",
-    )
-    parser.add_argument(
         "--skip-figures",
         action="store_true",
         help="Only write the CSV sensitivity summaries.",
@@ -704,20 +703,20 @@ def main() -> int:
         for transfer in args.transfers:
             base_pe = base_pee + transfer
             sensitivity_pe = sensitivity_pee + transfer
-            base_output_dir = baseline_solution_dir(
-                outputs_root=args.base_outputs_root,
-                solver=args.solver,
-                sites=sites,
-                pa=args.pa,
-                pe=base_pe,
-            )
             print(
-                "Loading baseline deterministic solution and solving delta sensitivity: "
+                "Solving deterministic delta sensitivity: "
                 f"sites={sites}, transfer={transfer:g}, "
                 f"base_pe={base_pe:g}, sensitivity_pe={sensitivity_pe:g}, "
-                f"base_delta={args.base_delta:g}, sensitivity_delta={args.sensitivity_delta:g}"
+                f"delta={args.base_delta:g} vs {args.sensitivity_delta:g}"
             )
-            base_solution = load_solution(base_output_dir)
+            base_solution = solve_deterministic_trajectory(
+                sites=sites,
+                pe=base_pe,
+                pa=args.pa,
+                delta=args.base_delta,
+                solver=args.solver,
+                time_horizon=args.time_horizon,
+            )
             sensitivity_solution = solve_deterministic_trajectory(
                 sites=sites,
                 pe=sensitivity_pe,
