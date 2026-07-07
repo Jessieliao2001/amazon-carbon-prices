@@ -103,7 +103,7 @@ def value_decom_mpc(pee=5.9, num_sites=78, solver="gurobi", model="unconstrained
 
         results_AO = []
         for i in range(200):
-            result_AO = p_a_values[i] * np.dot(dfz_np[i + 1], dft_np) / ((1 + 0.02) ** (i))
+            result_AO = p_a_values[i] * np.dot(dfz_np[i + 1], dft_np) * np.exp(-0.02 * i)
             results_AO.append(result_AO)
         total_AO = np.sum(results_AO)
 
@@ -112,7 +112,7 @@ def value_decom_mpc(pee=5.9, num_sites=78, solver="gurobi", model="unconstrained
             result_NT = (
                 -b
                 * (kappa * np.sum(dfz_np[i + 1]) - dfxdot[i])
-                / ((1 + 0.02) ** (i))
+                * np.exp(-0.02 * i)
             )
             results_NT.append(result_NT)
         total_NT = np.sum(results_NT)
@@ -120,7 +120,7 @@ def value_decom_mpc(pee=5.9, num_sites=78, solver="gurobi", model="unconstrained
         results_CS = []
         for i in range(200):
             result_CS = (
-                -pee * (kappa * np.sum(dfz_np[i + 1]) - dfxdot[i]) / ((1 + 0.02) ** (i))
+                -pee * (kappa * np.sum(dfz_np[i + 1]) - dfxdot[i]) * np.exp(-0.02 * i)
             )
             results_CS.append(result_CS)
         total_CS = np.sum(results_CS)
@@ -134,7 +134,7 @@ def value_decom_mpc(pee=5.9, num_sites=78, solver="gurobi", model="unconstrained
                 (zeta_v / 2)
                 * (np.sum(dfv_np[i]) ) ** 2
                 )
-                / ((1 + 0.02) ** (i))
+                * np.exp(-0.02 * i)
             )
             results_AC.append(result_AC)
         total_AC = np.sum(results_AC)
@@ -318,7 +318,7 @@ if __name__ == "__main__":
 #             result_NT2 = (
 #                 -b
 #                 * (kappa * np.sum(dfz_np[i + 1]) - dfxdot[i])
-#                 / ((1 + 0.02) ** (i))
+#                 * np.exp(-0.02 * i)
 #             )
 
 #             results_NT2.append(result_NT2)

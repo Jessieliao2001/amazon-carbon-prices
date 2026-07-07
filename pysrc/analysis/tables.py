@@ -72,7 +72,7 @@ def value_decom(pee=7.1, num_sites=78, solver="gurobi", pa=41.11, model="det", x
 
         results_AO = []
         for i in range(200):
-            result_AO = pa * np.dot(dfz_np[i + 1], dft_np) / ((1 + 0.02) ** (i))
+            result_AO = pa * np.dot(dfz_np[i + 1], dft_np) * np.exp(-0.02 * i)
             results_AO.append(result_AO)
         total_AO = np.sum(results_AO)
 
@@ -81,7 +81,7 @@ def value_decom(pee=7.1, num_sites=78, solver="gurobi", pa=41.11, model="det", x
             result_NT = (
                 -b[order]
                 * (kappa * np.sum(dfz_np[i + 1]) - dfxdot[i])
-                / ((1 + 0.02) ** (i))
+                * np.exp(-0.02 * i)
             )
             results_NT.append(result_NT)
         total_NT = np.sum(results_NT)
@@ -89,7 +89,7 @@ def value_decom(pee=7.1, num_sites=78, solver="gurobi", pa=41.11, model="det", x
         results_CS = []
         for i in range(200):
             result_CS = (
-                -pee * (kappa * np.sum(dfz_np[i + 1]) - dfxdot[i]) / ((1 + 0.02) ** (i))
+                -pee * (kappa * np.sum(dfz_np[i + 1]) - dfxdot[i]) * np.exp(-0.02 * i)
             )
             results_CS.append(result_CS)
         total_CS = np.sum(results_CS)
@@ -103,7 +103,7 @@ def value_decom(pee=7.1, num_sites=78, solver="gurobi", pa=41.11, model="det", x
                 (zeta_v / 2)
                 * (np.sum(dfv_np[i]) ) ** 2
                 )
-                / ((1 + 0.02) ** (i))
+                * np.exp(-0.02 * i)
             )
             results_AC.append(result_AC)
         total_AC = np.sum(results_AC)
@@ -223,7 +223,7 @@ def transfer_cost(pee=7.1, num_sites=78, solver="gurobi", pa=41.11, y=30, model=
             result_NT2 = (
                 -b[order]
                 * (kappa * np.sum(dfz_np[i + 1]) - dfxdot[i])
-                / ((1 + 0.02) ** (i))
+                * np.exp(-0.02 * i)
             )
 
             results_NT2.append(result_NT2)
@@ -292,7 +292,7 @@ def ambiguity_decom(pe_det=7.1, pe_hmc=5.3, num_sites=78, solver="gurobi", pa=41
 
         results_AO = []
         for i in range(200):
-            result_AO = pa * np.dot(dfz_np[i + 1], dft_np) / ((1 + 0.02) ** (i))
+            result_AO = pa * np.dot(dfz_np[i + 1], dft_np) * np.exp(-0.02 * i)
             results_AO.append(result_AO)
         total_AO = np.sum(results_AO)
 
@@ -301,7 +301,7 @@ def ambiguity_decom(pe_det=7.1, pe_hmc=5.3, num_sites=78, solver="gurobi", pa=41
             result_NT = (
                 -b[order]
                 * (kappa * np.sum(dfz_np[i + 1]) - dfxdot[i])
-                / ((1 + 0.02) ** (i))
+                * np.exp(-0.02 * i)
             )
             results_NT.append(result_NT)
         total_NT = np.sum(results_NT)
@@ -309,7 +309,7 @@ def ambiguity_decom(pe_det=7.1, pe_hmc=5.3, num_sites=78, solver="gurobi", pa=41
         results_CS = []
         for i in range(200):
             result_CS = (
-                -pee * (kappa * np.sum(dfz_np[i + 1]) - dfxdot[i]) / ((1 + 0.02) ** (i))
+                -pee * (kappa * np.sum(dfz_np[i + 1]) - dfxdot[i]) * np.exp(-0.02 * i)
             )
             results_CS.append(result_CS)
         total_CS = np.sum(results_CS)
@@ -323,7 +323,7 @@ def ambiguity_decom(pe_det=7.1, pe_hmc=5.3, num_sites=78, solver="gurobi", pa=41
                 (zeta_v / 2)
                 * (np.sum(dfv_np[i]) ) ** 2
                 )
-                / ((1 + 0.02) ** (i))
+                * np.exp(-0.02 * i)
             )
             results_AC.append(result_AC)
         total_AC = np.sum(results_AC)
@@ -376,7 +376,7 @@ def ambiguity_decom(pe_det=7.1, pe_hmc=5.3, num_sites=78, solver="gurobi", pa=41
 
         results_AO = []
         for i in range(200):
-            result_AO = pa * np.dot(dfz_np[i + 1], dft_np) / ((1 + 0.02) ** (i))
+            result_AO = pa * np.dot(dfz_np[i + 1], dft_np) * np.exp(-0.02 * i)
             results_AO.append(result_AO)
         total_AO = np.sum(results_AO)
 
@@ -385,7 +385,7 @@ def ambiguity_decom(pe_det=7.1, pe_hmc=5.3, num_sites=78, solver="gurobi", pa=41
             result_NT = (
                 -b[order]
                 * (kappa * np.sum(dfz_np[i + 1]) - dfxdot[i])
-                / ((1 + 0.02) ** (i))
+                * np.exp(-0.02 * i)
             )
             results_NT.append(result_NT)
         total_NT = np.sum(results_NT)
@@ -393,7 +393,7 @@ def ambiguity_decom(pe_det=7.1, pe_hmc=5.3, num_sites=78, solver="gurobi", pa=41
         results_CS = []
         for i in range(200):
             result_CS = (
-                -pee * (kappa * np.sum(dfz_np[i + 1]) - dfxdot[i]) / ((1 + 0.02) ** (i))
+                -pee * (kappa * np.sum(dfz_np[i + 1]) - dfxdot[i]) * np.exp(-0.02 * i)
             )
             results_CS.append(result_CS)
         total_CS = np.sum(results_CS)
@@ -407,7 +407,7 @@ def ambiguity_decom(pe_det=7.1, pe_hmc=5.3, num_sites=78, solver="gurobi", pa=41
                 (zeta_v / 2)
                 * (np.sum(dfv_np[i]) ) ** 2
                 )
-                / ((1 + 0.02) ** (i))
+                * np.exp(-0.02 * i)
             )
             results_AC.append(result_AC)
         total_AC = np.sum(results_AC)
@@ -553,7 +553,7 @@ def value_decom_mpc(pee=6.9, num_sites=78, solver="gams", model="unconstrained",
             results_AO = []
             for i in range(200):
                 result_AO = (
-                    p_a_values[i] * np.dot(dfz_np[i + 1], dft_np) / ((1 + 0.02) ** (i))
+                    p_a_values[i] * np.dot(dfz_np[i + 1], dft_np) * np.exp(-0.02 * i)
                 )
                 results_AO.append(result_AO)
             total_AO = np.sum(results_AO)
@@ -563,7 +563,7 @@ def value_decom_mpc(pee=6.9, num_sites=78, solver="gams", model="unconstrained",
                 result_NT = (
                     -b
                     * (kappa * np.sum(dfz_np[i + 1]) - dfxdot[i])
-                    / ((1 + 0.02) ** (i))
+                    * np.exp(-0.02 * i)
                 )
                 results_NT.append(result_NT)
             total_NT = np.sum(results_NT)
@@ -573,7 +573,7 @@ def value_decom_mpc(pee=6.9, num_sites=78, solver="gams", model="unconstrained",
                 result_CS = (
                     -pee
                     * (kappa * np.sum(dfz_np[i + 1]) - dfxdot[i])
-                    / ((1 + 0.02) ** (i))
+                    * np.exp(-0.02 * i)
                 )
                 results_CS.append(result_CS)
             total_CS = np.sum(results_CS)
@@ -587,7 +587,7 @@ def value_decom_mpc(pee=6.9, num_sites=78, solver="gams", model="unconstrained",
                     (zeta_v / 2)
                     * (np.sum(dfv_np[i]) ) ** 2
                     )
-                    / ((1 + 0.02) ** (i))
+                    * np.exp(-0.02 * i)
                 )
                 results_AC.append(result_AC)
             total_AC = np.sum(results_AC)

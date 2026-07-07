@@ -20,13 +20,13 @@ def value_decomposition(
 
     # Compute agricultural output
     results_AO = [
-        pa * np.dot(solution.Z[t + 1], theta) / ((1 + delta) ** t) for t in range(T)
+        pa * np.dot(solution.Z[t + 1], theta) * np.exp(-delta * t) for t in range(T)
     ]
     total_AO = np.sum(results_AO)
 
     # Compute net transfers
     results_NT = [
-        -b * (kappa * np.sum(solution.Z[t + 1]) - np.sum(X_dot[t])) / ((1 + delta) ** t)
+        -b * (kappa * np.sum(solution.Z[t + 1]) - np.sum(X_dot[t])) * np.exp(-delta * t)
         for t in range(T)
     ]
     total_NT = np.sum(results_NT)
@@ -35,7 +35,7 @@ def value_decomposition(
     results_FS = [
         -pee
         * (kappa * np.sum(solution.Z[t + 1]) - np.sum(X_dot[t]))
-        / ((1 + delta) ** t)
+        * np.exp(-delta * t)
         for t in range(T)
     ]
     total_FS = np.sum(results_FS)
@@ -46,7 +46,7 @@ def value_decomposition(
             (zeta_u / 2) * (np.sum(solution.U[t])) ** 2
             + (zeta_v / 2) * (np.sum(solution.V[t])) ** 2
         )
-        / ((1 + delta) ** t)
+        * np.exp(-delta * t)
         for t in range(T)
     ]
     total_AC = np.sum(results_AC)
@@ -91,7 +91,7 @@ def transfers_decomposition(
     total_NCE = np.sum(results_NCE)
 
     results_NT2 = [
-        -b * (kappa * Z[t + 1] - X_dot[t]) / ((1 + delta) ** t)
+        -b * (kappa * Z[t + 1] - X_dot[t]) * np.exp(-delta * t)
         for t in range(num_years)
     ]
     total_NT2 = np.sum(results_NT2)
