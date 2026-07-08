@@ -5,6 +5,17 @@ post-processing code for the Amazon carbon-prices manuscript. The replication
 workflow is organized around a single driver, `run.sh`, and the exhibit audit
 files in `replication/`.
 
+Manuscript authors and affiliations, in manuscript order:
+
+- Juliano Assunção (Climate Policy Initiative and PUC-Rio)
+- Lars Peter Hansen (University of Chicago)
+- Todd Munson (Argonne National Laboratories)
+- José A. Scheinkman (Columbia and Princeton Universities)
+
+## Acknowledgments
+
+This Git repository was built by Jiaying Liao (Jessie) based on an earlier repository that included work by Pengyu Chen, Leonardo Gomes, Patricio Hernandez, Zhaoyang Xu, and Daniel Zhao.
+
 The package is structured to be usable both on a local machine and on a server
 or cluster. Local runs execute commands directly. Server runs can submit the
 same steps through Slurm.
@@ -23,10 +34,10 @@ run by JPE were limited by computational constraints for the JPE Data Editor.
 | Data processing: `rsrc/processing/_masterfile.R` | Not run by JPE Data Editor | Computational constraints for the JPE Data Editor. |
 | Calibration: `rsrc/calibration/_masterfile.R` | Not run by JPE Data Editor | Computational constraints for the JPE Data Editor. |
 | Post-processing-only run | Completed | `./run.sh --steps postprocess-only --backend local`. |
-| Figures 1-21 | Reproduced | All feasible figures looked similar to the paper version. |
+| Figures 1-22 | Reproduced | All feasible figures looked similar to the paper version. |
 | Tables 1-25 | Reproduced | All feasible tables were reproduced. |
 | Figure 11 | Reproduced with minor visual difference | The JPE report notes a y-axis scale difference; the plot and numbers match. |
-| In-text numbers not tied to tables or figures | Partly mapped below | The README now lists each item from the report and the current audit status. |
+| In-text numbers not tied to tables or figures | Fully mapped below | The README lists each item from the report and the replication evidence. |
 
 ## Quick Start
 

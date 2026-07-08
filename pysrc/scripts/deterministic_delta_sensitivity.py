@@ -639,6 +639,15 @@ def main() -> int:
         help="Root directory for delta-specific optimization outputs and figures.",
     )
     parser.add_argument(
+        "--baseline-outputs-root",
+        type=Path,
+        default=get_path("output"),
+        help=(
+            "Root directory containing existing baseline deterministic solutions "
+            "under optimization/det/..."
+        ),
+    )
+    parser.add_argument(
         "--skip-figures",
         action="store_true",
         help="Only write the CSV sensitivity summaries.",
@@ -704,18 +713,19 @@ def main() -> int:
             base_pe = base_pee + transfer
             sensitivity_pe = sensitivity_pee + transfer
             print(
-                "Solving deterministic delta sensitivity: "
+                "Loading baseline and solving deterministic delta sensitivity: "
                 f"sites={sites}, transfer={transfer:g}, "
                 f"base_pe={base_pe:g}, sensitivity_pe={sensitivity_pe:g}, "
                 f"delta={args.base_delta:g} vs {args.sensitivity_delta:g}"
             )
-            base_solution = solve_deterministic_trajectory(
-                sites=sites,
-                pe=base_pe,
-                pa=args.pa,
-                delta=args.base_delta,
-                solver=args.solver,
-                time_horizon=args.time_horizon,
+            base_solution = load_solution(
+                baseline_solution_dir(
+                    outputs_root=args.baseline_outputs_root,
+                    solver=args.solver,
+                    sites=sites,
+                    pa=args.pa,
+                    pe=base_pe,
+                )
             )
             sensitivity_solution = solve_deterministic_trajectory(
                 sites=sites,
