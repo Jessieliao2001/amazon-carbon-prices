@@ -1,0 +1,2 @@
+/project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/pysrc/analysis/tables.py:232: RuntimeWarning: invalid value encountered in scalar divide
+  total_EC = b[order]*total_NCE / (total_NCE - total_NCE_base)

@@ -136,13 +136,21 @@ EXHIBITS = [
     {
         "exhibit": "Figure 15",
         "kind": "figure",
+        "description": "Deterministic discount-rate sensitivity for agricultural area",
+        "output_pattern": "output/delta_sensitivity/delta_0p03/figures/pred_zshare_delta_comparison_1043_sites_det_delta_0p03.png",
+        "program": "python pysrc/scripts/deterministic_delta_sensitivity.py",
+        "status_note": "",
+    },
+    {
+        "exhibit": "Figure 16",
+        "kind": "figure",
         "description": "Smoothed hidden-state probabilities",
         "output_pattern": "output/figures/smooth_prob_uncon.png|output/figures/smooth_prob_con.png",
         "program": "python pysrc/scripts/price_estimation.py",
         "status_note": "",
     },
     {
-        "exhibit": "Figure 16",
+        "exhibit": "Figure 17",
         "kind": "figure",
         "description": "Relative entropy by site",
         "output_pattern": "plots/1043-hmc/re_theta_b0.png|plots/1043-hmc/re_theta_b15.png|plots/1043-hmc/re_gamma_b0.png|plots/1043-hmc/re_gamma_b15.png",
@@ -150,7 +158,7 @@ EXHIBITS = [
         "status_note": "",
     },
     {
-        "exhibit": "Figure 17",
+        "exhibit": "Figure 18",
         "kind": "figure",
         "description": "Ambiguity-adjusted densities, xi=2",
         "output_pattern": "output/figures/density/site_1043/xi2*/**/*.png",
@@ -158,7 +166,7 @@ EXHIBITS = [
         "status_note": "",
     },
     {
-        "exhibit": "Figure 18",
+        "exhibit": "Figure 19",
         "kind": "figure",
         "description": "Ambiguity-adjusted densities, xi=0.5",
         "output_pattern": "output/figures/density/site_1043/xi0.5*/**/*.png",
@@ -166,7 +174,7 @@ EXHIBITS = [
         "status_note": "",
     },
     {
-        "exhibit": "Figure 19",
+        "exhibit": "Figure 20",
         "kind": "figure",
         "description": "Agricultural area evolution with ambiguity aversion, xi=1",
         "output_pattern": "plots/1043-hmc_xi1/map_zDecades_1043Sites_pe*_hmc.png",
@@ -174,7 +182,7 @@ EXHIBITS = [
         "status_note": "",
     },
     {
-        "exhibit": "Figure 20",
+        "exhibit": "Figure 21",
         "kind": "figure",
         "description": "Agricultural area evolution with ambiguity aversion, xi=0.5",
         "output_pattern": "plots/1043-hmc_xi05/map_zDecades_1043Sites_pe*_hmc.png",
@@ -182,7 +190,7 @@ EXHIBITS = [
         "status_note": "",
     },
     {
-        "exhibit": "Figure 21",
+        "exhibit": "Figure 22",
         "kind": "figure",
         "description": "Bayesian R-squared densities",
         "output_pattern": "output/figures/bayesian_r2_gamma_1043.png|output/figures/bayesian_r2_theta_1043.png",

@@ -1,0 +1,27 @@
+Linking to GEOS 3.13.0, GDAL 3.5.3, PROJ 9.5.1; sf_use_s2() is TRUE
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+file saved to /Users/jessieliao/Documents/amazon-carbon-prices/plots/1043-det/map_z50_1043Sites_pe6.8.png
+file saved to /Users/jessieliao/Documents/amazon-carbon-prices/plots/1043-det/map_z50_1043Sites_pe16.8.png
+file saved to /Users/jessieliao/Documents/amazon-carbon-prices/plots/1043-det/map_z50_1043Sites_pe21.8.png
+file saved to /Users/jessieliao/Documents/amazon-carbon-prices/plots/1043-det/map_z50_1043Sites_pe26.8.png
+file saved to /Users/jessieliao/Documents/amazon-carbon-prices/plots/1043-det/map_z50_1043Sites_pe31.8.png
+file saved to /Users/jessieliao/Documents/amazon-carbon-prices/plots/1043-det/map_z0z50GammaTheta_1043Sites_allPrices_det.png
+Warning message:
+In as_grob.default(plot) :
+  Cannot convert object of class character into a grob.
+file saved to /Users/jessieliao/Documents/amazon-carbon-prices/plots/1043-det/map_z0z30GammaTheta_1043Sites_allPrices_det.png
+file saved to /Users/jessieliao/Documents/amazon-carbon-prices/plots/1043-det/map_zDecades_1043Sites_pe6.8_det.png
+file saved to /Users/jessieliao/Documents/amazon-carbon-prices/plots/1043-det/map_zDecades_1043Sites_pe16.8_det.png
+file saved to /Users/jessieliao/Documents/amazon-carbon-prices/plots/1043-det/map_zDecades_1043Sites_pe21.8_det.png
+file saved to /Users/jessieliao/Documents/amazon-carbon-prices/plots/1043-det/map_zDecades_1043Sites_pe26.8_det.png
+file saved to /Users/jessieliao/Documents/amazon-carbon-prices/plots/1043-det/map_zDecades_1043Sites_pe31.8_det.png

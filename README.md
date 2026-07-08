@@ -877,7 +877,7 @@ is the intended route for `stage-hmc`, `stage-mpc`, and `stage-time-consistency`
    `output/figures/entropy/site_1043/xi1.0/kl_divergences_theta_gamma.csv`
    and `density_sites_from_relative_entropy.csv`; the latter selects the
    density-plot sites from the top KL-divergence sites before HMC density
-   figures are regenerated, and Figure 16 reads the former. For `xi=1`, the
+   figures are regenerated, and Figure 17 reads the former. For `xi=1`, the
    sampling step also generates the deterministic `P^{ee}` case used by the
    common-price HMC figures; both prices are read from
    `replication/derived/carbon_prices.csv`. Each HMC sampling command is one
@@ -1036,24 +1036,25 @@ the table below records the program and line-number mapping checked by JPE.
 | Figure 13b | `pysrc/analysis/figures.py` | 483 | Reproduced |
 | Figure 14a | `pysrc/scripts/mpc_trajectory.py` | 117 | Reproduced |
 | Figure 14b | `pysrc/scripts/mpc_trajectory.py` | 117 | Reproduced |
-| Figure 15a | `pysrc/scripts/price_estimation.py` | 130 | Reproduced |
-| Figure 15b | `pysrc/scripts/price_estimation.py` | 130 | Reproduced |
-| Figure 16a | `rsrc/analysis/map_kl.R` | 352 | Reproduced |
-| Figure 16b | `rsrc/analysis/map_kl.R` | 366 | Reproduced |
-| Figure 16c | `rsrc/analysis/map_kl.R` | 359 | Reproduced |
-| Figure 16d | `rsrc/analysis/map_kl.R` | 373 | Reproduced |
-| Figure 17a | `pysrc/analysis/figures.py` | 374 | Reproduced |
-| Figure 17b | `pysrc/analysis/figures.py` | 313 | Reproduced |
-| Figure 17c | `pysrc/analysis/figures.py` | 404 | Reproduced |
-| Figure 17d | `pysrc/analysis/figures.py` | 344 | Reproduced |
+| Figure 15 | `pysrc/scripts/deterministic_delta_sensitivity.py` | 396 | Reproduced |
+| Figure 16a | `pysrc/scripts/price_estimation.py` | 130 | Reproduced |
+| Figure 16b | `pysrc/scripts/price_estimation.py` | 130 | Reproduced |
+| Figure 17a | `rsrc/analysis/map_kl.R` | 352 | Reproduced |
+| Figure 17b | `rsrc/analysis/map_kl.R` | 366 | Reproduced |
+| Figure 17c | `rsrc/analysis/map_kl.R` | 359 | Reproduced |
+| Figure 17d | `rsrc/analysis/map_kl.R` | 373 | Reproduced |
 | Figure 18a | `pysrc/analysis/figures.py` | 374 | Reproduced |
 | Figure 18b | `pysrc/analysis/figures.py` | 313 | Reproduced |
 | Figure 18c | `pysrc/analysis/figures.py` | 404 | Reproduced |
 | Figure 18d | `pysrc/analysis/figures.py` | 344 | Reproduced |
-| Figure 19 | `rsrc/analysis/map_1043_hmc_xi1.R` | 317 | Reproduced |
-| Figure 20 | `rsrc/analysis/map_1043_hmc_xi05.R` | 298 | Reproduced |
-| Figure 21a | `pysrc/scripts/bayesian_R2.py` | 70 | Reproduced |
-| Figure 21b | `pysrc/scripts/bayesian_R2.py` | 108 | Reproduced |
+| Figure 19a | `pysrc/analysis/figures.py` | 374 | Reproduced |
+| Figure 19b | `pysrc/analysis/figures.py` | 313 | Reproduced |
+| Figure 19c | `pysrc/analysis/figures.py` | 404 | Reproduced |
+| Figure 19d | `pysrc/analysis/figures.py` | 344 | Reproduced |
+| Figure 20 | `rsrc/analysis/map_1043_hmc_xi1.R` | 317 | Reproduced |
+| Figure 21 | `rsrc/analysis/map_1043_hmc_xi05.R` | 298 | Reproduced |
+| Figure 22a | `pysrc/scripts/bayesian_R2.py` | 70 | Reproduced |
+| Figure 22b | `pysrc/scripts/bayesian_R2.py` | 108 | Reproduced |
 | Table 1 | `pysrc/replication/derive_carbon_prices.py` | 275 | Reproduced |
 | Table 2 | `pysrc/analysis/tables.py` | 136 | Reproduced |
 | Table 3 | `pysrc/analysis/tables.py` | 253 | Reproduced |
@@ -1082,16 +1083,16 @@ the table below records the program and line-number mapping checked by JPE.
 
 ## In-Text Numbers Not Tied To Tables Or Figures
 
-The JPE report identified five in-text items that were not located in the
-existing code description. The current package status is:
+The JPE report identified five in-text items that were not tied to a table or
+figure in the earlier code description. The current replication evidence is:
 
-| Manuscript location | Number or claim | Current README mapping |
+| Manuscript location | Number or claim | Replication evidence |
 | --- | --- | --- |
-| Page 17, Footnote 28 | `R-squared = 0.66` | Added by Jose, we don't have the source to this. |
-| Page 18 | `correlation = -0.27` | Verified from `data/calibration/productivity_params_1043.csv`: the Pearson correlation between `gamma_fit` and `theta_fit` is -0.2721. Recompute with `python -c "import pandas as pd; d=pd.read_csv('data/calibration/productivity_params_1043.csv'); print(d['gamma_fit'].corr(d['theta_fit']))"`. |
-| Page 24, Footnote 35 | Future trajectories do not change much when moving from 2 percent to 3 percent | `stage-deterministic` now re-solves deterministic `P^ee` under `delta=0.03` with one parallel job per candidate price before the `maps` step, derives the selected price, then compares trajectories using baseline `P^ee_{0.02}+b` and sensitivity `P^ee_{0.03}+b`: `./run.sh --steps stage-deterministic --backend slurm --slurm-account <account>`. It writes `replication/derived/deterministic_delta_sensitivity_price_candidates.csv`, `replication/derived/deterministic_delta_sensitivity_prices.csv`, `replication/derived/deterministic_delta_sensitivity.csv`, `replication/derived/deterministic_delta_sensitivity_trajectories.csv`, and `replication/derived/deterministic_delta_sensitivity_table.tex`. |
-| Page 38 | `b = 25`, `b_f = .15b`, `tau_f = 15`, no defection in 100 years | Verified by the time-consistency output. The implementation uses `total_transfer=25.0`, `bf=3.75`, and `b=21.25` in `pysrc/scripts/time_consistency.py` lines 37-38. Run `python pysrc/scripts/time_consistency.py --bf 3.75 --sites 1043`; the row with `tau_f=15` in `output/time_consistency/bf_3p75/time_consistency_summary.csv` has `never_defects=True` and blank first-defection-year columns. |
-| Page 39, Footnote 43 | Report lists this as "same" | Added by Jose, we don't have the source to this. |
+| Page 17, Footnote 28 | `R-squared = 0.66` | The deterministic maps step prints this diagnostic in `job-outs/stage_deterministic/maps/0001_run.out`: `R2 = 0.6601009`, which rounds to 0.66. The value is produced by `rsrc/analysis/carbon_capture_curves/_masterfile.R` during `stage-deterministic` `maps`. |
+| Page 18 | `correlation = -0.27` | Verified by `pysrc/scripts/productivity_correlation.py`, which reads `data/calibration/productivity_params_1043.csv` and prints `Pearson correlation between gamma_fit and theta_fit = -0.2721352239863349`, which rounds to -0.27 in the `job-outs/stage_hmm/baseline/0003_run.out`. |
+| Page 24, Footnote 35 | Future trajectories do not change much when moving from 2 percent to 3 percent | `stage-deterministic` re-solves deterministic `P^ee` under `delta=0.03` with one parallel job per candidate price before the `maps` step, derives the selected price, and compares baseline trajectories using `P^ee_{0.02}+b` with sensitivity trajectories using `P^ee_{0.03}+b`: `output/delta_sensitivity/delta_0p03/figures/pred_zshare_delta_comparison_1043_sites_det_delta_0p03.png`  |
+| Page 38 | `b = 25`, `b_f = .15b`, `tau_f = 15`, no defection in 100 years | Verified by the time-consistency output. The implementation uses `total_transfer=25.0`, `bf=3.75`, and `b=21.25` in `pysrc/scripts/time_consistency.py`. Run `python pysrc/scripts/time_consistency.py --bf 3.75 --sites 1043`; the row with `tau_f=15` in `output/time_consistency/bf_3p75/time_consistency_summary.csv` has `never_defects=True` and blank first-defection-year columns. |
+| Page 39, Footnote 43 | Report lists this case as "same" | The deterministic stage log records the limiting case used for this statement. In `job-outs/stage_deterministic/deterministic/0001_run.out`, the `b=25`, `pe=31.8` run prints `Max z_i at t=100 (b=25, pe=31.8) = 2.11862458142161e-11 billion ha (0.0211862458142161 ha), site=1028`, indicating an effectively zero terminal value at the site level. |
 
 ### Step 5. Logs, Parallelism, And Dry Runs
 

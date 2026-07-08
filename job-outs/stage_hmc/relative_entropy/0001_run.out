@@ -1,0 +1,28 @@
+Command: /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/.venv/bin/python pysrc/bash/relative_entropy.py --xi 1 --sites 1043 --skip-density
+Working directory: /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices
+Program starts Sun May 31 01:54:22 CDT 2026
+
+Loading adjusted b=0 sample: /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/output/sampling/gurobi/1043sites/pa_41.11/xi_1.0/pe_4.8/results.pcl
+Loading adjusted b=15 sample: /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/output/sampling/gurobi/1043sites/pa_41.11/xi_1.0/pe_19.8/results.pcl
+Using old xi=10000 sampling output as neutral reference: /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/output/sampling/gurobi/1043sites/pa_41.11/xi_10000.0/pe_21.8/results.pcl
+Computing theta KL divergences...
+Computing gamma KL divergences...
+Relative entropy CSV saved to /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/output/figures/entropy/site_1043/xi1.0/kl_divergences_theta_gamma.csv
+Density-site selection saved to /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/output/figures/entropy/site_1043/xi1.0/density_sites_from_relative_entropy.csv
+Gamma density sites selected from KL output: [938, 929]
+Theta density sites selected from KL output: [985, 1028]
+Top 2 KL divergences per parameter:
+theta_b0: id 985 -> KL = 38.2178
+theta_b0: id 963 -> KL = 31.8104
+theta_b15: id 1028 -> KL = 1.3697
+theta_b15: id 1040 -> KL = 1.1243
+gamma_b0: id 938 -> KL = 0.0188
+gamma_b0: id 913 -> KL = 0.0184
+gamma_b15: id 929 -> KL = 0.2950
+gamma_b15: id 904 -> KL = 0.2907
+Relative entropy step done: /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/output/figures/entropy/site_1043/xi1.0/kl_divergences_theta_gamma.csv
+Density-site selection done: /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/output/figures/entropy/site_1043/xi1.0/density_sites_from_relative_entropy.csv
+
+Program ends Sun May 31 02:03:04 CDT 2026
+Exit code: 0
+Elapsed time: 522 seconds

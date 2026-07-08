@@ -22,7 +22,7 @@ uses those derived prices, including the extra `xi=1` deterministic-price case
 needed by the common-price HMC figures. HMC sampling is submitted as one
 `(xi, price source, transfer)` command per job so transfer levels can run in
 parallel. The HMC stage also runs `relative-entropy` after HMC sampling, because
-Figure 16 reads `output/figures/entropy/site_1043/xi1.0/kl_divergences_theta_gamma.csv`
+Figure 17 reads `output/figures/entropy/site_1043/xi1.0/kl_divergences_theta_gamma.csv`
 and the HMC density figures use the companion `density_sites_from_relative_entropy.csv`
 to pick sites from the top KL-divergence results.
 The time-consistency stage runs the carrot-policy checks for `bf=3.75` and

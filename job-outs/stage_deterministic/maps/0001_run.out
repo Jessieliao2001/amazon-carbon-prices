@@ -1,0 +1,179 @@
+Command: Rscript rsrc/analysis/carbon_capture_curves/_masterfile.R
+Working directory: /Users/jessieliao/Documents/amazon-carbon-prices
+Program starts Sat Jul  4 00:06:53 2026
+
+
+> library(sf)
+
+> library(terra)
+
+> library(tidyverse)
+
+> calibration_path <- "data/calibration/gamma_calibration_1043_sites.Rdata"
+
+> load(calibration_path)
+
+> calib_vect <- vect(calib_1043)
+
+> sec_veg_age_candidates <- list.files("data/raw/mapbiomas/secondary_vegetation_age/", 
++     pattern = "2017.*\\.tif$", full.names = TRUE)
+
+> sec_veg_age_file <- sec_veg_age_candidates[grepl("mapbiomas_brazil_sv_age_2017\\.tif$", 
++     sec_veg_age_candidates)]
+
+> if (length(sec_veg_age_file) == 0 && length(sec_veg_age_candidates) == 
++     1) {
++     sec_veg_age_file <- sec_veg_age_candidates
++ }
+
+> if (length(sec_veg_age_file) != 1) {
++     stop(sprintf("Expected exactly one secondary vegetation age raster, got %d: %s", 
++         length(sec_ve .... [TRUNCATED] 
+
+> sec_veg_age_rst <- rast(sec_veg_age_file)
+
+> sec_veg_age_rst <- crop(sec_veg_age_rst, ext(project(calib_vect, 
++     sec_veg_age_rst)))
+|---------|---------|---------|---------|=========================================                                          
+> ext_overlaps <- function(a, b) {
++     av <- as.vector(a)
++     bv <- as.vector(b)
++     !(av[2] < bv[1] || av[1] > bv[2] || av[4] < bv[3] || av[3]  .... [TRUNCATED] 
+
+> study_extent_ll <- ext(sec_veg_age_rst)
+
+> agb_files <- list.files("data/raw/esa/above_ground_biomass/", 
++     pattern = "_ESACCI-BIOMASS-L4-AGB-MERGED-100m-2017-fv3.0.tif", 
++     full.name .... [TRUNCATED] 
+
+> agb_rasters <- map(agb_files, function(path) {
++     tile <- rast(path)
++     if (!ext_overlaps(ext(tile), study_extent_ll)) {
++         return(NULL .... [TRUNCATED] 
+
+> if (length(agb_rasters) == 0) {
++     stop("No AGB tiles overlap the study extent.")
++ }
+
+> combined_agb <- do.call(merge, agb_rasters)
+|---------|---------|---------|---------|=========================================                                          
+> rm(agb_rasters)
+
+> out_dir <- "data/calibration/carbon_capture_curves"
+
+> dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
+
+> sec_veg_age_agg <- aggregate(sec_veg_age_rst, fact = 4, 
++     fun = mean, na.rm = TRUE, filename = file.path(out_dir, "sec_veg_age_agg.tif"), 
++    .... [TRUNCATED] 
+|---------|---------|---------|---------|=========================================                                          
+> rm(sec_veg_age_rst)
+
+> agb_resamp <- resample(combined_agb, sec_veg_age_agg, 
++     method = "near", filename = file.path(out_dir, "resampled_agb_aggregated.tif"), 
++      .... [TRUNCATED] 
+|---------|---------|---------|---------|=========================================                                          |---------|---------|---------|---------|=========================================                                          
+> rm(combined_agb)
+
+> gamma_params_path <- "data/calibration/productivity_params_1043.csv"
+
+> gamma_params <- read.csv(gamma_params_path)
+
+> gamma_params$id <- seq_len(nrow(gamma_params))
+
+> calib_bayesian <- calib_1043 %>% select(id, geometry) %>% 
++     left_join(gamma_params %>% select(id, gamma_fit), by = "id")
+
+> gamma_resamp <- rasterize(project(vect(calib_bayesian), 
++     sec_veg_age_agg), sec_veg_age_agg, field = "gamma_fit", touches = TRUE, 
++     filena .... [TRUNCATED] 
+
+> n_rows <- nrow(sec_veg_age_agg)
+
+> chunk_size <- 500
+
+> chunks <- split(seq_len(n_rows), ceiling(seq_len(n_rows)/chunk_size))
+
+> combined_list <- vector("list", length(chunks))
+
+> for (i in seq_along(chunks)) {
++     rows <- chunks[[i]]
++     n <- max(rows) - min(rows) + 1
++     agb_vals <- values(agb_resamp, row = min(rows),  .... [TRUNCATED] 
+
+> combined_list <- combined_list[!sapply(combined_list, 
++     is.null)]
+
+> combined_df <- do.call(rbind, combined_list)
+
+> rm(combined_list)
+
+> gc()
+           used  (Mb) gc trigger   (Mb) limit (Mb)  max used   (Mb)
+Ncells  1880414 100.5    3430545  183.3         NA   2643241  141.2
+Vcells 52061316 397.2  149040829 1137.1      36864 186212750 1420.7
+
+> save(combined_df, file = file.path(out_dir, "combined_df.Rdata"))
+
+> library(tidyverse)
+
+> library(ggplot2)
+
+> load("data/calibration/carbon_capture_curves/combined_df.Rdata")
+
+> df <- combined_df %>% filter(!is.na(agb), !is.na(sec), 
++     !is.na(gamma)) %>% filter(sec > 0, sec <= 30) %>% mutate(ratio = agb/gamma, 
++     t = .... [TRUNCATED] 
+
+> rm(combined_df)
+
+> gc()
+           used  (Mb) gc trigger   (Mb) limit (Mb)  max used   (Mb)
+Ncells  1893367 101.2    3430545  183.3         NA   2643241  141.2
+Vcells 77901691 594.4  221087517 1686.8      36864 186212750 1420.7
+
+> m_dummy <- lm(ratio ~ 0 + factor(age_bin), data = df)
+
+> m_dummy_summary <- summary(m_dummy)
+
+> coefs <- coef(m_dummy)
+
+> ses <- m_dummy_summary$coefficients[, "Std. Error"]
+
+> emp_df <- tibble(age_bin = 1:30, mean_ratio = as.numeric(coefs[paste0("factor(age_bin)", 
++     1:30)]), se = as.numeric(ses[paste0("factor(age_bin) ..." ... [TRUNCATED] 
+
+> theo_045 <- tibble(age = 0:30, value = 1 - exp(-0.045 * 
++     (0:30)), type = "Theoretical (alpha=0.045)")
+
+> emp_plot <- emp_df %>% mutate(type = "Estimates from data")
+
+> dir.create("output/figures/carbon_capture", recursive = TRUE, 
++     showWarnings = FALSE)
+
+> p_main <- ggplot() + geom_line(data = emp_plot, aes(x = age_bin, 
++     y = mean_ratio, group = 1, color = "Estimates from data"), 
++     linewidth  .... [TRUNCATED] 
+
+> ggsave("output/figures/carbon_capture/gamma_secondary_vegetation.png", 
++     p_main, width = 8.5, height = 6)
+
+> cat("R2 =", m_dummy_summary$r.squared, "\n")
+R2 = 0.6601009 
+
+> cat("Adjusted R2 =", m_dummy_summary$adj.r.squared, 
++     "\n")
+Adjusted R2 = 0.6601002 
+
+> rm(df, m_dummy, m_dummy_summary, emp_df, emp_plot, 
++     theo_045, p_main)
+
+> gc()
+           used  (Mb) gc trigger   (Mb) limit (Mb)   max used   (Mb)
+Ncells  2061290 110.1   36482471 1948.4         NA   18688986  998.1
+Vcells 19910944 152.0  976647916 7451.3      36864 1219073944 9300.8
+carbon_capture_curves/_masterfile.R script: 306.303 sec elapsed
+
+Program ends Sat Jul  4 00:12:01 2026
+Exit code: 0
+Elapsed time: 0 days 00 hr 05 min 07 sec

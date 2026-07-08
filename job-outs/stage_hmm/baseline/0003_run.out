@@ -1,0 +1,12 @@
+Command: /opt/homebrew/Caskroom/miniforge/base/bin/python pysrc/scripts/productivity_correlation.py --sites 1043
+Working directory: /Users/jessieliao/Documents/amazon-carbon-prices
+Program starts Wed Jul  8 15:06:58 2026
+
+In-text check: productivity parameter correlation
+Source file: data/calibration/productivity_params_1043.csv
+Pearson correlation between gamma_fit and theta_fit = -0.2721352239863349
+Rounded manuscript value = -0.27
+
+Program ends Wed Jul  8 15:06:58 2026
+Exit code: 0
+Elapsed time: 0 days 00 hr 00 min 00 sec

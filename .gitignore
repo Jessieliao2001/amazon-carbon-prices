@@ -6,14 +6,31 @@
 # Keep selected audit logs that are used to regenerate paper results.
 job-outs/**
 !job-outs/
+!job-outs/custom_steps/
+!job-outs/custom_steps/productivity_correlation/
+!job-outs/custom_steps/productivity_correlation/*_run.out
+!job-outs/custom_steps/productivity_correlation/*_run.err
 !job-outs/stage_deterministic/
+!job-outs/stage_deterministic/deterministic/
+!job-outs/stage_deterministic/deterministic/*_run.out
+!job-outs/stage_deterministic/deterministic/*_run.err
+!job-outs/stage_deterministic/maps/
+!job-outs/stage_deterministic/maps/*_run.out
+!job-outs/stage_deterministic/maps/*_run.err
 !job-outs/stage_deterministic/shadow_prices_det/
 !job-outs/stage_deterministic/shadow_prices_det/*_run.out
 !job-outs/stage_deterministic/shadow_prices_det/*_run.err
 !job-outs/stage_deterministic/shadow_prices_det_delta_sensitivity/
 !job-outs/stage_deterministic/shadow_prices_det_delta_sensitivity/*_run.out
 !job-outs/stage_deterministic/shadow_prices_det_delta_sensitivity/*_run.err
+!job-outs/stage_hmm/
+!job-outs/stage_hmm/baseline/
+!job-outs/stage_hmm/baseline/*_run.out
+!job-outs/stage_hmm/baseline/*_run.err
 !job-outs/stage_hmc/
+!job-outs/stage_hmc/relative_entropy/
+!job-outs/stage_hmc/relative_entropy/*_run.out
+!job-outs/stage_hmc/relative_entropy/*_run.err
 !job-outs/stage_hmc/shadow_prices_hmc/
 !job-outs/stage_hmc/shadow_prices_hmc/*_run.out
 !job-outs/stage_hmc/shadow_prices_hmc/*_run.err
@@ -41,8 +58,8 @@ gams_file/mpc/computation
 gams_file/mpc/simulation
 
 # Stan executables
-adjusted
-baseline
+/adjusted
+/baseline
 stan_model/compiled_model.pkl
 *.hpp
 *.o

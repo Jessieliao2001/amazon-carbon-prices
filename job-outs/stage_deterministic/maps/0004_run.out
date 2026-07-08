@@ -1,0 +1,17 @@
+Command: Rscript rsrc/analysis/map_1043_det.R
+Working directory: /Users/jessieliao/Documents/amazon-carbon-prices
+Program starts Sat Jul  4 00:12:08 2026
+
+Reading layer `BASIN_LEVEL_2_PNRH' from data source 
+  `/Users/jessieliao/Documents/amazon-carbon-prices/data/raw/mapbiomas/basin' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 273 features and 23 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: -73.98921 ymin: -33.75086 xmax: -34.79317 ymax: 5.272224
+Geodetic CRS:  WGS 84
+mapsPrediction_1043SitesModel.R script: 15.419 sec elapsed
+
+Program ends Sat Jul  4 00:12:25 2026
+Exit code: 0
+Elapsed time: 0 days 00 hr 00 min 17 sec

@@ -1,0 +1,28 @@
+Command: /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/.venv/bin/python pysrc/sampling/baseline.py --sites 1043
+Working directory: /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices
+Program starts Fri May 29 01:01:35 CDT 2026
+
+                                                                                                                                                                                                                                                                                                                                
+Finished sampling! Time: 131.4148 seconds
+Checking sampler transitions treedepth.
+133 of 6000 (2.22%) transitions hit the maximum treedepth limit of 10, or 2^10 leapfrog steps.
+Trajectories that are prematurely terminated due to this limit will result in slow exploration.
+For optimal performance, increase this limit.
+
+Checking sampler transitions for divergences.
+No divergent transitions found.
+
+Checking E-BFMI - sampler transitions HMC potential energy.
+E-BFMI satisfactory.
+
+Rank-normalized split effective sample size satisfactory for all parameters.
+
+Rank-normalized split R-hat values satisfactory for all parameters.
+
+Processing complete.
+
+Results saved to /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/output/sampling/gurobi/1043sites/baseline/results.pcl
+
+Program ends Fri May 29 01:05:25 CDT 2026
+Exit code: 0
+Elapsed time: 230 seconds

@@ -129,6 +129,10 @@ def base_steps() -> dict[str, list[list[str]]]:
         "baseline": [
             [PY, "pysrc/sampling/baseline.py", "--sites", "1043"],
             [PY, "pysrc/sampling/baseline.py", "--sites", "78"],
+            [PY, "pysrc/scripts/productivity_correlation.py", "--sites", "1043"],
+        ],
+        "productivity-correlation": [
+            [PY, "pysrc/scripts/productivity_correlation.py", "--sites", "1043"]
         ],
         "derive-prices": [[PY, "pysrc/replication/derive_carbon_prices.py"]],
         "derive-prices-det": [[PY, "pysrc/replication/derive_carbon_prices.py"]],

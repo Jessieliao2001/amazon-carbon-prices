@@ -1,0 +1,17 @@
+Command: Rscript rsrc/analysis/calibration_maps_1043_sites.R
+Working directory: /Users/jessieliao/Documents/amazon-carbon-prices
+Program starts Sat Jul  4 00:12:01 2026
+
+Reading layer `BASIN_LEVEL_2_PNRH' from data source 
+  `/Users/jessieliao/Documents/amazon-carbon-prices/data/raw/mapbiomas/basin' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 273 features and 23 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: -73.98921 ymin: -33.75086 xmax: -34.79317 ymax: 5.272224
+Geodetic CRS:  WGS 84
+mapsCalibration_1043SitesModel.R script: 2.005 sec elapsed
+
+Program ends Sat Jul  4 00:12:04 2026
+Exit code: 0
+Elapsed time: 0 days 00 hr 00 min 03 sec

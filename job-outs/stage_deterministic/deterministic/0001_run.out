@@ -1,0 +1,860 @@
+Command: /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/.venv/bin/python pysrc/scripts/conduction_det.py
+Working directory: /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices
+Program starts Tue Jul  7 16:06:11 CDT 2026
+
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/51504920/tmpled2lj6e.pyomo.lp
+Reading time = 2.17 seconds
+x1: 417600 rows, 834801 columns, 2083271 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 417600 rows, 834801 columns and 2083271 nonzeros
+Model fingerprint: 0xa1592405
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 9e+02]
+  Objective range  [2e-04, 1e+03]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-06, 1e+00]
+  RHS range        [9e-11, 4e-01]
+Presolve removed 208947 rows and 209294 columns
+Presolve time: 0.82s
+Presolved: 208653 rows, 625507 columns, 1249571 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 1.21s
+
+Barrier statistics:
+ AA' NZ     : 6.241e+05
+ Factor NZ  : 6.773e+07 (roughly 900 MB of memory)
+ Factor Ops : 2.543e+10 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -1.71441391e+11  1.10640369e+11  1.04e+06 1.13e-13  1.00e+06     5s
+   1  -6.58589291e+10  6.33619394e+10  4.43e+04 3.08e+01  4.67e+04     7s
+   2  -3.05914629e+10  3.06514850e+10  4.48e+02 1.24e-01  5.43e+02     9s
+   3  -1.08843631e+10  1.09716646e+10  3.21e+00 1.34e-12  2.86e+01    11s
+   4  -2.40126015e+09  2.49873088e+09  2.67e-01 1.43e-12  5.95e+00    16s
+   5  -5.82514653e+08  6.48463517e+08  3.65e-02 2.42e-12  1.46e+00    21s
+   6  -9.63386337e+07  1.09527729e+08  2.74e-03 1.49e-12  2.41e-01    25s
+   7  -1.41216846e+07  1.68659569e+07  2.74e-09 1.53e-12  3.63e-02    30s
+   8  -2.07267835e+06  2.45482747e+06  2.58e-13 1.27e-12  5.30e-03    33s
+   9  -3.09798899e+05  3.76942077e+05  4.79e-14 2.76e-13  8.04e-04    35s
+  10  -4.70645340e+04  5.43269615e+04  1.78e-14 6.35e-14  1.19e-04    37s
+  11  -7.50147321e+03  8.48651650e+03  1.11e-14 1.03e-14  1.87e-05    38s
+  12  -1.61570532e+03  1.96137417e+03  9.40e-15 2.12e-15  4.19e-06    42s
+  13  -3.15911864e+02  8.76190970e+02  1.93e-15 6.66e-16  1.40e-06    44s
+  14   4.09722122e+01  4.72461904e+02  4.80e-16 6.66e-16  5.05e-07    46s
+  15   1.93272542e+02  3.11187744e+02  3.93e-16 6.66e-16  1.38e-07    48s
+  16   2.32573949e+02  2.76860041e+02  1.63e-16 8.88e-16  5.18e-08    50s
+  17   2.41308468e+02  2.71643523e+02  8.17e-17 6.66e-16  3.55e-08    52s
+  18   2.50891221e+02  2.66260667e+02  1.08e-16 6.66e-16  1.80e-08    54s
+  19   2.54174478e+02  2.64648565e+02  1.33e-16 6.66e-16  1.23e-08    56s
+  20   2.57880888e+02  2.62790116e+02  1.60e-16 6.66e-16  5.75e-09    58s
+  21   2.59115410e+02  2.62224185e+02  1.57e-16 6.66e-16  3.64e-09    59s
+  22   2.60187653e+02  2.61738622e+02  2.24e-16 6.66e-16  1.82e-09    61s
+  23   2.60705371e+02  2.61513281e+02  3.72e-16 6.66e-16  9.46e-10    63s
+  24   2.61008952e+02  2.61384141e+02  2.27e-16 8.88e-16  4.39e-10    65s
+  25   2.61125416e+02  2.61336984e+02  1.48e-16 6.66e-16  2.48e-10    67s
+  26   2.61232791e+02  2.61294078e+02  3.02e-16 6.66e-16  7.18e-11    69s
+  27   2.61257857e+02  2.61284260e+02  1.76e-15 6.66e-16  3.09e-11    71s
+  28   2.61268953e+02  2.61279973e+02  1.65e-15 8.88e-16  1.29e-11    73s
+  29   2.61274256e+02  2.61277933e+02  4.16e-15 6.66e-16  4.30e-12    75s
+  30   2.61276402e+02  2.61277110e+02  3.82e-15 8.88e-16  8.29e-13    77s
+  31   2.61276797e+02  2.61276959e+02  2.62e-15 8.88e-16  1.89e-13    79s
+  32   2.61276890e+02  2.61276923e+02  1.79e-15 8.88e-16  3.93e-14    81s
+  33   2.61276908e+02  2.61276916e+02  7.56e-16 6.66e-16  9.45e-15    83s
+
+Barrier solved model in 33 iterations and 82.62 seconds (15.18 work units)
+Optimal objective 2.61276908e+02
+
+Done! Time elapsed: 114.47762870788574 seconds.
+Results for pe =  6.8
+Max z_i at t=100 (b=0, pe=6.8) = 0.000451537244379032 billion ha (451537.244379032 ha), site=381
+First year after which total x_dot is decreasing (b=0, pe=6.8) = 194
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/51504920/tmpp1yk3phr.pyomo.lp
+Reading time = 2.17 seconds
+x1: 417600 rows, 834801 columns, 2083271 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 417600 rows, 834801 columns and 2083271 nonzeros
+Model fingerprint: 0x3c81e967
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 9e+02]
+  Objective range  [2e-04, 3e+03]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-06, 1e+00]
+  RHS range        [9e-11, 4e-01]
+Presolve removed 208947 rows and 209294 columns
+Presolve time: 0.81s
+Presolved: 208653 rows, 625507 columns, 1249571 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 1.44s
+
+Barrier statistics:
+ AA' NZ     : 6.241e+05
+ Factor NZ  : 6.773e+07 (roughly 900 MB of memory)
+ Factor Ops : 2.543e+10 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -2.65058726e+11  1.10640368e+11  1.04e+06 1.14e-13  1.00e+06     6s
+   1  -6.98182861e+10  6.33459525e+10  4.43e+04 3.08e+01  4.67e+04     7s
+   2  -3.06281511e+10  3.06437013e+10  4.48e+02 1.24e-01  5.43e+02     9s
+   3  -1.08836831e+10  1.09680639e+10  3.21e+00 1.47e-12  2.86e+01    12s
+   4  -2.40053030e+09  2.49668728e+09  2.66e-01 1.46e-12  5.94e+00    17s
+   5  -5.82588431e+08  6.47872924e+08  3.65e-02 3.52e-12  1.46e+00    21s
+   6  -9.64431938e+07  1.09365501e+08  2.74e-03 1.59e-12  2.41e-01    26s
+   7  -1.41721955e+07  1.68322045e+07  2.74e-09 1.86e-12  3.63e-02    31s
+   8  -2.09296572e+06  2.43789190e+06  2.80e-13 1.05e-12  5.30e-03    33s
+   9  -3.18690438e+05  3.74433169e+05  5.23e-14 2.93e-13  8.12e-04    35s
+  10  -5.07242091e+04  5.30234078e+04  2.37e-14 6.62e-14  1.21e-04    37s
+  11  -8.77724277e+03  8.02146898e+03  9.13e-15 9.83e-15  1.97e-05    39s
+  12  -1.57314916e+03  1.65523703e+03  8.08e-15 1.78e-15  3.78e-06    42s
+  13  -3.13859606e+02  6.07663622e+02  2.05e-15 1.78e-15  1.08e-06    45s
+  14   1.03424978e+02  3.56394428e+02  7.76e-16 1.78e-15  2.96e-07    48s
+  15   2.23007293e+02  3.15310717e+02  3.86e-16 1.33e-15  1.08e-07    50s
+  16   2.54471306e+02  3.05499546e+02  2.21e-16 1.33e-15  5.97e-08    52s
+  17   2.64693674e+02  3.02180501e+02  1.76e-16 1.33e-15  4.39e-08    54s
+  18   2.75438799e+02  2.98691532e+02  1.46e-16 1.33e-15  2.72e-08    56s
+  19   2.81652547e+02  2.96813139e+02  2.74e-16 8.88e-16  1.77e-08    58s
+  20   2.85137197e+02  2.95811526e+02  3.46e-16 1.78e-15  1.25e-08    59s
+  21   2.89600660e+02  2.94217963e+02  3.07e-16 1.78e-15  5.41e-09    61s
+  22   2.90779907e+02  2.93804862e+02  3.15e-16 1.33e-15  3.54e-09    63s
+  23   2.91786779e+02  2.93452345e+02  3.26e-16 1.33e-15  1.95e-09    65s
+  24   2.92464230e+02  2.93217135e+02  4.07e-16 2.22e-15  8.81e-10    67s
+  25   2.92840144e+02  2.93084892e+02  1.20e-15 1.33e-15  2.87e-10    68s
+  26   2.92961589e+02  2.93042276e+02  3.57e-15 1.78e-15  9.45e-11    70s
+  27   2.93002226e+02  2.93028091e+02  3.68e-15 1.33e-15  3.03e-11    72s
+  28   2.93014102e+02  2.93023955e+02  1.06e-15 1.78e-15  1.15e-11    74s
+  29   2.93019286e+02  2.93022153e+02  4.45e-16 1.78e-15  3.36e-12    75s
+  30   2.93019838e+02  2.93021962e+02  3.87e-16 1.33e-15  2.49e-12    77s
+  31   2.93021212e+02  2.93021484e+02  1.35e-15 1.78e-15  3.19e-13    79s
+  32   2.93021413e+02  2.93021415e+02  6.16e-16 1.78e-15  2.29e-15    81s
+
+Barrier solved model in 32 iterations and 80.67 seconds (14.90 work units)
+Optimal objective 2.93021413e+02
+
+Done! Time elapsed: 112.47774863243103 seconds.
+Results for pe =  16.8
+Max z_i at t=100 (b=10, pe=16.8) = 0.000446216649472668 billion ha (446216.649472668 ha), site=694
+First year after which total x_dot is decreasing (b=10, pe=16.8) = 188
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/51504920/tmpkh03hydq.pyomo.lp
+Reading time = 2.18 seconds
+x1: 417600 rows, 834801 columns, 2083271 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 417600 rows, 834801 columns and 2083271 nonzeros
+Model fingerprint: 0x499f368d
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 9e+02]
+  Objective range  [6e-04, 4e+03]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-06, 1e+00]
+  RHS range        [9e-11, 4e-01]
+Presolve removed 208947 rows and 209294 columns
+Presolve time: 0.81s
+Presolved: 208653 rows, 625507 columns, 1249571 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 1.52s
+
+Barrier statistics:
+ AA' NZ     : 6.241e+05
+ Factor NZ  : 6.773e+07 (roughly 900 MB of memory)
+ Factor Ops : 2.543e+10 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -3.11867393e+11  1.10640368e+11  1.04e+06 1.14e-13  1.00e+06     6s
+   1  -7.17977593e+10  6.33379614e+10  4.43e+04 3.08e+01  4.67e+04     8s
+   2  -3.06464936e+10  3.06398106e+10  4.48e+02 1.24e-01  5.43e+02    10s
+   3  -1.08833441e+10  1.09662653e+10  3.21e+00 1.76e-12  2.86e+01    12s
+   4  -2.40016359e+09  2.49566415e+09  2.66e-01 1.25e-12  5.94e+00    17s
+   5  -5.82623721e+08  6.47576276e+08  3.65e-02 1.62e-12  1.46e+00    22s
+   6  -9.64946788e+07  1.09283753e+08  2.74e-03 1.38e-12  2.41e-01    27s
+   7  -1.41975084e+07  1.68170571e+07  2.74e-09 1.92e-12  3.63e-02    31s
+   8  -2.10301710e+06  2.42963130e+06  2.70e-13 1.07e-12  5.31e-03    34s
+   9  -3.23052182e+05  3.73502068e+05  5.84e-14 3.12e-13  8.16e-04    36s
+  10  -5.23699145e+04  5.22427301e+04  1.91e-14 6.65e-14  1.22e-04    38s
+  11  -9.16386335e+03  7.67190450e+03  8.54e-15 8.60e-15  1.97e-05    40s
+  12  -2.09369014e+03  2.54261670e+03  5.78e-15 2.66e-15  5.43e-06    42s
+  13  -3.59060490e+02  6.57571108e+02  1.64e-15 1.78e-15  1.19e-06    45s
+  14  -8.73324240e+01  5.23037010e+02  1.15e-15 1.78e-15  7.15e-07    48s
+  15   1.48501183e+02  4.27762264e+02  6.67e-16 1.78e-15  3.27e-07    51s
+  16   2.53213579e+02  3.94837183e+02  4.43e-16 1.33e-15  1.66e-07    53s
+  17   3.03796605e+02  3.80564379e+02  3.73e-16 1.78e-15  8.99e-08    55s
+  18   3.18786995e+02  3.76980969e+02  3.84e-16 1.78e-15  6.81e-08    57s
+  19   3.29285914e+02  3.74285275e+02  6.75e-16 1.33e-15  5.27e-08    59s
+  20   3.41775300e+02  3.70805413e+02  3.74e-16 1.33e-15  3.40e-08    61s
+  21   3.49557963e+02  3.68731849e+02  4.08e-16 1.78e-15  2.24e-08    63s
+  22   3.53558959e+02  3.67822030e+02  1.85e-16 1.78e-15  1.67e-08    65s
+  23   3.58097216e+02  3.66281476e+02  4.37e-16 1.78e-15  9.58e-09    66s
+  24   3.59466971e+02  3.65823423e+02  2.63e-16 1.78e-15  7.44e-09    68s
+  25   3.61566918e+02  3.65130211e+02  5.07e-16 1.78e-15  4.17e-09    70s
+  26   3.63052061e+02  3.64609527e+02  1.87e-16 1.78e-15  1.82e-09    71s
+  27   3.63748981e+02  3.64366805e+02  4.60e-16 1.78e-15  7.23e-10    73s
+  28   3.63989428e+02  3.64282934e+02  8.73e-16 1.78e-15  3.44e-10    75s
+  29   3.64122925e+02  3.64236526e+02  1.93e-15 1.78e-15  1.33e-10    77s
+  30   3.64185684e+02  3.64214725e+02  3.11e-15 1.78e-15  3.40e-11    79s
+  31   3.64199137e+02  3.64210054e+02  9.58e-16 2.22e-15  1.28e-11    80s
+  32   3.64205942e+02  3.64207695e+02  4.48e-16 1.78e-15  2.05e-12    82s
+  33   3.64206934e+02  3.64207351e+02  4.55e-16 1.78e-15  4.88e-13    84s
+  34   3.64207232e+02  3.64207247e+02  3.21e-16 2.22e-15  1.72e-14    86s
+  35   3.64207243e+02  3.64207243e+02  1.23e-16 1.78e-15  2.99e-17    88s
+
+Barrier solved model in 35 iterations and 87.54 seconds (16.44 work units)
+Optimal objective 3.64207243e+02
+
+Done! Time elapsed: 118.78714036941528 seconds.
+Results for pe =  21.8
+Max z_i at t=100 (b=15, pe=21.8) = 0.000319700304799442 billion ha (319700.304799442 ha), site=694
+First year after which total x_dot is decreasing (b=15, pe=21.8) = 182
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/51504920/tmps21uqsls.pyomo.lp
+Reading time = 2.18 seconds
+x1: 417600 rows, 834801 columns, 2083271 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 417600 rows, 834801 columns and 2083271 nonzeros
+Model fingerprint: 0x06bb99e6
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 9e+02]
+  Objective range  [2e-04, 5e+03]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-06, 1e+00]
+  RHS range        [9e-11, 4e-01]
+Presolve removed 208947 rows and 209294 columns
+Presolve time: 0.81s
+Presolved: 208653 rows, 625507 columns, 1249571 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 1.19s
+
+Barrier statistics:
+ AA' NZ     : 6.241e+05
+ Factor NZ  : 6.773e+07 (roughly 900 MB of memory)
+ Factor Ops : 2.543e+10 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -3.58676061e+11  1.10640368e+11  1.04e+06 1.13e-13  1.00e+06     6s
+   1  -7.37770955e+10  6.33299720e+10  4.43e+04 3.08e+01  4.67e+04     7s
+   2  -3.06648350e+10  3.06359207e+10  4.48e+02 1.24e-01  5.43e+02     9s
+   3  -1.08830055e+10  1.09644675e+10  3.20e+00 1.41e-12  2.86e+01    11s
+   4  -2.39979602e+09  2.49464047e+09  2.66e-01 1.45e-12  5.94e+00    16s
+   5  -5.82658206e+08  6.47279004e+08  3.65e-02 3.34e-12  1.46e+00    21s
+   6  -9.65457491e+07  1.09201715e+08  2.74e-03 1.45e-12  2.41e-01    26s
+   7  -1.42226786e+07  1.68018777e+07  2.74e-09 1.58e-12  3.63e-02    31s
+   8  -2.11296535e+06  2.42137967e+06  2.65e-13 9.69e-13  5.31e-03    33s
+   9  -3.27317050e+05  3.72555509e+05  6.43e-14 2.99e-13  8.19e-04    35s
+  10  -5.39227173e+04  5.15288243e+04  2.05e-14 5.85e-14  1.23e-04    37s
+  11  -1.05206903e+04  7.41215487e+03  8.79e-15 1.12e-14  2.10e-05    39s
+  12  -2.79836344e+03  3.30633001e+03  5.83e-15 7.11e-15  7.15e-06    42s
+  13  -4.15870075e+02  9.72614171e+02  2.58e-15 1.78e-15  1.63e-06    45s
+  14   1.67150692e+02  5.34328570e+02  8.29e-16 1.78e-15  4.30e-07    47s
+  15   3.14317226e+02  4.82747988e+02  4.69e-16 1.78e-15  1.97e-07    50s
+  16   3.60759581e+02  4.68115328e+02  3.11e-16 1.78e-15  1.26e-07    52s
+  17   3.90390512e+02  4.58978204e+02  2.08e-16 2.66e-15  8.03e-08    53s
+  18   4.11223590e+02  4.52635970e+02  3.13e-16 1.78e-15  4.85e-08    55s
+  19   4.20662053e+02  4.49715602e+02  3.12e-16 1.78e-15  3.40e-08    57s
+  20   4.30887174e+02  4.46578051e+02  3.13e-16 1.78e-15  1.84e-08    59s
+  21   4.36912283e+02  4.44641780e+02  2.96e-16 1.78e-15  9.05e-09    61s
+  22   4.39432793e+02  4.43842724e+02  3.78e-16 1.78e-15  5.16e-09    62s
+  23   4.40619995e+02  4.43453181e+02  7.23e-16 1.78e-15  3.32e-09    64s
+  24   4.42046605e+02  4.42974367e+02  3.42e-16 1.78e-15  1.09e-09    66s
+  25   4.42479359e+02  4.42829052e+02  3.81e-16 2.22e-15  4.09e-10    68s
+  26   4.42667017e+02  4.42765259e+02  1.79e-14 1.78e-15  1.15e-10    70s
+  27   4.42720786e+02  4.42746979e+02  3.38e-15 1.78e-15  3.07e-11    71s
+  28   4.42736743e+02  4.42741537e+02  2.45e-15 1.78e-15  5.61e-12    73s
+  29   4.42739930e+02  4.42740450e+02  6.69e-15 1.78e-15  6.09e-13    75s
+  30   4.42740298e+02  4.42740325e+02  3.19e-14 2.66e-15  3.07e-14    77s
+  31   4.42740318e+02  4.42740318e+02  8.39e-14 2.66e-15  8.19e-17    79s
+
+Barrier solved model in 31 iterations and 78.54 seconds (14.25 work units)
+Optimal objective 4.42740318e+02
+
+Done! Time elapsed: 110.09597516059875 seconds.
+Results for pe =  26.8
+Max z_i at t=100 (b=20, pe=26.8) = 0.000179666027915224 billion ha (179666.027915224 ha), site=1028
+First year after which total x_dot is decreasing (b=20, pe=26.8) = 168
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/51504920/tmpo_u111k4.pyomo.lp
+Reading time = 2.18 seconds
+x1: 417600 rows, 834801 columns, 2083271 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 417600 rows, 834801 columns and 2083271 nonzeros
+Model fingerprint: 0x4cbda20c
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 9e+02]
+  Objective range  [9e-04, 6e+03]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-06, 1e+00]
+  RHS range        [9e-11, 4e-01]
+Presolve removed 208947 rows and 209294 columns
+Presolve time: 0.82s
+Presolved: 208653 rows, 625507 columns, 1249571 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 0.87s
+
+Barrier statistics:
+ AA' NZ     : 6.241e+05
+ Factor NZ  : 6.773e+07 (roughly 900 MB of memory)
+ Factor Ops : 2.543e+10 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -4.05484728e+11  1.10640367e+11  1.04e+06 1.14e-13  1.00e+06     5s
+   1  -7.57562948e+10  6.33219841e+10  4.43e+04 3.08e+01  4.67e+04     7s
+   2  -3.06831754e+10  3.06320315e+10  4.48e+02 1.24e-01  5.43e+02     9s
+   3  -1.08826671e+10  1.09626705e+10  3.20e+00 1.48e-12  2.86e+01    11s
+   4  -2.39942785e+09  2.49361650e+09  2.66e-01 1.43e-12  5.94e+00    16s
+   5  -5.82692101e+08  6.46981336e+08  3.65e-02 2.76e-12  1.46e+00    21s
+   6  -9.65965028e+07  1.09119502e+08  2.74e-03 1.63e-12  2.41e-01    25s
+   7  -1.42477204e+07  1.67866818e+07  2.74e-09 2.78e-12  3.63e-02    30s
+   8  -2.12281321e+06  2.41313963e+06  2.96e-13 9.48e-13  5.31e-03    33s
+   9  -3.31486438e+05  3.71590982e+05  6.44e-14 2.57e-13  8.23e-04    35s
+  10  -5.53660271e+04  5.07606282e+04  1.50e-14 6.37e-14  1.24e-04    37s
+  11  -1.18269731e+04  7.16971719e+03  6.88e-15 1.33e-14  2.22e-05    40s
+  12  -3.03564780e+03  3.65692062e+03  6.79e-15 6.22e-15  7.84e-06    42s
+  13  -4.82240620e+02  1.16622475e+03  1.75e-15 3.55e-15  1.93e-06    44s
+  14   8.30710565e+01  7.40145173e+02  9.41e-16 1.78e-15  7.69e-07    47s
+  15   3.24991700e+02  6.09917653e+02  4.60e-16 1.78e-15  3.34e-07    48s
+  16   4.00375364e+02  5.75467511e+02  3.35e-16 2.66e-15  2.05e-07    50s
+  17   4.43828100e+02  5.56958392e+02  4.45e-16 1.78e-15  1.32e-07    52s
+  18   4.67902887e+02  5.47115966e+02  2.85e-16 1.78e-15  9.27e-08    54s
+  19   4.89419791e+02  5.38653269e+02  2.30e-16 2.66e-15  5.76e-08    55s
+  20   4.97546258e+02  5.35455735e+02  4.02e-16 2.66e-15  4.44e-08    57s
+  21   5.11386053e+02  5.30200269e+02  3.36e-16 2.66e-15  2.20e-08    59s
+  22   5.15482563e+02  5.28671314e+02  4.24e-16 2.66e-15  1.54e-08    61s
+  23   5.21418911e+02  5.26528495e+02  5.78e-16 1.78e-15  5.98e-09    63s
+  24   5.23038720e+02  5.25939844e+02  8.23e-16 2.66e-15  3.40e-09    65s
+  25   5.24722698e+02  5.25361250e+02  3.12e-16 2.66e-15  7.48e-10    66s
+  26   5.25099024e+02  5.25232915e+02  6.42e-15 2.66e-15  1.57e-10    68s
+  27   5.25183101e+02  5.25204431e+02  3.69e-15 2.66e-15  2.50e-11    70s
+  28   5.25198546e+02  5.25199200e+02  3.89e-15 3.55e-15  7.66e-13    72s
+  29   5.25199027e+02  5.25199037e+02  3.30e-14 3.55e-15  1.17e-14    74s
+
+Barrier solved model in 29 iterations and 74.37 seconds (13.62 work units)
+Optimal objective 5.25199027e+02
+
+Done! Time elapsed: 105.66341400146484 seconds.
+Results for pe =  31.8
+Max z_i at t=100 (b=25, pe=31.8) = 2.11862458142161e-11 billion ha (0.0211862458142161 ha), site=1028
+First year after which total x_dot is decreasing (b=25, pe=31.8) = 7
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/51504920/tmpzrq1lter.pyomo.lp
+Reading time = 2.17 seconds
+x1: 417600 rows, 834801 columns, 2083271 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 417600 rows, 834801 columns and 2083271 nonzeros
+Model fingerprint: 0x499f368d
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 9e+02]
+  Objective range  [6e-04, 4e+03]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-06, 1e+00]
+  RHS range        [9e-11, 4e-01]
+Presolve removed 208947 rows and 209294 columns
+Presolve time: 0.82s
+Presolved: 208653 rows, 625507 columns, 1249571 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 1.54s
+
+Barrier statistics:
+ AA' NZ     : 6.241e+05
+ Factor NZ  : 6.773e+07 (roughly 900 MB of memory)
+ Factor Ops : 2.543e+10 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -3.11867393e+11  1.10640368e+11  1.04e+06 1.14e-13  1.00e+06     6s
+   1  -7.17977593e+10  6.33379614e+10  4.43e+04 3.08e+01  4.67e+04     8s
+   2  -3.06464936e+10  3.06398106e+10  4.48e+02 1.24e-01  5.43e+02    10s
+   3  -1.08833441e+10  1.09662653e+10  3.21e+00 1.76e-12  2.86e+01    12s
+   4  -2.40016359e+09  2.49566415e+09  2.66e-01 1.25e-12  5.94e+00    17s
+   5  -5.82623721e+08  6.47576276e+08  3.65e-02 1.62e-12  1.46e+00    21s
+   6  -9.64946788e+07  1.09283753e+08  2.74e-03 1.38e-12  2.41e-01    26s
+   7  -1.41975084e+07  1.68170571e+07  2.74e-09 1.92e-12  3.63e-02    31s
+   8  -2.10301710e+06  2.42963130e+06  2.70e-13 1.07e-12  5.31e-03    34s
+   9  -3.23052182e+05  3.73502068e+05  5.84e-14 3.12e-13  8.16e-04    36s
+  10  -5.23699145e+04  5.22427301e+04  1.91e-14 6.65e-14  1.22e-04    38s
+  11  -9.16386335e+03  7.67190450e+03  8.54e-15 8.60e-15  1.97e-05    39s
+  12  -2.09369014e+03  2.54261670e+03  5.78e-15 2.66e-15  5.43e-06    42s
+  13  -3.59060490e+02  6.57571108e+02  1.64e-15 1.78e-15  1.19e-06    45s
+  14  -8.73324240e+01  5.23037010e+02  1.15e-15 1.78e-15  7.15e-07    47s
+  15   1.48501183e+02  4.27762264e+02  6.67e-16 1.78e-15  3.27e-07    50s
+  16   2.53213579e+02  3.94837183e+02  4.43e-16 1.33e-15  1.66e-07    52s
+  17   3.03796605e+02  3.80564379e+02  3.73e-16 1.78e-15  8.99e-08    55s
+  18   3.18786995e+02  3.76980969e+02  3.84e-16 1.78e-15  6.81e-08    57s
+  19   3.29285914e+02  3.74285275e+02  6.75e-16 1.33e-15  5.27e-08    59s
+  20   3.41775300e+02  3.70805413e+02  3.74e-16 1.33e-15  3.40e-08    60s
+  21   3.49557963e+02  3.68731849e+02  4.08e-16 1.78e-15  2.24e-08    62s
+  22   3.53558959e+02  3.67822030e+02  1.85e-16 1.78e-15  1.67e-08    64s
+  23   3.58097216e+02  3.66281476e+02  4.37e-16 1.78e-15  9.58e-09    66s
+  24   3.59466971e+02  3.65823423e+02  2.63e-16 1.78e-15  7.44e-09    68s
+  25   3.61566918e+02  3.65130211e+02  5.07e-16 1.78e-15  4.17e-09    70s
+  26   3.63052061e+02  3.64609527e+02  1.87e-16 1.78e-15  1.82e-09    71s
+  27   3.63748981e+02  3.64366805e+02  4.60e-16 1.78e-15  7.23e-10    73s
+  28   3.63989428e+02  3.64282934e+02  8.73e-16 1.78e-15  3.44e-10    75s
+  29   3.64122925e+02  3.64236526e+02  1.93e-15 1.78e-15  1.33e-10    77s
+  30   3.64185684e+02  3.64214725e+02  3.11e-15 1.78e-15  3.40e-11    78s
+  31   3.64199137e+02  3.64210054e+02  9.58e-16 2.22e-15  1.28e-11    80s
+  32   3.64205942e+02  3.64207695e+02  4.48e-16 1.78e-15  2.05e-12    82s
+  33   3.64206934e+02  3.64207351e+02  4.55e-16 1.78e-15  4.88e-13    84s
+  34   3.64207232e+02  3.64207247e+02  3.21e-16 2.22e-15  1.72e-14    86s
+  35   3.64207243e+02  3.64207243e+02  1.23e-16 1.78e-15  2.99e-17    88s
+
+Barrier solved model in 35 iterations and 87.59 seconds (16.44 work units)
+Optimal objective 3.64207243e+02
+
+Done! Time elapsed: 119.38917970657349 seconds.
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/51504920/tmplbh1pn5t.pyomo.lp
+Reading time = 2.18 seconds
+x1: 417600 rows, 834801 columns, 2083271 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 417600 rows, 834801 columns and 2083271 nonzeros
+Model fingerprint: 0x4cbda20c
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 9e+02]
+  Objective range  [9e-04, 6e+03]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-06, 1e+00]
+  RHS range        [9e-11, 4e-01]
+Presolve removed 208947 rows and 209294 columns
+Presolve time: 0.81s
+Presolved: 208653 rows, 625507 columns, 1249571 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 1.40s
+
+Barrier statistics:
+ AA' NZ     : 6.241e+05
+ Factor NZ  : 6.773e+07 (roughly 900 MB of memory)
+ Factor Ops : 2.543e+10 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -4.05484728e+11  1.10640367e+11  1.04e+06 1.14e-13  1.00e+06     6s
+   1  -7.57562948e+10  6.33219841e+10  4.43e+04 3.08e+01  4.67e+04     8s
+   2  -3.06831754e+10  3.06320315e+10  4.48e+02 1.24e-01  5.43e+02    10s
+   3  -1.08826671e+10  1.09626705e+10  3.20e+00 1.48e-12  2.86e+01    12s
+   4  -2.39942785e+09  2.49361650e+09  2.66e-01 1.43e-12  5.94e+00    17s
+   5  -5.82692101e+08  6.46981336e+08  3.65e-02 2.76e-12  1.46e+00    21s
+   6  -9.65965028e+07  1.09119502e+08  2.74e-03 1.63e-12  2.41e-01    26s
+   7  -1.42477204e+07  1.67866818e+07  2.74e-09 2.78e-12  3.63e-02    31s
+   8  -2.12281321e+06  2.41313963e+06  2.96e-13 9.48e-13  5.31e-03    33s
+   9  -3.31486438e+05  3.71590982e+05  6.44e-14 2.57e-13  8.23e-04    35s
+  10  -5.53660271e+04  5.07606282e+04  1.50e-14 6.37e-14  1.24e-04    37s
+  11  -1.18269731e+04  7.16971719e+03  6.88e-15 1.33e-14  2.22e-05    40s
+  12  -3.03564780e+03  3.65692062e+03  6.79e-15 6.22e-15  7.84e-06    43s
+  13  -4.82240620e+02  1.16622475e+03  1.75e-15 3.55e-15  1.93e-06    45s
+  14   8.30710565e+01  7.40145173e+02  9.41e-16 1.78e-15  7.69e-07    47s
+  15   3.24991700e+02  6.09917653e+02  4.60e-16 1.78e-15  3.34e-07    49s
+  16   4.00375364e+02  5.75467511e+02  3.35e-16 2.66e-15  2.05e-07    51s
+  17   4.43828100e+02  5.56958392e+02  4.45e-16 1.78e-15  1.32e-07    52s
+  18   4.67902887e+02  5.47115966e+02  2.85e-16 1.78e-15  9.27e-08    54s
+  19   4.89419791e+02  5.38653269e+02  2.30e-16 2.66e-15  5.76e-08    56s
+  20   4.97546258e+02  5.35455735e+02  4.02e-16 2.66e-15  4.44e-08    58s
+  21   5.11386053e+02  5.30200269e+02  3.36e-16 2.66e-15  2.20e-08    60s
+  22   5.15482563e+02  5.28671314e+02  4.24e-16 2.66e-15  1.54e-08    61s
+  23   5.21418911e+02  5.26528495e+02  5.78e-16 1.78e-15  5.98e-09    63s
+  24   5.23038720e+02  5.25939844e+02  8.23e-16 2.66e-15  3.40e-09    65s
+  25   5.24722698e+02  5.25361250e+02  3.12e-16 2.66e-15  7.48e-10    67s
+  26   5.25099024e+02  5.25232915e+02  6.42e-15 2.66e-15  1.57e-10    69s
+  27   5.25183101e+02  5.25204431e+02  3.69e-15 2.66e-15  2.50e-11    71s
+  28   5.25198546e+02  5.25199200e+02  3.89e-15 3.55e-15  7.66e-13    73s
+  29   5.25199027e+02  5.25199037e+02  3.30e-14 3.55e-15  1.17e-14    75s
+
+Barrier solved model in 29 iterations and 75.28 seconds (13.62 work units)
+Optimal objective 5.25199027e+02
+
+Done! Time elapsed: 106.35122418403625 seconds.
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/51504920/tmpc9ylx8hd.pyomo.lp
+Reading time = 0.15 seconds
+x1: 31600 rows, 62801 columns, 156166 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 31600 rows, 62801 columns and 156166 nonzeros
+Model fingerprint: 0xf5347c59
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+03]
+  Objective range  [3e-03, 1e+03]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-04, 1e+00]
+  RHS range        [6e-07, 5e+00]
+Presolve removed 15602 rows and 15604 columns
+Presolve time: 0.06s
+Presolved: 15998 rows, 47197 columns, 93916 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 0.03s
+
+Barrier statistics:
+ AA' NZ     : 4.672e+04
+ Factor NZ  : 4.833e+05 (roughly 30 MB of memory)
+ Factor Ops : 3.322e+07 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -1.14951606e+11  1.10640256e+11  7.89e+04 5.68e-14  1.00e+06     0s
+   1  -6.65619643e+10  6.63280954e+10  5.74e+03 5.33e+01  8.23e+04     0s
+   2  -2.89025953e+10  2.89857435e+10  6.75e+01 5.42e-01  1.82e+03     0s
+   3  -5.46370050e+09  5.55253043e+09  6.12e-01 1.42e-12  1.78e+02     0s
+   4  -1.35010026e+09  1.44125726e+09  8.39e-02 1.71e-12  4.42e+01     0s
+   5  -1.94697734e+08  2.16766086e+08  8.39e-08 1.18e-12  6.40e+00     0s
+   6  -2.81084511e+07  3.16597058e+07  1.23e-13 8.17e-13  9.29e-01     0s
+   7  -4.12915819e+06  4.94605876e+06  2.38e-14 3.79e-13  1.41e-01     0s
+   8  -6.09174270e+05  7.18351258e+05  1.22e-14 9.58e-14  2.06e-02     0s
+   9  -9.18828586e+04  1.09193352e+05  3.91e-15 1.03e-14  3.13e-03     0s
+  10  -1.42625733e+04  1.58748354e+04  1.22e-15 2.66e-15  4.69e-04     0s
+  11  -2.26397665e+03  2.56988850e+03  5.35e-16 8.88e-16  7.52e-05     0s
+  12  -2.88690574e+02  7.58116944e+02  2.62e-16 4.44e-16  1.63e-05     1s
+  13   6.98577462e+01  3.38170923e+02  7.81e-17 6.66e-16  4.17e-06     1s
+  14   1.88436666e+02  2.60173706e+02  6.17e-17 5.55e-16  1.12e-06     1s
+  15   2.22985976e+02  2.41446116e+02  1.58e-16 4.44e-16  2.87e-07     1s
+  16   2.27412283e+02  2.39869869e+02  2.15e-16 6.66e-16  1.94e-07     1s
+  17   2.33114243e+02  2.37425030e+02  1.75e-16 6.66e-16  6.70e-08     1s
+  18   2.33232215e+02  2.37367002e+02  1.68e-16 6.66e-16  6.43e-08     1s
+  19   2.33452086e+02  2.37262406e+02  1.52e-16 4.44e-16  5.93e-08     1s
+  20   2.35021455e+02  2.36520483e+02  1.02e-16 6.66e-16  2.33e-08     1s
+  21   2.35584657e+02  2.36273041e+02  8.16e-17 6.66e-16  1.07e-08     1s
+  22   2.35771509e+02  2.36192876e+02  1.54e-16 4.44e-16  6.55e-09     1s
+  23   2.35951761e+02  2.36116496e+02  1.24e-16 4.44e-16  2.56e-09     1s
+  24   2.35973603e+02  2.36107244e+02  9.74e-17 4.44e-16  2.08e-09     1s
+  25   2.36046006e+02  2.36076920e+02  1.67e-16 6.66e-16  4.81e-10     1s
+  26   2.36060227e+02  2.36071004e+02  1.27e-16 6.66e-16  1.68e-10     1s
+  27   2.36065838e+02  2.36068684e+02  1.22e-16 4.44e-16  4.43e-11     1s
+  28   2.36067233e+02  2.36068109e+02  1.98e-16 6.66e-16  1.36e-11     1s
+  29   2.36067801e+02  2.36067877e+02  1.80e-16 6.66e-16  1.18e-12     1s
+  30   2.36067847e+02  2.36067858e+02  3.98e-16 6.66e-16  1.61e-13     1s
+
+Barrier solved model in 30 iterations and 1.14 seconds (0.44 work units)
+Optimal objective 2.36067847e+02
+
+Done! Time elapsed: 4.715150356292725 seconds.
+Results for pe =  6.7
+Max z_i at t=100 (b=0, pe=6.7) = 0.00712842081875398 billion ha (7128420.81875398 ha), site=39
+First year after which total x_dot is decreasing (b=0, pe=6.7) = 189
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/51504920/tmpkquosj0j.pyomo.lp
+Reading time = 0.15 seconds
+x1: 31600 rows, 62801 columns, 156166 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 31600 rows, 62801 columns and 156166 nonzeros
+Model fingerprint: 0x933d1468
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+03]
+  Objective range  [6e-03, 3e+03]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-04, 1e+00]
+  RHS range        [6e-07, 5e+00]
+Presolve removed 15602 rows and 15604 columns
+Presolve time: 0.06s
+Presolved: 15998 rows, 47197 columns, 93916 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 0.03s
+
+Barrier statistics:
+ AA' NZ     : 4.672e+04
+ Factor NZ  : 4.833e+05 (roughly 30 MB of memory)
+ Factor Ops : 3.322e+07 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -1.21825135e+11  1.10640255e+11  7.89e+04 1.13e-13  1.00e+06     0s
+   1  -6.70645040e+10  6.63242963e+10  5.74e+03 5.33e+01  8.23e+04     0s
+   2  -2.89104036e+10  2.89834205e+10  6.75e+01 5.42e-01  1.82e+03     0s
+   3  -5.46496119e+09  5.55178668e+09  6.13e-01 1.41e-12  1.78e+02     0s
+   4  -1.35112776e+09  1.44131517e+09  8.41e-02 1.19e-12  4.42e+01     0s
+   5  -1.94963420e+08  2.16679698e+08  8.41e-08 1.38e-12  6.40e+00     0s
+   6  -2.81928624e+07  3.16094968e+07  1.34e-13 6.93e-13  9.30e-01     0s
+   7  -4.16004298e+06  4.92749510e+06  2.54e-14 3.66e-13  1.41e-01     0s
+   8  -6.21170780e+05  7.11411311e+05  7.30e-15 7.14e-14  2.07e-02     0s
+   9  -9.69020828e+04  1.07640822e+05  4.36e-15 1.04e-14  3.18e-03     0s
+  10  -1.61903186e+04  1.53151690e+04  1.93e-15 2.66e-15  4.90e-04     0s
+  11  -2.98111228e+03  2.11747872e+03  5.19e-16 8.88e-16  7.93e-05     1s
+  12  -6.22897152e+02  9.59550860e+02  2.40e-16 1.78e-15  2.46e-05     1s
+  13  -1.95682664e+00  4.52796723e+02  8.50e-17 1.33e-15  7.07e-06     1s
+  14   2.03144318e+02  3.16243698e+02  2.86e-17 1.11e-15  1.76e-06     1s
+  15   2.55673031e+02  2.96449360e+02  6.64e-17 1.33e-15  6.34e-07     1s
+  16   2.72313423e+02  2.89576175e+02  8.91e-17 1.33e-15  2.68e-07     1s
+  17   2.77003871e+02  2.87650682e+02  4.48e-17 1.78e-15  1.66e-07     1s
+  18   2.81273918e+02  2.85918949e+02  4.80e-17 1.33e-15  7.22e-08     1s
+  19   2.82905405e+02  2.85269026e+02  1.09e-16 1.33e-15  3.68e-08     1s
+  20   2.84120461e+02  2.84799251e+02  1.78e-16 8.88e-16  1.06e-08     1s
+  21   2.84417759e+02  2.84685848e+02  1.48e-16 1.33e-15  4.17e-09     1s
+  22   2.84566766e+02  2.84630491e+02  1.19e-16 1.33e-15  9.91e-10     1s
+  23   2.84608435e+02  2.84615094e+02  3.89e-16 1.78e-15  1.04e-10     1s
+  24   2.84613112e+02  2.84613375e+02  2.18e-16 1.33e-15  4.10e-12     1s
+  25   2.84613303e+02  2.84613305e+02  6.76e-16 1.33e-15  2.33e-14     1s
+
+Barrier solved model in 25 iterations and 1.00 seconds (0.38 work units)
+Optimal objective 2.84613303e+02
+
+Done! Time elapsed: 4.389468431472778 seconds.
+Results for pe =  16.7
+Max z_i at t=100 (b=10, pe=16.7) = 0.00214976466488354 billion ha (2149764.66488354 ha), site=77
+First year after which total x_dot is decreasing (b=10, pe=16.7) = 188
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/51504920/tmpuv4i2zf2.pyomo.lp
+Reading time = 0.15 seconds
+x1: 31600 rows, 62801 columns, 156166 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 31600 rows, 62801 columns and 156166 nonzeros
+Model fingerprint: 0xc714929f
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+03]
+  Objective range  [1e-03, 4e+03]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-04, 1e+00]
+  RHS range        [6e-07, 5e+00]
+Presolve removed 15602 rows and 15604 columns
+Presolve time: 0.06s
+Presolved: 15998 rows, 47197 columns, 93916 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 0.03s
+
+Barrier statistics:
+ AA' NZ     : 4.672e+04
+ Factor NZ  : 4.833e+05 (roughly 30 MB of memory)
+ Factor Ops : 3.322e+07 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -1.25261900e+11  1.10640255e+11  7.89e+04 1.01e-13  1.00e+06     0s
+   1  -6.73157646e+10  6.63223969e+10  5.74e+03 5.33e+01  8.23e+04     0s
+   2  -2.89143085e+10  2.89822600e+10  6.75e+01 5.42e-01  1.82e+03     0s
+   3  -5.46559454e+09  5.55141794e+09  6.14e-01 1.23e-12  1.78e+02     0s
+   4  -1.35164101e+09  1.44134370e+09  8.42e-02 1.02e-12  4.42e+01     0s
+   5  -1.95096080e+08  2.16636482e+08  8.42e-08 1.24e-12  6.40e+00     0s
+   6  -2.82349287e+07  3.15844666e+07  1.33e-13 9.34e-13  9.30e-01     0s
+   7  -4.17548148e+06  4.91908661e+06  2.98e-14 4.39e-13  1.41e-01     0s
+   8  -6.27039938e+05  7.07960826e+05  8.66e-15 7.50e-14  2.08e-02     0s
+   9  -9.92859171e+04  1.07073487e+05  3.63e-15 1.14e-14  3.21e-03     0s
+  10  -1.69282212e+04  1.49212635e+04  2.55e-15 2.66e-15  4.95e-04     0s
+  11  -3.53479899e+03  2.21965221e+03  5.53e-16 1.78e-15  8.95e-05     1s
+  12  -7.79876480e+02  1.18289777e+03  2.44e-16 2.66e-15  3.05e-05     1s
+  13   1.80884649e+01  5.49486296e+02  8.02e-17 1.78e-15  8.26e-06     1s
+  14   2.58013843e+02  3.96254278e+02  4.88e-17 1.33e-15  2.15e-06     1s
+  15   3.17828874e+02  3.75622248e+02  7.39e-17 1.78e-15  8.99e-07     1s
+  16   3.39153103e+02  3.67433381e+02  1.55e-16 1.33e-15  4.40e-07     1s
+  17   3.50319210e+02  3.63188557e+02  1.34e-16 1.33e-15  2.00e-07     1s
+  18   3.54630395e+02  3.61623133e+02  1.63e-16 1.78e-15  1.09e-07     1s
+  19   3.57838246e+02  3.60439088e+02  1.63e-16 1.33e-15  4.04e-08     1s
+  20   3.58858100e+02  3.60063540e+02  1.87e-16 1.33e-15  1.87e-08     1s
+  21   3.59630534e+02  3.59785778e+02  2.71e-16 1.78e-15  2.41e-09     1s
+  22   3.59721868e+02  3.59753017e+02  9.22e-16 1.33e-15  4.84e-10     1s
+  23   3.59742934e+02  3.59745501e+02  1.20e-15 1.78e-15  3.99e-11     1s
+  24   3.59744816e+02  3.59744830e+02  2.82e-15 1.78e-15  2.10e-13     1s
+  25   3.59744826e+02  3.59744826e+02  5.04e-16 1.78e-15  2.10e-16     1s
+
+Barrier solved model in 25 iterations and 0.88 seconds (0.36 work units)
+Optimal objective 3.59744826e+02
+
+Done! Time elapsed: 3.735910415649414 seconds.
+Results for pe =  21.7
+Max z_i at t=100 (b=15, pe=21.7) = 0.000860690504945494 billion ha (860690.504945494 ha), site=76
+First year after which total x_dot is decreasing (b=15, pe=21.7) = 174
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/51504920/tmpb1g683u1.pyomo.lp
+Reading time = 0.15 seconds
+x1: 31600 rows, 62801 columns, 156166 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 31600 rows, 62801 columns and 156166 nonzeros
+Model fingerprint: 0xa3d1f285
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+03]
+  Objective range  [1e-02, 5e+03]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-04, 1e+00]
+  RHS range        [6e-07, 5e+00]
+Presolve removed 15602 rows and 15604 columns
+Presolve time: 0.05s
+Presolved: 15998 rows, 47197 columns, 93916 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 0.03s
+
+Barrier statistics:
+ AA' NZ     : 4.672e+04
+ Factor NZ  : 4.833e+05 (roughly 30 MB of memory)
+ Factor Ops : 3.322e+07 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -1.28698664e+11  1.10640254e+11  7.89e+04 5.68e-14  1.00e+06     0s
+   1  -6.75670190e+10  6.63204977e+10  5.74e+03 5.33e+01  8.23e+04     0s
+   2  -2.89182163e+10  2.89811024e+10  6.75e+01 5.42e-01  1.82e+03     0s
+   3  -5.46623867e+09  5.55106007e+09  6.15e-01 1.24e-12  1.78e+02     0s
+   4  -1.35215633e+09  1.44137438e+09  8.43e-02 1.16e-12  4.42e+01     0s
+   5  -1.95228962e+08  2.16593619e+08  8.43e-08 1.21e-12  6.40e+00     0s
+   6  -2.82769519e+07  3.15595414e+07  1.27e-13 7.91e-13  9.31e-01     0s
+   7  -4.19083746e+06  4.91073047e+06  3.02e-14 4.16e-13  1.42e-01     0s
+   8  -6.32817440e+05  7.04536410e+05  8.75e-15 6.71e-14  2.08e-02     0s
+   9  -1.01555664e+05  1.06443109e+05  4.92e-15 1.19e-14  3.23e-03     0s
+  10  -1.75460055e+04  1.44990442e+04  1.24e-15 2.22e-15  4.98e-04     0s
+  11  -3.53906437e+03  2.10520978e+03  4.31e-16 1.78e-15  8.78e-05     1s
+  12  -6.24024612e+02  1.08379435e+03  1.65e-16 3.55e-15  2.66e-05     1s
+  13   1.36433685e+02  5.67851520e+02  6.38e-17 1.78e-15  6.71e-06     1s
+  14   3.48627278e+02  4.72674488e+02  9.84e-17 1.78e-15  1.93e-06     1s
+  15   4.09124576e+02  4.52314869e+02  2.83e-16 1.78e-15  6.72e-07     1s
+  16   4.16887940e+02  4.49467384e+02  1.54e-16 1.78e-15  5.07e-07     1s
+  17   4.30820793e+02  4.44346118e+02  1.16e-16 2.66e-15  2.10e-07     1s
+  18   4.36612169e+02  4.42197506e+02  1.74e-16 1.78e-15  8.69e-08     1s
+  19   4.38766899e+02  4.41411973e+02  1.65e-16 1.78e-15  4.11e-08     1s
+  20   4.40027814e+02  4.40960272e+02  1.47e-16 1.78e-15  1.45e-08     1s
+  21   4.40603839e+02  4.40753929e+02  3.38e-16 1.78e-15  2.33e-09     1s
+  22   4.40692555e+02  4.40722397e+02  3.09e-16 1.78e-15  4.64e-10     1s
+  23   4.40714045e+02  4.40714806e+02  3.92e-16 1.78e-15  1.18e-11     1s
+  24   4.40714600e+02  4.40714611e+02  6.33e-16 1.78e-15  1.68e-13     1s
+  25   4.40714608e+02  4.40714608e+02  6.34e-16 2.66e-15  3.10e-16     1s
+
+Barrier solved model in 25 iterations and 0.98 seconds (0.38 work units)
+Optimal objective 4.40714608e+02
+
+Done! Time elapsed: 4.003484487533569 seconds.
+Results for pe =  26.7
+Max z_i at t=100 (b=20, pe=26.7) = 0.000860690371293346 billion ha (860690.371293346 ha), site=76
+First year after which total x_dot is decreasing (b=20, pe=26.7) = 121
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/51504920/tmpw5ho5gho.pyomo.lp
+Reading time = 0.15 seconds
+x1: 31600 rows, 62801 columns, 156166 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 31600 rows, 62801 columns and 156166 nonzeros
+Model fingerprint: 0x29e34b8b
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+03]
+  Objective range  [2e-03, 6e+03]
+  QObjective range [2e+03, 2e+05]
+  Bounds range     [3e-04, 1e+00]
+  RHS range        [6e-07, 5e+00]
+Presolve removed 15602 rows and 15604 columns
+Presolve time: 0.05s
+Presolved: 15998 rows, 47197 columns, 93916 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 0.03s
+
+Barrier statistics:
+ AA' NZ     : 4.672e+04
+ Factor NZ  : 4.833e+05 (roughly 30 MB of memory)
+ Factor Ops : 3.322e+07 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -1.32135428e+11  1.10640254e+11  7.89e+04 5.68e-14  1.00e+06     0s
+   1  -6.78182672e+10  6.63185986e+10  5.74e+03 5.33e+01  8.23e+04     0s
+   2  -2.89221242e+10  2.89799449e+10  6.75e+01 5.42e-01  1.82e+03     0s
+   3  -5.46688260e+09  5.55070209e+09  6.15e-01 1.21e-12  1.78e+02     0s
+   4  -1.35267074e+09  1.44140418e+09  8.44e-02 1.30e-12  4.43e+01     0s
+   5  -1.95361640e+08  2.16550652e+08  8.44e-08 1.43e-12  6.41e+00     0s
+   6  -2.83188707e+07  3.15346520e+07  1.29e-13 8.83e-13  9.31e-01     0s
+   7  -4.20610241e+06  4.90241565e+06  3.28e-14 3.08e-13  1.42e-01     0s
+   8  -6.38503177e+05  7.01135622e+05  7.51e-15 5.17e-14  2.08e-02     0s
+   9  -1.03714218e+05  1.05748736e+05  3.99e-15 9.46e-15  3.26e-03     0s
+  10  -1.80451893e+04  1.39913160e+04  1.83e-15 2.66e-15  4.98e-04     0s
+  11  -2.87171405e+03  2.20460451e+03  5.16e-16 2.22e-15  7.89e-05     1s
+  12  -4.65955441e+02  9.71689029e+02  1.98e-16 2.66e-15  2.24e-05     1s
+  13   2.24576482e+02  6.46590077e+02  7.03e-17 2.66e-15  6.56e-06     1s
+  14   4.45595255e+02  5.49795028e+02  4.47e-17 1.78e-15  1.62e-06     1s
+  15   4.93323283e+02  5.35067902e+02  3.05e-16 2.66e-15  6.49e-07     1s
+  16   5.07914102e+02  5.29861375e+02  1.39e-16 2.66e-15  3.41e-07     1s
+  17   5.16616387e+02  5.26733933e+02  3.22e-16 1.78e-15  1.57e-07     1s
+  18   5.20894276e+02  5.25219016e+02  1.63e-16 1.78e-15  6.73e-08     1s
+  19   5.22763952e+02  5.24562846e+02  5.56e-16 1.78e-15  2.80e-08     1s
+  20   5.23730503e+02  5.24224702e+02  1.16e-16 1.78e-15  7.69e-09     1s
+  21   5.24038932e+02  5.24117333e+02  9.54e-17 1.78e-15  1.22e-09     1s
+  22   5.24090414e+02  5.24099408e+02  3.32e-16 2.66e-15  1.40e-10     1s
+  23   5.24096892e+02  5.24097153e+02  4.70e-16 2.66e-15  4.05e-12     1s
+  24   5.24097085e+02  5.24097086e+02  1.90e-16 2.66e-15  4.09e-15     1s
+
+Barrier solved model in 24 iterations and 0.93 seconds (0.37 work units)
+Optimal objective 5.24097085e+02
+
+Done! Time elapsed: 4.170496702194214 seconds.
+Results for pe =  31.7
+Max z_i at t=100 (b=25, pe=31.7) = 4.73188136554651e-13 billion ha (0.000473188136554651 ha), site=76
+First year after which total x_dot is decreasing (b=25, pe=31.7) = 7
+det All done!
+
+Program ends Tue Jul  7 16:37:31 CDT 2026
+Exit code: 0
+Elapsed time: 1880 seconds

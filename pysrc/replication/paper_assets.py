@@ -91,15 +91,21 @@ def read_or_build_paper_figure_inputs(
 
 
 def generated_figure_name_candidates(basename: str) -> list[str]:
-    candidates = [basename]
     mpc_match = re.fullmatch(
         r"mpc_landallocation_b_(?P<b>\d+)_baseline_same_ylim\.png",
         basename,
     )
     if mpc_match:
+        candidates = [basename]
         candidates.append(f"mpc_landallocation_b_{mpc_match.group('b')}_adjust.png")
-    elif basename.endswith("_same_ylim.png"):
-        candidates.append(basename.replace("_same_ylim.png", ".png"))
+    elif basename.startswith("aggregate_percentage_Z_") and basename.endswith(
+        "_same_ylim.png"
+    ):
+        candidates = [basename.replace("_same_ylim.png", ".png"), basename]
+    else:
+        candidates = [basename]
+        if basename.endswith("_same_ylim.png"):
+            candidates.append(basename.replace("_same_ylim.png", ".png"))
 
     return list(dict.fromkeys(candidates))
 
