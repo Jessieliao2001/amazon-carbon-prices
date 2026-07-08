@@ -461,26 +461,32 @@ def trajectory_diff(
         ) * 100
 
     time = list(range(0, len(result_zper_hmc)))
-    plt.figure(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=(10, 6))
 
-    plt.plot(time, result_zper_hmc, label=rf"$\xi$={xi}", linewidth=4, color="blue")
-    plt.plot(time, result_zper_det, label=r"$\xi=\infty$", linewidth=4, color="red")
-    plt.xlabel("years", fontsize=16)
-    plt.ylabel("Z(%)", fontsize=16)
-    plt.xlim(0, max(time) + 2)
+    ax.plot(time, result_zper_hmc, label=rf"$\xi$={xi}", linewidth=4, color="blue")
+    ax.plot(time, result_zper_det, label=r"$\xi=\infty$", linewidth=4, color="red")
+    ax.set_xlabel("years", fontsize=16)
+    ax.set_ylabel("Z(%)", fontsize=16)
+    ax.set_xlim(0, max(time) + 2)
     # if b==0:
     #     plt.ylim(12,24)
     #     if xi==0.5:
     #         plt.ylim(10, 26)
-    plt.ylim(0,24)
-    plt.legend(loc="upper left", ncol=5, frameon=False, fontsize=16)
+    ax.legend(loc="upper left", ncol=5, frameon=False, fontsize=16)
     output_path = (
         output_folder
         + f"/aggregate_percentage_Z_b{b}_pehmc_{pe_hmc}_pedet_{pe_det}_xi_{xi}.png"
     )
-    plt.savefig(output_path)
-    plt.savefig(output_path.replace(".png", "_same_ylim.png"))
-    plt.show()
+
+    is_figure11 = b == 0 and np.isclose(float(xi), 1.0) and np.isclose(pe_hmc, pe_det)
+    figure_ylim = (12, 24) if is_figure11 else (0, 24)
+
+    ax.set_ylim(*figure_ylim)
+    fig.savefig(output_path)
+
+    ax.set_ylim(0, 24)
+    fig.savefig(output_path.replace(".png", "_same_ylim.png"))
+    plt.close(fig)
 
     return
 
