@@ -1,0 +1,90 @@
+Command: /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/.venv/bin/python pysrc/bash/shadow_price.py --id 78 --xi 10000 --sites 1043 --delta 0.03
+Working directory: /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices
+Program starts Thu Jul  2 12:53:11 CDT 2026
+
+Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
+Solving the optimization problem...
+Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
+Read LP format model from file /scratch/local/jobs/51374976/tmpoy8snbjh.pyomo.lp
+Reading time = 2.18 seconds
+x1: 417600 rows, 834801 columns, 2083271 nonzeros
+Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
+
+CPU model: Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 48 physical cores, 48 logical processors, using up to 32 threads
+
+Optimize a model with 417600 rows, 834801 columns and 2083271 nonzeros
+Model fingerprint: 0xc4f4d5d0
+Model has 400 quadratic objective terms
+Coefficient statistics:
+  Matrix range     [1e+00, 9e+02]
+  Objective range  [3e-05, 2e+03]
+  QObjective range [3e+02, 2e+05]
+  Bounds range     [2e-06, 1e+00]
+  RHS range        [6e-10, 4e-01]
+Presolve removed 209011 rows and 209422 columns
+Presolve time: 0.82s
+Presolved: 208589 rows, 625379 columns, 1249315 nonzeros
+Presolved model has 400 quadratic objective terms
+Ordering time: 1.03s
+
+Barrier statistics:
+ AA' NZ     : 6.239e+05
+ Factor NZ  : 6.769e+07 (roughly 900 MB of memory)
+ Factor Ops : 2.541e+10 (less than 1 second per iteration)
+ Threads    : 32
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -1.70772484e+11  1.09202732e+11  1.04e+06 1.13e-13  1.00e+06     5s
+   1  -1.28114624e+11  1.09557598e+11  3.16e+05 2.23e+02  3.23e+05     7s
+   2  -1.52604960e+11  1.52350866e+11  5.85e+03 3.90e+00  6.98e+03     9s
+   3  -7.59588629e+10  7.60499324e+10  2.94e+01 1.67e-12  2.09e+02    11s
+   4  -1.34186292e+10  1.35224652e+10  1.27e+00 4.16e-12  3.27e+01    14s
+   5  -3.15443713e+09  3.26445298e+09  1.92e-01 1.92e-12  7.67e+00    18s
+   6  -7.01352807e+08  7.69025912e+08  2.92e-02 3.63e-12  1.74e+00    23s
+   7  -1.35622190e+08  1.51414416e+08  2.86e-03 2.04e-12  3.37e-01    27s
+   8  -1.97470874e+07  2.30128270e+07  2.86e-09 1.93e-12  5.01e-02    32s
+   9  -2.89179585e+06  3.41677414e+06  4.94e-13 1.51e-12  7.39e-03    36s
+  10  -4.29587753e+05  5.17958941e+05  1.98e-13 3.83e-13  1.11e-03    38s
+  11  -6.51917190e+04  7.71991979e+04  7.28e-14 7.12e-14  1.67e-04    41s
+  12  -1.03995910e+04  1.18295321e+04  3.76e-14 1.17e-14  2.60e-05    42s
+  13  -2.42173992e+03  2.28019469e+03  1.47e-14 3.92e-15  5.51e-06    46s
+  14  -7.61878698e+02  1.22070972e+03  1.13e-14 8.88e-16  2.32e-06    48s
+  15  -1.63653251e+02  3.79152984e+02  5.20e-15 1.11e-15  6.36e-07    51s
+  16  -3.48506104e+01  1.95958989e+02  2.49e-15 1.11e-15  2.70e-07    54s
+  17   1.58710155e+01  1.45340045e+02  1.47e-15 6.66e-16  1.52e-07    56s
+  18   5.43642300e+01  1.14394773e+02  8.82e-16 8.88e-16  7.03e-08    58s
+  19   6.93748583e+01  1.04269725e+02  6.20e-16 8.88e-16  4.09e-08    60s
+  20   8.02860395e+01  9.75709402e+01  4.06e-16 6.66e-16  2.02e-08    62s
+  21   8.34708186e+01  9.58599453e+01  2.94e-16 8.88e-16  1.45e-08    64s
+  22   8.71865331e+01  9.39505757e+01  2.10e-16 6.66e-16  7.92e-09    65s
+  23   8.90759251e+01  9.30497893e+01  1.48e-16 8.88e-16  4.65e-09    67s
+  24   9.02627815e+01  9.25254981e+01  1.81e-16 8.88e-16  2.65e-09    69s
+  25   9.08555926e+01  9.22630383e+01  2.10e-16 8.88e-16  1.65e-09    71s
+  26   9.13602631e+01  9.20458193e+01  6.29e-16 8.88e-16  8.03e-10    73s
+  27   9.13780455e+01  9.20381207e+01  5.82e-16 8.88e-16  7.73e-10    74s
+  28   9.15498294e+01  9.19648026e+01  4.18e-16 8.88e-16  4.86e-10    76s
+  29   9.17051999e+01  9.19003095e+01  3.30e-16 8.88e-16  2.28e-10    78s
+  30   9.17206491e+01  9.18940216e+01  2.67e-16 8.88e-16  2.03e-10    80s
+  31   9.17928534e+01  9.18650490e+01  2.65e-16 8.88e-16  8.45e-11    82s
+  32   9.17939100e+01  9.18646329e+01  2.62e-16 8.88e-16  8.28e-11    83s
+  33   9.17950407e+01  9.18641878e+01  2.56e-16 8.88e-16  8.10e-11    85s
+  34   9.18014797e+01  9.18616363e+01  2.21e-16 8.88e-16  7.04e-11    87s
+  35   9.18223063e+01  9.18534589e+01  3.63e-16 8.88e-16  3.65e-11    89s
+  36   9.18384914e+01  9.18471816e+01  3.84e-15 1.11e-15  1.02e-11    91s
+  37   9.18417623e+01  9.18459354e+01  1.60e-15 8.88e-16  4.89e-12    92s
+  38   9.18440008e+01  9.18450841e+01  1.66e-15 8.88e-16  1.27e-12    94s
+  39   9.18445129e+01  9.18448901e+01  2.61e-16 8.88e-16  4.42e-13    96s
+  40   9.18447139e+01  9.18448139e+01  4.12e-16 8.88e-16  1.17e-13    98s
+  41   9.18447801e+01  9.18447889e+01  1.43e-16 1.11e-15  1.03e-14   100s
+
+Barrier solved model in 41 iterations and 100.46 seconds (18.71 work units)
+Optimal objective 9.18447801e+01
+
+Done! Time elapsed: 132.49118089675903 seconds.
+min_result -0.4869481477438691 min_pe 7.8
+
+Program ends Thu Jul  2 12:58:01 CDT 2026
+Exit code: 0
+Elapsed time: 290 seconds

@@ -1,12 +1,12 @@
 Command: /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/.venv/bin/python pysrc/bash/shadow_price.py --id 70 --xi 10000 --sites 78
 Working directory: /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices
-Program starts Fri May 22 01:59:27 CDT 2026
+Program starts Tue Jul  7 16:02:14 CDT 2026
 
 Data successfully loaded from /project/lhansen/HMC_rep26_robust_mac/amazon-carbon-prices/data/calibration
 Solving the optimization problem...
 Set parameter TokenServer to value "licenses.rcc.uchicago.edu"
-Read LP format model from file /scratch/local/jobs/49992699/tmp_fk_r5c_.pyomo.lp
-Reading time = 0.15 seconds
+Read LP format model from file /scratch/local/jobs/51504918/tmpi0gvg0ab.pyomo.lp
+Reading time = 0.16 seconds
 x1: 31600 rows, 62801 columns, 156166 nonzeros
 Gurobi Optimizer version 11.0.0 build v11.0.0rc2 (linux64 - "CentOS Linux 8")
 
@@ -23,7 +23,7 @@ Coefficient statistics:
   Bounds range     [2e-04, 1e+00]
   RHS range        [8e-07, 6e+00]
 Presolve removed 15601 rows and 15602 columns
-Presolve time: 0.05s
+Presolve time: 0.06s
 Presolved: 15999 rows, 47199 columns, 93920 nonzeros
 Presolved model has 400 quadratic objective terms
 Ordering time: 0.03s
@@ -45,8 +45,8 @@ Iter       Primal          Dual         Primal    Dual     Compl     Time
    6  -2.83184919e+07  3.19876277e+07  1.29e-13 9.89e-13  9.38e-01     0s
    7  -4.16617875e+06  5.01415650e+06  2.26e-14 4.30e-13  1.43e-01     0s
    8  -6.15555550e+05  7.27373399e+05  8.36e-15 1.14e-13  2.09e-02     0s
-   9  -9.31757130e+04  1.10822750e+05  3.41e-15 2.31e-14  3.17e-03     0s
-  10  -1.46012913e+04  1.60149310e+04  2.25e-15 2.40e-15  4.76e-04     0s
+   9  -9.31757130e+04  1.10822750e+05  3.41e-15 2.31e-14  3.17e-03     1s
+  10  -1.46012913e+04  1.60149310e+04  2.25e-15 2.40e-15  4.76e-04     1s
   11  -2.40764106e+03  2.50078562e+03  6.80e-16 8.88e-16  7.63e-05     1s
   12  -4.38792610e+02  8.08239247e+02  2.24e-16 4.44e-16  1.94e-05     1s
   13  -3.25511973e+01  2.73268456e+02  1.27e-16 4.44e-16  4.76e-06     1s
@@ -67,12 +67,12 @@ Iter       Primal          Dual         Primal    Dual     Compl     Time
   28   1.50789087e+02  1.50789462e+02  5.30e-16 6.66e-16  5.84e-12     1s
   29   1.50789346e+02  1.50789355e+02  1.05e-15 8.88e-16  1.39e-13     1s
 
-Barrier solved model in 29 iterations and 1.20 seconds (0.43 work units)
+Barrier solved model in 29 iterations and 1.22 seconds (0.43 work units)
 Optimal objective 1.50789346e+02
 
-Done! Time elapsed: 5.007125377655029 seconds.
+Done! Time elapsed: 4.719880819320679 seconds.
 min_result -0.04240044040475324 min_pe 7.0
 
-Program ends Fri May 22 01:59:54 CDT 2026
+Program ends Tue Jul  7 16:02:47 CDT 2026
 Exit code: 0
-Elapsed time: 27 seconds
+Elapsed time: 33 seconds

@@ -1,0 +1,2 @@
+context,model,sites,xi,delta,price_model,pee,metric,abs_metric,source_kind,source_file
+parameter_ambiguity,det,1043,inf,0.03,,4.9,0.008818550684546839,0.008818550684546839,shadow_price_local_log,job-outs/stage_deterministic/shadow_prices_det_delta_sensitivity/0005_run.out

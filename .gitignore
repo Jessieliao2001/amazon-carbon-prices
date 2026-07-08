@@ -10,6 +10,9 @@ job-outs/**
 !job-outs/stage_deterministic/shadow_prices_det/
 !job-outs/stage_deterministic/shadow_prices_det/*_run.out
 !job-outs/stage_deterministic/shadow_prices_det/*_run.err
+!job-outs/stage_deterministic/shadow_prices_det_delta_sensitivity/
+!job-outs/stage_deterministic/shadow_prices_det_delta_sensitivity/*_run.out
+!job-outs/stage_deterministic/shadow_prices_det_delta_sensitivity/*_run.err
 !job-outs/stage_hmc/
 !job-outs/stage_hmc/shadow_prices_hmc/
 !job-outs/stage_hmc/shadow_prices_hmc/*_run.out
