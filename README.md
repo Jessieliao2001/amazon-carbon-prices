@@ -1040,7 +1040,7 @@ the table below records the program and line-number mapping checked by JPE.
 | Figure 9c | `pysrc/analysis/figures.py` | 404 | Reproduced |
 | Figure 9d | `pysrc/analysis/figures.py` | 344 | Reproduced |
 | Figure 10 | `pysrc/analysis/map.py` | 114 | Reproduced |
-| Figure 11 | `pysrc/analysis/figures.py` | 482 | Reproduced; minor y-axis scale difference noted by JPE |
+| Figure 11 | `pysrc/analysis/figures.py` | 482 | Reproduced |
 | Figure 12a | `pysrc/analysis/map.py` | 114 | Reproduced |
 | Figure 12b | `pysrc/analysis/map.py` | 114 | Reproduced |
 | Figure 13a | `pysrc/analysis/figures.py` | 483 | Reproduced |
