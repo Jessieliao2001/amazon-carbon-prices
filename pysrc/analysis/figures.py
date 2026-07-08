@@ -485,7 +485,7 @@ def trajectory_diff(
     fig.savefig(output_path)
 
     ax.set_ylim(0, 24)
-    fig.savefig(output_path.replace(".png", "_same_ylim.png"))
+    fig.savefig(output_path)
     plt.close(fig)
 
     return
