@@ -101,7 +101,7 @@ def generated_figure_name_candidates(basename: str) -> list[str]:
     elif basename.startswith("aggregate_percentage_Z_") and basename.endswith(
         "_same_ylim.png"
     ):
-        candidates = [basename.replace("_same_ylim.png", ".png"), basename]
+        candidates = [basename, basename.replace("_same_ylim.png", ".png")]
     else:
         candidates = [basename]
         if basename.endswith("_same_ylim.png"):

@@ -178,12 +178,7 @@ def _generated_table_name(name: str) -> str:
 
 def _generated_figure_name(figure: str, source: Path) -> str:
     figure_number = int(figure.removeprefix("Figure ").strip())
-    source_name = source.name
-    if source_name.startswith("aggregate_percentage_Z_") and source_name.endswith(
-        "_same_ylim.png"
-    ):
-        source_name = source_name.replace("_same_ylim.png", ".png")
-    return f"Figure{figure_number}_{source_name}"
+    return f"Figure{figure_number}_{source.name}"
 
 
 def _active_numeric_rows(path: Path) -> list[list[str]]:
