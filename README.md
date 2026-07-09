@@ -5,7 +5,7 @@ post-processing code for the Amazon carbon-prices manuscript. The replication
 workflow is organized around a single driver, `run.sh`, and the exhibit audit
 files in `replication/`.
 
-Manuscript authors and affiliations, in manuscript order:
+Manuscript authors and affiliations:
 
 - Juliano Assunção (Climate Policy Initiative and PUC-Rio)
 - Lars Peter Hansen (University of Chicago)
@@ -14,36 +14,37 @@ Manuscript authors and affiliations, in manuscript order:
 
 ## Acknowledgments
 
-This Git repository was built by Jiaying Liao (Jessie) based on an earlier repository that included work by Pengyu Chen, Leonardo Gomes, Patricio Hernandez, Zhaoyang Xu, and Daniel Zhao.
+This Git repository was prepared by Jiaying Liao (Jessie), building on an
+earlier repository that included work by Pengyu Chen, Leonardo Gomes, Patricio
+Hernandez, Zhaoyang Xu, and Daniel Zhao.
 
 The package is structured to be usable both on a local machine and on a server
-or cluster. Local runs execute commands directly. Server runs can submit the
-same steps through Slurm.
+or cluster. Local runs execute commands directly. On a server or cluster, the
+same steps can be submitted through Slurm.
 
-## Status Of JPE Reproducibility Check
+## Journal Reproducibility Check Status
 
-This table summarizes the JPE Data Editor report dated June 30, 2026. All
-feasible exhibits reproduced by the JPE team were acceptable; components not
-run by JPE were limited by computational constraints for the JPE Data Editor.
+This section documents the scope of the reproducibility check reported by the
+JPE Data Editor on June 30, 2026. It records which components were run during
+the journal reproducibility check and which components were not run because of
+computational constraints.
 
-| Component | Status in JPE check | Reason or notes |
+| Component | Status in reproducibility check | Notes |
 | --- | --- | --- |
-| Environment setup | Completed after Linux dependency fixes | See the Linux setup notes below for the support libraries and compiler settings used by the replicator. |
-| Full end-to-end pipeline | Not run by JPE Data Editor | Computational constraints for the JPE Data Editor. |
-| Data cleaning: `rsrc/cleaning/_masterfile.R` | Not run by JPE Data Editor | Computational constraints for the JPE Data Editor. |
-| Data processing: `rsrc/processing/_masterfile.R` | Not run by JPE Data Editor | Computational constraints for the JPE Data Editor. |
-| Calibration: `rsrc/calibration/_masterfile.R` | Not run by JPE Data Editor | Computational constraints for the JPE Data Editor. |
+| Environment setup | Completed after Linux dependency fixes | See the Linux setup notes below. |
+| Full end-to-end pipeline | Not run | Computational constraints for the JPE Data Editor. |
+| Data cleaning: `rsrc/cleaning/_masterfile.R` | Not run | Computational constraints for the JPE Data Editor. |
+| Data processing: `rsrc/processing/_masterfile.R` | Not run | Computational constraints for the JPE Data Editor. |
+| Calibration: `rsrc/calibration/_masterfile.R` | Not run | Computational constraints for the JPE Data Editor. |
 | Post-processing-only run | Completed | `./run.sh --steps postprocess-only --backend local`. |
-| Figures 1-22 | Reproduced | All feasible figures looked similar to the paper version. |
-| Tables 1-25 | Reproduced | All feasible tables were reproduced. |
-| Figure 11 | Reproduced with minor visual difference | The JPE report notes a y-axis scale difference; the plot and numbers match. |
-| In-text numbers not tied to tables or figures | Fully mapped below | The README lists each item from the report and the replication evidence. |
+| Figures and tables | Reproduced | All feasible figures and tables were reproduced; Figure 11 had a minor y-axis scale difference, while the plot and numbers matched. |
+| In-text numbers not tied to tables or figures | Documented below | The README lists each item from the report and the corresponding replication evidence. |
 
 ## Quick Start
 
-Most users should use a local machine for R data/plot steps and a Slurm server
-for the computationally heavy Python/Gurobi/CmdStan steps. The full workflow is
-controlled by one entry point, `run.sh`.
+Most users should use a local machine for R data and plotting steps and a
+Slurm server for the computationally heavy Python/Gurobi/CmdStan steps. The
+full workflow is controlled by one entry point, `run.sh`.
 
 ```bash
 git clone <repo-url>
@@ -82,7 +83,7 @@ Before any long run, inspect the exact plan without executing commands:
 ./run.sh --steps all --backend slurm --slurm-account pi-<pi_account_name> --run-r-on-slurm --dry-run
 ```
 
-## Choosing Local Or Server Runs
+## Choosing Local or Server Runs
 
 | Use case | Recommended run location | Command pattern |
 | --- | --- | --- |
@@ -92,13 +93,13 @@ Before any long run, inspect the exact plan without executing commands:
 | Server has R and `renv` restored | Run everything on Slurm | `./run.sh --steps all --backend slurm --slurm-account <account> --run-r-on-slurm` |
 | Heavy outputs already exist | Refresh tables, manifests, and `results_in_paper/` locally | `./run.sh --steps postprocess-only --backend local` |
 
-## Workflow Overview And Runtime
+## Workflow Overview and Runtime
 
 The table below summarizes what each stage does, whether it needs R, and the
 approximate runtime observed in the completed replication logs. Times are
 hardware- and queue-dependent. The `observed wall time` column reflects the
-logged wall-clock span when parallel jobs were allowed to run together; the
-heavy MPC stage would take much longer if run strictly serially.
+logged wall-clock span when parallel jobs ran concurrently; the heavy MPC stage
+would take much longer if run strictly serially.
 
 | Stage | Main tools | Needs R? | Parallel? | Observed wall time | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -112,8 +113,8 @@ heavy MPC stage would take much longer if run strictly serially.
 
 With enough Slurm parallelism, the completed logs imply an end-to-end run of
 roughly two days after environment setup and data placement are ready. The same
-commands can run locally, but a one-worker local run is not practical for a fresh
-full replication: the MPC Figure 14 simulation jobs alone accumulated more than
+commands can run locally, but a single-worker local run is not practical for a
+fresh full replication: the MPC Figure 14 simulation jobs alone accumulated more than
 2,400 job-hours across parallel tasks. For local verification, prefer
 `postprocess-only`, R map refreshes, or one stage at a time.
 
@@ -154,7 +155,7 @@ rebuilt. The only named steps that call `Rscript` are `data`, `maps`, and
   assets.
   The previous top-level `scripts` layout has been folded into `pysrc/` so
   Python code lives under one importable package tree.
-- `replication/figure1/`: repo-internal World Bank inputs and
+- `replication/figure1/`: World Bank inputs included in the repository and
   `FIGURE1_DOCUMENTATION.md` notes for reproducing Figure 1 through
   `pysrc/scripts/figure1.py`.
 - `job-outs/`: generated local or Slurm logs. The audit logs used to derive
@@ -175,8 +176,8 @@ rebuilt. The only named steps that call `Rscript` are `data`, `maps`, and
   `pandas==2.1.0`, `geopandas==0.14.4`, `pyomo==6.6.2`,
   `cmdstanpy==1.2.0`, `scipy==1.11.1`, `matplotlib==3.7.3`,
   `seaborn==0.13.2`, `jinja2==3.1.6`, and `hmmlearn==0.3.3`.
-- Additional installed Python packages used in the author local/server
-  snapshots include `gurobipy==11.0.3`, `fiona==1.10.1`,
+- Additional installed Python packages used in the author-tested local and
+  server snapshots include `gurobipy==11.0.3`, `fiona==1.10.1`,
   `pyproj==3.6.1`, `shapely==2.0.7`, and `scikit-learn==1.6.1`.
 - R 4.4.1 with packages restored from `renv.lock`. Key R packages pinned in
   the lockfile include `sf==1.0-16`, `terra==1.7-78`, `magick==2.8.3`,
@@ -185,13 +186,13 @@ rebuilt. The only named steps that call `Rscript` are `data`, `maps`, and
 - GDAL, GEOS, PROJ, UDUNITS2, ImageMagick/Magick++, NLopt, CMake,
   `pkg-config`, and a working C/C++ toolchain are required to restore the R
   spatial and graphics stack on Linux.
-- Gurobi is required for optimization. The author local Python environment
-  uses `gurobipy==11.0.3`; `gurobi_cl --version` on the local machine reports
+- Gurobi is required for optimization. The author-tested local Python
+  environment uses `gurobipy==11.0.3`; `gurobi_cl --version` on the local machine reports
   Gurobi Optimizer 12.0.2. The setup script installs `gurobipy==11.0.*`, so
   keep the command-line Gurobi installation and the Python package compatible
   with the available license.
-- CmdStan is required through `cmdstanpy`. The author local environment uses
-  `cmdstanpy==1.2.0` and CmdStan 2.38.0 at
+- CmdStan is required through `cmdstanpy`. The author-tested local environment
+  uses `cmdstanpy==1.2.0` and CmdStan 2.38.0 at
   `/Users/jessieliao/.cmdstan/cmdstan-2.38.0`. The Linux replicator report
   used a rebuilt CmdStan 2.39.0.
 - Slurm is optional and only needed for `--backend slurm`.
@@ -269,10 +270,10 @@ Use `--dry-run` before submission to print the planned local or Slurm commands.
 Use `--slurm-time`, `--slurm-cpus`, `--slurm-mem`, `--slurm-account`, and
 `--slurm-partition` to override the defaults without editing source files.
 
-### Runtime, Memory, And Storage
+### Runtime, Memory, and Storage
 
 With enough Slurm parallelism, the observed end-to-end runtime is roughly two
-days after data and environments are ready. A one-worker local run is not
+days after data and environments are ready. A single-worker local run is not
 recommended for the heavy HMC/MPC stages. The completed logs imply more than
 2,400 accumulated job-hours for the MPC Figure 14 simulation jobs alone.
 
@@ -282,7 +283,7 @@ kept together. The final JPE archive should exclude `.venv/`, `.venv_server/`,
 `renv/library/`, and CmdStan build caches because they are platform-specific
 and regenerated by the setup scripts.
 
-## Notes For Linux Users
+## Notes for Linux Users
 
 The JPE replicator used a Nuvolos Ubuntu 24.04.1 LTS server with AMD EPYC
 9354P, 32 cores, and 64 GB RAM, using Python 3.11 and R 4.5.3 during the
@@ -371,7 +372,7 @@ make build -j1
 Follow these steps in order. The commands work locally with `--backend local`
 and on a Slurm server with `--backend slurm`.
 
-### Step 1. Prepare The Environment
+### Step 1. Prepare the Environment
 
 The setup can be run as one command from the repository root. Use `source` if
 you want the environment to remain active in the current shell after setup
@@ -462,23 +463,25 @@ Keep environment setup separate from the replication run. Slurm jobs source the
 existing `.venv`; they should not reinstall Python packages, CmdStan, or R
 packages inside every submitted job.
 
-### Step 2. Prepare The Data Inputs
+### Step 2. Prepare the Data Inputs
 
 The final journal replication archive should include the complete `data/`
 directory: `data/raw/`, `data/processed/`, `data/clean/`, and
 `data/calibration/`. A GitHub mirror may omit large raw and intermediate files;
 if so, use the archived replication package as the authoritative data source.
-During pre-archive review, the same raw-data bundle can be downloaded
+Same raw-data bundle can be downloaded
 [here](https://www.dropbox.com/scl/fo/n6gsyl7w2mki77eqew8ts/AMUKehiyaTFH2fjO5VotYwE?rlkey=iuk47v413domc1utvoa8x3yfp&st=ie2dyrzx&dl=0). The GitHub replication branch also provides
 `data/calibration/` calibrated inputs as a reference and as a starting point for
 users who want to skip raw-data calibration and reproduce the model, table, and
 figure outputs directly.
 
-Data availability statement: The package is designed to be reproducible from
-public administrative, market, climate, remote-sensing, and carbon-price data.
+#### Data Availability Statement
+
+The package is designed to be reproducible from public administrative, market,
+climate, remote-sensing, and carbon-price data.
 The final JPE archive should contain the exact raw extracts used by the authors
 plus the generated processed, cleaned, and calibrated data. No confidential
-human-subject microdata are used. The data-source inventory, access notes,
+human subjects data are used. The data-source inventory, access notes,
 provider names, generated-file descriptions, and `.Rdata` open-format
 equivalents are documented below. `data/codebook.csv` mirrors the same
 inventory in machine-readable form, but this README is the authoritative
@@ -489,16 +492,23 @@ Because the full `data/`, `output/`, and `plots/` directories can exceed 10GB,
 authors should coordinate with the JPE Data Editor before final upload if the
 accepted archive must be split across multiple files.
 
-Raw Excel files. Several third-party source files are archived in their
-original `.xls` or `.xlsx` formats under `data/raw/` to preserve the exact raw
+#### Raw Excel Files
+
+Several third-party source files are archived in their original `.xls` or
+`.xlsx` formats under `data/raw/` to preserve the exact raw
 extracts used by the authors. These Excel files are raw archived sources, not
 the final analysis data used in the paper tables and figures. The
 data-processing scripts read the archived raw files and write generated CSV,
-Rdata, GeoJSON, and raster products under `data/processed/`, `data/clean/`,
+`.Rdata`, GeoJSON, and raster products under `data/processed/`, `data/clean/`,
 `data/calibration/`, and `replication/derived/`; those generated files are the
 analysis inputs used by the model, table, figure, and post-processing scripts.
 
-Data sources and citations. The manuscript's Appendix A describes the data construction in detail. The table below maps the data sources mentioned in the manuscript and used by the code to the package folders. All source-specific licenses and citation requirements remain with the original providers.
+#### Data Sources and Citations
+
+The manuscript's Appendix A describes the data construction in detail. The
+table below maps the data sources mentioned in the manuscript and used by the
+code to the package folders. All source-specific licenses and citation
+requirements remain with the original providers.
 
 | Source | Package location | Use in paper/code | Citation or access note |
 | --- | --- | --- | --- |
@@ -515,7 +525,7 @@ Data sources and citations. The manuscript's Appendix A describes the data const
 | FGV IBRE | `data/raw/fgv/deflator_ipa/` | Deflator used in price preparation. | Public/third-party economic series; retain provider citation and terms. |
 | World Bank Carbon Pricing Dashboard / carbon-price files | `data/raw/worldbank/carbon_price/` | Carbon-pricing source inputs used by data-cleaning scripts and contextual outputs. | Include source files in the final archive; retain provider terms and access date when known. |
 
-### Data Documentation And Codebook
+#### Data Documentation and Codebook
 
 This section reproduces the contents of `data/codebook.csv` so that the README
 contains the full source and generated-data inventory.
@@ -545,7 +555,7 @@ contains the full source and generated-data inventory.
 | raw | `replication/figure1/reference` | Fatos da Amazonia 2021 / Amazonia 2030 | Brazilian Amazon point used in Figure 1 | script constants/source note | Manuscript Figure 1 cites Fatos da Amazonia 2021 and www.amazonia2030.org |
 | raw | `data/raw/mapbiomas/basin` | ANA / PNRH via MapBiomas | National Water Resources Plan basin layers used for basin random effects | shapefile | Manuscript Appendix C.1 cites level-2 ANA 2006 sub-basins available through MapBiomas |
 
-### Source Access Conditions
+#### Source Access Conditions
 
 This table reproduces the source-level access and redistribution notes tracked
 in `data/source_permissions.csv`.
@@ -556,16 +566,16 @@ in `data/source_permissions.csv`.
 | Climate Watch / World Resources Institute | `replication/figure1/input/`; `data/raw/worldbank/emission_kuznets/` | Retain exact downloaded extract and metadata in final archive | Public source; final deposit should confirm current provider terms before publication. Used with World Bank inputs for Figure 1 emissions context. |
 | Amazonia 2030 / Fatos da Amazonia 2021 | `replication/figure1/reference/` | 2021 report cited in manuscript | Public source; final deposit should confirm redistribution permission or cite source files as archived reference material. |
 | MapBiomas Collection 5 and related products | `data/raw/mapbiomas/` | Collection 5 identified in manuscript; retain raw-file metadata in final archive | Public source; final deposit should verify MapBiomas terms and cite Collection 5. |
-| ANA PNRH basin layers distributed through MapBiomas | `data/raw/mapbiomas/basin/` | ANA 2006 level-2 sub-basins noted in manuscript Appendix C.1 | Public administrative/geographic source; final deposit should verify provider terms. |
+| ANA PNRH basin layers distributed through MapBiomas | `data/raw/mapbiomas/basin/` | ANA 2006 level-2 sub-basins noted in manuscript Appendix C.1 | Public administrative/geographic source. |
 | ESA Biomass Climate Change Initiative | `data/raw/esa/above_ground_biomass/` | Biomass_cci v3; 2017 data used in manuscript Appendix A.2 | Public scientific data; include exact archived extract subject to ESA CCI data policy. Cite DOI 10.5285/5f331c418e9f4935b8eb1b836f8a91b8. |
 | SEEG emissions and removals data | `data/raw/seeg/emission/` | Raw filename records 2020.11.05 extract | Public source; final deposit should verify SEEG terms and citation requirements. |
-| IBGE 2017 Agricultural Census and geographies | `data/raw/ibge/` | 2017 Agricultural Census; Tables 6882 and 6911 cited in manuscript | Public Brazilian statistical/geographic data; final deposit should verify provider terms. |
+| IBGE 2017 Agricultural Census and geographies | `data/raw/ibge/` | 2017 Agricultural Census; Tables 6882 and 6911 cited in manuscript | Public Brazilian statistical/geographic data. |
 | SEAB-PR / DERAL commodity prices via IPEA | `data/raw/seabpr/commodity_prices/`; `data/raw/ipea/farm_gate_price/` | Manuscript reports IPEA access date February 22, 2021 | Public source; final deposit should verify IPEA and SEAB-PR terms. |
 | IPEA distance-to-capital table | `data/raw/ipea/distance_to_capital/` | Raw filename records 2023-08-21 extract | Public source; final deposit should verify IPEA terms. |
 | WorldClim 2.1 | `data/raw/worldclim/` | WorldClim 2.1; 2.5-minute historical rasters | Public climate data; final deposit should verify WorldClim terms. Cite Fick and Hijmans 2017. |
-| FGV IBRE deflator series | `data/raw/fgv/deflator_ipa/` | Retain exact raw-file metadata in final archive | Public/third-party economic series; final deposit should verify provider terms. |
+| FGV IBRE deflator series | `data/raw/fgv/deflator_ipa/` | Retain exact raw-file metadata in final archive | Public/third-party economic series. |
 
-### Data References
+#### Data References
 
 The following data references are included here to make the replication package
 self-contained. Provider-specific license and terms information should be
@@ -687,7 +697,7 @@ to rebuild generated data products from raw inputs.
 
 4. Generate processed, cleaned, and calibration data when starting from raw
    inputs. This stage also builds the Python-only Figure 1 output from the
-   repo-internal World Bank inputs in `replication/figure1/`:
+   World Bank inputs included in the repository under `replication/figure1/`:
 
    ```bash
    ./run.sh --steps stage-data --backend local
@@ -709,7 +719,7 @@ to rebuild generated data products from raw inputs.
    The full workflow assumes these data outputs exist before estimation,
    optimization, and post-processing steps are run.
 
-### Step 3. Run The Whole Project
+### Step 3. Run the Whole Project
 
 The single driver is `run.sh`. It runs commands locally by default and saves
 local command logs under `job-outs/`.
@@ -915,9 +925,9 @@ is the intended route for `stage-hmc`, `stage-mpc`, and `stage-time-consistency`
    After the MPC carbon prices are derived, the driver runs the unconstrained
    MPC-HMC pre/day-0/table/figure block first, then runs the constrained
    day-0/table block. The constrained MPC-HMC pre and constrained probability
-   steps are not part of the current replication workflow. In the driver,
-   The workflow uses the explicit unconstrained step names for MPC-HMC pre,
-   MPC probabilities, Figure 14 simulations, and MPC figures. Tables 6, 8, 12, 19,
+   steps are not part of the current replication workflow. The driver uses the
+   explicit unconstrained step names for MPC-HMC pre, MPC probabilities, Figure
+   14 simulations, and MPC figures. Tables 6, 8, 12, 19,
    and 21 are reconstructed from day-0 outputs; Table 18 additionally uses
    simulation rows from `mpc_compute.py`, so those rows run only after the
    unconstrained Figure 14 MPC-HMC simulation jobs. Figure 14 is generated only
@@ -933,7 +943,7 @@ is the intended route for `stage-hmc`, `stage-mpc`, and `stage-time-consistency`
    from the heavy MPC jobs. Carbon prices are derived earlier, immediately
    after the shadow-price and MPC price-search outputs that downstream steps
    need. The final stage refreshes MPC transition probabilities, paper-number
-   manifests, results-in-paper tables, and results-in-paper figures.
+   audit manifests, results-in-paper tables, and results-in-paper figures.
 
    The computational dependencies are intentionally one-way: downstream scripts
    read `replication/derived/carbon_prices.csv`,
@@ -952,7 +962,7 @@ is the intended route for `stage-hmc`, `stage-mpc`, and `stage-time-consistency`
    rm -f stan_model/adjusted stan_model/adjusted.o stan_model/adjusted.hpp stan_model/adjusted.compile.lock
    ```
 
-### Step 4. Process Generated Raw Results And Check Paper Outputs
+### Step 4. Process Generated Raw Results and Check Paper Outputs
 
 After model jobs have produced raw outputs in `job-outs/`, `output/`, and
 `plots/`, run the post-processing chain and lightweight replication audit:
@@ -1013,7 +1023,7 @@ outside the repository. The optional `--paper-tex` argument in the build scripts
 is only for maintainers who intentionally want to refresh
 `replication/paper_figure_inputs.csv`.
 
-## Output Manifest: Tables And Figures
+#### Output Manifest: Tables and Figures
 
 The JPE report noted that the README should identify which programs generate
 the paper tables and figures. The generated audit CSVs
@@ -1092,7 +1102,7 @@ the table below records the program and line-number mapping checked by JPE.
 | Table 24 | `pysrc/sampling/baseline.py` | 116 | Reproduced |
 | Table 25 | `pysrc/sampling/baseline.py` | 149 | Reproduced |
 
-## In-Text Numbers Not Tied To Tables Or Figures
+#### In-Text Numbers Not Tied to Tables or Figures
 
 The JPE report identified five in-text items that were not tied to a table or
 figure in the earlier code description. The current replication evidence is:
@@ -1103,9 +1113,9 @@ figure in the earlier code description. The current replication evidence is:
 | Page 18 | `correlation = -0.27` | Verified by `pysrc/scripts/productivity_correlation.py`, which reads `data/calibration/productivity_params_1043.csv` and prints `Pearson correlation between gamma_fit and theta_fit = -0.2721352239863349`, which rounds to -0.27 in the `job-outs/stage_hmm/baseline/0003_run.out`. |
 | Page 24, Footnote 35 | Future trajectories do not change much when moving from 2 percent to 3 percent | `stage-deterministic` re-solves deterministic `P^ee` under `delta=0.03` with one parallel job per candidate price before the `maps` step, derives the selected price, and compares baseline trajectories using `P^ee_{0.02}+b` with sensitivity trajectories using `P^ee_{0.03}+b`: `output/delta_sensitivity/delta_0p03/figures/pred_zshare_delta_comparison_1043_sites_det_delta_0p03.png`  |
 | Page 38 | `b = 25`, `b_f = .15b`, `tau_f = 15`, no defection in 100 years | Verified by the time-consistency output. The implementation uses `total_transfer=25.0`, `bf=3.75`, and `b=21.25` in `pysrc/scripts/time_consistency.py`. Run `python pysrc/scripts/time_consistency.py --bf 3.75 --sites 1043`; the row with `tau_f=15` in `output/time_consistency/bf_3p75/time_consistency_summary.csv` has `never_defects=True` and blank first-defection-year columns. |
-| Page 39, Footnote 43 | Report lists this case as "same" | The deterministic stage log records the limiting case used for this statement. In `job-outs/stage_deterministic/deterministic/0001_run.out`, the `b=25`, `pe=31.8` run prints `Max z_i at t=100 (b=25, pe=31.8) = 2.11862458142161e-11 billion ha (0.0211862458142161 ha), site=1028`, indicating an effectively zero terminal value at the site level. |
+| Page 39, Footnote 43 | Case labeled "same" in the report | The deterministic stage log records the limiting case used for this statement. In `job-outs/stage_deterministic/deterministic/0001_run.out`, the `b=25`, `pe=31.8` run prints `Max z_i at t=100 (b=25, pe=31.8) = 2.11862458142161e-11 billion ha (0.0211862458142161 ha), site=1028`, indicating an effectively zero terminal value at the site level. |
 
-### Step 5. Logs, Parallelism, And Dry Runs
+### Step 5. Logs, Parallelism, and Dry Runs
 
 Local and Slurm driver logs are saved under `job-outs/`, grouped first by
 replication stage and then by step. Step folders use only the step name; the
@@ -1135,8 +1145,7 @@ exists, the old folder is skipped instead of being moved inside it.
 
 MPC-HMC child output is written directly into the same stage-specific numbered
 logs shown above; the driver does not create nested `job-outs/mpc/.../run.out`
-files. Slurm batch scripts are submitted inline rather than saved as per-run
-`.sh` files. Slurm driver-level `out`/`err` files use the same stage folders shown above.
+files. The driver generates and submits Slurm batch scripts through `sbatch` at run time. The generated batch script is defined in `slurm_batch_command()`. Slurm driver-level `out`/`err` files use the same stage folders shown above.
 Slurm creates and writes those files only after the scheduled job actually
 starts, so a pending job may have no `Program starts` line yet. New Slurm
 submissions set `PYTHONUNBUFFERED=1`, so Python progress is written to logs
@@ -1243,7 +1252,7 @@ REPLICATION_SLURM_CPUS="8"
 REPLICATION_SLURM_MEM="32G"
 REPLICATION_SLURM_PARTITION="<partition-name>"
 REPLICATION_SLURM_COMMANDS_PER_JOB="10"
-REPLICATION_SLURM_GROUP_MIN_COMMANDS="100"
+REPLICATION_SLURM_GROUP_MIN_COMMANDS="1"
 ```
 
 The clean replication branch uses `run.sh` as the single entry point for both
@@ -1258,7 +1267,7 @@ local and Slurm runs.
   `Parameters from current iteration` vector, uses the second-to-last entry as
   `low -> low`, and uses one minus the last entry as `high -> high`.
 
-### Rights And License
+### Rights and License
 
 The code written for this replication package is released under the MIT License;
 see `LICENSE.txt`. Author-created derived data, tables, figures, manifests, and
@@ -1269,8 +1278,8 @@ in the journal archive only to allow exact replication of the reported results.
 Users who reuse the raw sources outside replication should consult and follow the
 original providers' licenses and citation requirements.
 
-I certify that the authors of the manuscript have legitimate access to and
-permission to use the data used in this manuscript. I certify that the authors
-have documented permission to redistribute or publish the data contained within
-this replication package to the extent stated in `LICENSE.txt`; third-party raw
-data remain subject to their original provider terms.
+The authors certify that they have legitimate access to the data analyzed in
+this manuscript. The authors also certify that they have documented permission
+to redistribute or publish the data contained within this replication package
+to the extent stated in `LICENSE.txt`; third-party raw data remain subject to
+their original provider terms.
